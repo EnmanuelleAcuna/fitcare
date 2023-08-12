@@ -1,0 +1,24 @@
+# Crear imagen for build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+WORKDIR /app
+
+# Copiar csproj para restaurar
+COPY PCG/*.csproj ./
+# Restaurar
+RUN dotnet restore
+
+# Copiar lo demás, exceptuando lo del archivo .dockerignore
+COPY PCG/. ./
+
+# Compilar y publicar
+RUN dotnet build --no-restore -c Release
+RUN dotnet publish --no-build -c Release -o out
+
+# Crear imagen for runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS run-env
+WORKDIR /app
+
+# Copiar lo publicado en la imagen build en la imagen runtime
+COPY --from=build-env /app/out .
+
+ENTRYPOINT [ "dotnet", "PCG.dll" ]
