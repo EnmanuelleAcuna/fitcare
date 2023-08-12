@@ -1,0 +1,171 @@
+<aside class="left-sidebar" data-sidebarbg="skin5">
+	<div class="scroll-sidebar">
+		<nav class="sidebar-nav">
+			<ul id="sidebarnav">
+				@if (User.IsInRole("Administrador"))
+				{
+					@* Menu de cuentas *@
+					<li class="sidebar-item dropright">
+						<a class="sidebar-link waves-effect waves-dark sidebar-link  dropdown-toggle" href="#" id="DropdownCuentas" role="button"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="mdi mdi-account-card-details"></i>
+							<span class="hide-menu">Cuentas</span>
+						</a>
+
+						<div class="dropdown-menu" aria-labelledby="DropdownCuentas">
+							<a class="dropdown-item" href='@Url.Action("ListarRoles", "Cuentas")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Roles
+							</a>
+							<a class="dropdown-item" href='@Url.Action("ListarUsuarios", "Cuentas")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Usuarios
+							</a>
+							<a class="dropdown-item" href='@Url.Action("Inicio", "Instructores")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Instructores
+							</a>
+							<a class="dropdown-item" href='@Url.Action("Inicio", "Clientes")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Clientes
+							</a>
+						</div>
+					</li>
+
+					@if (User.IsInRole("Cliente") || User.IsInRole("Instructor"))
+					{
+						@* Perfil de cliente *@
+						<li class="sidebar-item">
+							<a class="sidebar-link waves-effect waves-dark sidebar-link" href='#' aria-expanded="false">
+								<i class="mdi mdi-account"></i>
+								<span class="hide-menu">Mi perfil</span>
+							</a>
+						</li>
+					}
+
+					<li>
+						<hr class="my-0 bg-secondary" />
+					</li>
+
+					@* Menú de máquinas*@
+					<li class="sidebar-item dropright">
+						<a class="sidebar-link waves-effect waves-dark sidebar-link dropdown-toggle" href="#" id="DropdownMaquinas" role="button"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="mdi mdi-bandcamp"></i>
+							<span class="hide-menu">Máquinas</span>
+						</a>
+
+						<div class="dropdown-menu" aria-labelledby="DropdownMaquinas">
+							<a class="dropdown-item" href='@Url.Action("Inicio", "TiposMaquina")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Tipos de máquina
+							</a>
+							<a class="dropdown-item" href='@Url.Action("Index", "Maquinas")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Máquinas
+							</a>
+						</div>
+					</li>
+
+					@* Menú de ejercicios *@
+					<li class="sidebar-item dropright">
+						<a class="sidebar-link waves-effect waves-dark sidebar-link dropdown-toggle" href="#" id="DropdownEjercicios" role="button"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="mdi mdi-bandcamp"></i>
+							<span class="hide-menu">Ejercicios</span>
+						</a>
+
+						<div class="dropdown-menu" aria-labelledby="DropdownEjercicios">
+							<a class="dropdown-item" href='@Url.Action("Inicio", "GruposMusculares")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Grupos musculares
+							</a>
+							<a class="dropdown-item" href='@Url.Action("Inicio", "TiposMedida")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Tipos de medida
+							</a>
+							<a class="dropdown-item" href='@Url.Action("Inicio", "TiposEjercicio")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Tipos de ejercicio
+							</a>
+							<a class="dropdown-item" href='@Url.Action("Inicio", "Ejercicios")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Ejercicios
+							</a>
+						</div>
+					</li>
+				}
+
+				@* Menú de rutinas *@
+				<li class="sidebar-item dropright">
+					<a class="sidebar-link waves-effect waves-dark sidebar-link dropdown-toggle" href="#" id="DropdownRutinas" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="mdi mdi-dumbbell"></i>
+						<span class="hide-menu">Rutinas</span>
+					</a>
+
+					<div class="dropdown-menu" aria-labelledby="DropdownRutinas">
+						@if (User.IsInRole("Administrador") || User.IsInRole("Instructor"))
+						{
+							<a class="dropdown-item" href='@Url.Action("Inicio", "Rutinas")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Rutinas
+							</a>
+							<a class="dropdown-item" href='@Url.Action("Nuevo", "Rutinas")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Registrar rutina
+							</a>
+						}
+
+						@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
+						{
+							<a class="dropdown-item" href='#'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Mis rutinas
+							</a>
+						}
+					</div>
+				</li>
+
+				<li>
+					<hr class="my-0 bg-secondary" />
+				</li>
+
+				@if (User.IsInRole("Administrador"))
+				{
+					@* Menú de geografía *@
+					<li class="sidebar-item dropright">
+						<a class="sidebar-link waves-effect waves-dark sidebar-link dropdown-toggle" href="#" id="DropdownDivisionTerritorial" role="button"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<i class="mdi mdi-map-marker-radius"></i>
+							<span class="hide-menu">División territorial</span>
+						</a>
+
+						<div class="dropdown-menu" aria-labelledby="DropdownDivisionTerritorial">
+							<a class="dropdown-item" href='@Url.Action("ListarProvincias", "DivisionTerritorial")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Provincias
+							</a>
+							<a class="dropdown-item" href='@Url.Action("ListarCantones", "DivisionTerritorial")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Cantones
+							</a>
+							<a class="dropdown-item" href='@Url.Action("ListarDistritos", "DivisionTerritorial")'>
+								<i class="mdi mdi-checkbox-blank"></i>
+								Distritos
+							</a>
+						</div>
+					</li>
+
+					@* Contactos *@
+					<li class="sidebar-item">
+						<a class="sidebar-link waves-effect waves-dark sidebar-link" href='@Url.Action("Index", "Contactos")' aria-expanded="false">
+							<i class="mdi mdi-message-processing"></i>
+							<span class="hide-menu">Contactos</span>
+						</a>
+					</li>
+				}
+			</ul>
+		</nav>
+	</div>
+</aside>

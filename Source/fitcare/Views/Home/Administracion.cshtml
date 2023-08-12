@@ -1,0 +1,116 @@
+@{
+	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+	ViewData["Title"] = "Administración";
+}
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<h6 class="mb-0"><i class="fa fa-house-user text-info">&nbsp;</i>Bienvenido <b>@ViewBag.NombreUsuario</b>, usted ingresó por ultima vez el
+						@ViewBag.UltimoIngreso (UTC)</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s12">
+			<div class="card-deck">
+				<div class="card">
+					<img src="~/images/admin_1.svg" alt="Administración" class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+					<div class="card-body">
+						@if (User.IsInRole("Administrador"))
+						{
+							<h5 class="card-title font-light text-info"><b>Administración</b></h5>
+							<p class="card-text">
+								Bienvenido a las opciones de administración de fit<b>care</b>.
+							</p>
+						}
+						else
+						{
+							<h5 class="card-title font-light text-info">fit<b>care</b></h5>
+							<p class="card-text">
+								Bienvenido.
+							</p>
+						}
+					</div>
+				</div>
+
+				@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
+				{
+					<div class="card">
+						<img src="~/images/user.svg" alt="Perfil" class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+						<div class="card-body">
+							<h5 class="card-title text-center font-weight-bold">Perfil de cliente</h5>
+							<p class="card-text">Gestione su información.</p>
+							<a href='#' class="btn btn-sm btn-block btn-dark">Mi perfil</a>
+						</div>
+					</div>
+				}
+
+				@if (User.IsInRole("Administrador"))
+				{
+					<div class="card">
+						<img src="~/images/group.svg" alt="Clientes" class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+						<div class="card-body">
+							<h5 class="card-title text-center font-weight-bold">Clientes</h5>
+							<p class="card-text">Gestione sus clientes.</p>
+							<a href='@Url.Action("Inicio", "Clientes")' class="btn btn-sm btn-block btn-dark">Clientes</a>
+							<a href='@Url.Action("Nuevo", "Clientes")' class="btn btn-sm btn-block btn-dark">Nuevo cliente</a>
+							<a href='@Url.Action("Reporte", "Clientes")' class="btn btn-sm btn-block btn-dark">Reporte de clientes</a>
+						</div>
+					</div>
+				}
+
+				@if (User.IsInRole("Administrador"))
+				{
+					<div class="card">
+						<img src="~/images/sports-and-competition.svg" alt="Instructores" class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+						<div class="card-body">
+							<h5 class="card-title text-center font-weight-bold">Instructores</h5>
+							<p class="card-text">Gestione sus instructores.</p>
+							<a href='@Url.Action("Inicio", "Instructores")' class="btn btn-sm btn-block btn-dark">Instructores</a>
+							<a href='@Url.Action("Nuevo", "Instructores")' class="btn btn-sm btn-block btn-dark">Nuevo instructor</a>
+							<a href='@Url.Action("Reporte", "Instructores")' class="btn btn-sm btn-block btn-dark">Reporte de instructores</a>
+						</div>
+					</div>
+				}
+
+				<div class="card">
+					<img src="~/images/excersice.svg" alt="Rutinas" class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+					<div class="card-body">
+						<h5 class="card-title text-center font-weight-bold">Rutinas</h5>
+						@if (User.IsInRole("Cliente"))
+						{
+							<p class="card-text">Gestione sus rutinas.</p>
+						}
+						else
+						{
+							<p class="card-text">Gestine las rutinas de sus clientes.</p>
+						}
+
+						@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+						{
+							<a href='@Url.Action("Inicio", "Rutinas")' class="btn btn-sm btn-block btn-dark">Todas las rutinas</a>
+							<a href='@Url.Action("Nuevo", "Rutinas")' class="btn btn-sm btn-block btn-dark">Registrar rutina</a>
+							<a href='@Url.Action("ReporteResumido", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas resumido</a>
+							<a href='@Url.Action("ReporteDetallado", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas detallado</a>
+						}
+
+						@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
+						{
+							<a href="#" class="btn btn-sm btn-block btn-dark">Mis rutinas</a>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

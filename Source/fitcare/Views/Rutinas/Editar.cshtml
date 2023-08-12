@@ -1,0 +1,235 @@
+﻿@* @model EditarRutinaViewModel
+
+@{
+Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+ViewBag.Title = "Rutinas";
+}
+
+<!-- ============================================================== -->
+<!-- Bread crumb -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb">
+<div class="row">
+<div class="col-5 align-self-center">
+<h4 class="page-title">Editar rutina</h4>
+</div>
+<div class="col-7 align-self-center">
+<div class="d-flex align-items-center justify-content-end">
+<nav aria-label="breadcrumb">
+<ol class="breadcrumb">
+<li class="breadcrumb-item">
+<a href='@Url.Action("Administracion", "Home")'>Administración</a>
+</li>
+<li class="breadcrumb-item">
+<a href='@Url.Action("Inicio")'>Rutinas</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+Editar
+</li>
+</ol>
+</nav>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- End Bread crumb -->
+<!-- ============================================================== -->
+<!-- Container fluid -->
+<!-- ============================================================== -->
+<div class="container-fluid">
+<!-- ============================================================== -->
+<!-- Start Page Content -->
+<!-- ============================================================== -->
+<div class="row">
+<div class="col-12">
+<div class="card shadow-sm">
+<div class="card-body">
+@using (Html.BeginForm("Editar", "Rutinas", FormMethod.Post, new { autocomplete = "off" }))
+{
+@Html.AntiForgeryToken()
+@Html.HiddenFor(m => m.Id)
+
+<div class="row">
+<div class="col-md-12">
+@Html.ValidationSummary(true, "")
+</div>
+</div>
+
+<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="false">
+<div class="carousel-inner">
+<div class="carousel-item active">
+<div class="card">
+<div class="card-body">
+<h5 class="card-title text-info">Datos preliminares</h5>
+<div class="row">
+<div class="col-sm-12 col-md-6">
+<div class="form-group">
+@Html.LabelFor(model => model.Instructor)
+@Html.DropDownListFor(model => model.Instructor, new List<SelectListItem>(ViewBag.ListaInstructores), "Seleccione un instructor", new { @class = "form-control
+form-control-sm" })
+@Html.ValidationMessageFor(model => model.Instructor)
+</div>
+</div>
+
+<div class="col-sm-12 col-md-6">
+<div class="form-group">
+@Html.LabelFor(model => model.Cliente)
+@Html.DropDownListFor(model => model.Cliente, new List<SelectListItem>(ViewBag.ListaClientes), "Seleccione un cliente", new { @class = "form-control
+form-control-sm" })
+@Html.ValidationMessageFor(model => model.Cliente)
+</div>
+</div>
+
+<div class="col-sm-12 col-md-4">
+<div class="form-group">
+@Html.LabelFor(model => model.FechaInicio)
+<br />
+@Html.EditorFor(model => model.FechaInicio, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de inicio" })
+@Html.ValidationMessageFor(model => model.FechaInicio, "", new { @class = "text-danger" })
+</div>
+</div>
+
+<div class="col-sm-12 col-md-4">
+<div class="form-group">
+@Html.LabelFor(model => model.FechaFin)
+<br />
+@Html.EditorFor(model => model.FechaFin, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de finalización" })
+@Html.ValidationMessageFor(model => model.FechaFin, "", new { @class = "text-danger" })
+</div>
+</div>
+
+<div class="col-sm-12">
+<div class="form-group">
+@Html.LabelFor(model => model.Objetivo)
+@Html.TextAreaFor(model => model.Objetivo, 4, 10, htmlAttributes: new { @class = "form-control form-control-sm", placeholder = "Digite el objetivo de la rutina"
+})
+@Html.ValidationMessageFor(model => model.Objetivo, "", new { @class = "text-danger" })
+</div>
+</div>
+</div>
+
+<div class="btn-group" role="group" aria-label="Basic example">
+<button type="button" class="btn btn-sm btn-success" data-target="#carouselExampleSlidesOnly" data-slide-to="1">Medidas&#9;<i class="fa
+fa-arrow-right"></i></button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="carousel-item">
+<div class="card">
+<div class="card-body">
+<h5 class="card-title text-success">Medidas</h5>
+<div class="row" id="contenedor_medidas_registradas">
+@{
+int contadorMedidas = 0;
+}
+@foreach (var medida in Model.Medidas)
+{
+string nombreInputId = string.Format("DetalleMedidas[{0}].IdTipoMedida", contadorMedidas);
+string nombreInputValor = string.Format("DetalleMedidas[{0}].Valor", contadorMedidas);
+string nombreInputComentario = string.Format("DetalleMedidas[{0}].Comentario", contadorMedidas);
+
+@Html.Hidden(nombreInputId, medida.IdTipoMedida)
+<div class="col-12">
+<p class="font-bold mb-0">@Html.DisplayFor(m => medida.Nombre)</p>
+</div>
+<div class="col-sm-12 col-md-2">
+<div class="form-group">
+@Html.LabelFor(m => medida.Valor)
+@Html.TextBox(nombreInputValor, medida.Valor, new { @class = "form-control form-control-sm" })
+</div>
+</div>
+<div class="col-sm-12 col-md-10">
+<div class="form-group">
+@Html.LabelFor(m => medida.Comentario)
+@Html.TextBox(nombreInputComentario, medida.Comentario, new { @class = "form-control form-control-sm" })
+</div>
+</div>
+
+contadorMedidas++;
+}
+</div>
+
+<div class="btn-group" role="group" aria-label="Basic example">
+<button type="button" class="btn btn-sm btn-info" data-target="#carouselExampleSlidesOnly" data-slide-to="0"><i class="fa fa-arrow-left"></i>&#9;Datos
+preliminares</button>
+<button type="button" class="btn btn-sm btn-secondary" data-target="#carouselExampleSlidesOnly" data-slide-to="2">Ejercicios&#9;<i class="fa
+fa-arrow-right"></i></button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="carousel-item">
+<div class="card">
+<div class="card-body">
+<h5 class="card-title text-secondary">Ejercicios</h5>
+<div class="row" id="contenedor_ejercicios_registrados">
+@{
+int contadorEjercicios = 0;
+}
+@foreach (var ejercicio in Model.Ejercicios)
+{
+string nombreInputId = string.Format("DetalleEjercicios[{0}].IdEjercicio", contadorEjercicios);
+string nombreInputSeries = string.Format("DetalleEjercicios[{0}].Series", contadorEjercicios);
+string nombreInputRepeticiones = string.Format("DetalleEjercicios[{0}].Repeticiones", contadorEjercicios);
+string nombreInputMinutosDescanso = string.Format("DetalleEjercicios[{0}].MinutosDescanso", contadorEjercicios);
+
+@Html.Hidden(nombreInputId, ejercicio.IdEjercicio)
+<div class="col-12">
+<p class="font-bold mb-0">@Html.DisplayFor(m => ejercicio.Nombre)</p>
+</div>
+<div class="col-sm-12 col-md-2">
+<div class="form-group">
+@Html.LabelFor(m => ejercicio.Series)
+@Html.TextBox(nombreInputSeries, ejercicio.Series, new { @class = "form-control form-control-sm" })
+</div>
+</div>
+<div class="col-sm-12 col-md-2">
+<div class="form-group">
+@Html.LabelFor(m => ejercicio.Repeticiones)
+@Html.TextBox(nombreInputRepeticiones, ejercicio.Repeticiones, new { @class = "form-control form-control-sm" })
+</div>
+</div>
+<div class="col-sm-12 col-md-2">
+<div class="form-group">
+@Html.LabelFor(m => ejercicio.MinutosDescanso)
+@Html.TextBox(nombreInputMinutosDescanso, ejercicio.MinutosDescanso, new { @class = "form-control form-control-sm" })
+</div>
+</div>
+}
+</div>
+
+<div class="btn-group" role="group">
+<button type="button" class="btn btn-sm btn-success" data-target="#carouselExampleSlidesOnly" data-slide-to="1"><i class="fa
+fa-arrow-left"></i>&#9;Medidas</button>
+<button class="btn btn-sm btn-default" type="submit">Guardar&#9;<i class="fa fa-check"></i></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+}
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid -->
+<!-- ============================================================== -->
+@section Scripts{
+@{
+await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+
+<script type="text/javascript">
+
+</script>
+} *@

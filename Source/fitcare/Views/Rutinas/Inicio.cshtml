@@ -1,0 +1,97 @@
+﻿@* @model IEnumerable<InicioRutinasViewModel>
+
+@{
+Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+ViewBag.Title = "Rutinas";
+}
+
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb">
+<div class="row">
+<div class="col-5 align-self-center">
+<h4 class="page-title">Lista de rutinas</h4>
+</div>
+<div class="col-7 align-self-center">
+<div class="d-flex align-items-center justify-content-end">
+<nav aria-label="breadcrumb">
+<ol class="breadcrumb">
+<li class="breadcrumb-item">
+<a href="@Url.Action("Administracion", "Home")">Administración</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+Rutinas
+</li>
+</ol>
+</nav>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Container fluid -->
+<!-- ============================================================== -->
+<div class="container-fluid">
+<!-- ============================================================== -->
+<!-- Start Page Content -->
+<!-- ============================================================== -->
+<div class="row">
+<div class="col-12">
+<div class="card shadow-sm">
+<div class="card-body">
+<a asp-action="Nuevo" class="btn btn-sm btn-default">Agregar rutina</a>
+
+<hr />
+
+<div class="table-responsive">
+<table class="table table-hover table-sm">
+<thead>
+<tr>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Instructor)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Cliente)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaRealizacion)</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+@foreach (var Rutina in Model)
+{
+<tr>
+<td>@Rutina.Instructor</td>
+<td>@Rutina.Cliente</td>
+<td>@Rutina.FechaRealizacion</td>
+<td>
+<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+<a class="btn btn-sm btn-success" asp-controller="Rutinas"
+asp-action="Detalle" asp-route-id="@Rutina.Id">Detalle</a>
+<a class="btn btn-sm btn-secondary" asp-controller="Rutinas"
+asp-action="Editar" asp-route-id="@Rutina.Id">Modificar</a>
+<a class="btn btn-sm btn-danger" asp-controller="Rutinas"
+asp-action="Eliminar" asp-route-id="@Rutina.Id">Eliminar</a>
+</div>
+</td>
+</tr>
+}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid -->
+<!-- ============================================================== -->
+@section Scripts {
+<script type="text/javascript">
+
+</script>
+} *@

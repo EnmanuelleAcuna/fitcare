@@ -1,0 +1,129 @@
+﻿@model AgregarContactoViewModel
+
+@{
+	ViewData["Title"] = "Contáctenos";
+}
+
+<div class="jumbotron p-4 bg-white shadow-sm">
+	<div class="row">
+		<div class="col-sm-12 col-md-5">
+			<iframe
+				src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3167.5906925025197!2d25.329344025122776!3d37.44677298121658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14a2bf2a8c16b079%3A0x2f5d71c266f21430!2zTnVzci1ldCDOnM-NzrrOv869zr_Pgg!5e0!3m2!1ses-419!2scr!4v1598164540444!5m2!1ses-419!2scr"
+				frameborder="0" style="border:0; width: 100%; height: 100%;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+		</div>
+
+		<div class="col-sm-12 col-md-7 text-center">
+			<img class="img-fluid max-height-96px mb-4" src="~/images/fitcare_logo.png" alt="Logo fitcare">
+
+			<h4 class="font-light text-primary my-2">
+				Contactar a fit<b>care</b>
+			</h4>
+
+			<p class="lead">
+				<b>Dirección: </b>En algún lugar de Costa Rica, donde puede llegar a caballo solamente.
+			</p>
+
+			<p class="lead">
+				<b>Teléfono: </b><a href="tel:+50683156727"><span class="glyphicon glyphicon-earphone"></span>&nbsp;83156727</a>
+			</p>
+
+			<p class="lead">
+				<b>Correo electrónico: </b><a href="mailto:emanuelacu@outlook.com"><span
+						class="glyphicon glyphicon-earphone"></span>&nbsp;emanuelacu@outlook.com</a>
+			</p>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="bg-white shadow-sm">
+			<h5 class="py-3 font-light text-center text-dark">
+				Enviar un mensaje a fit<b>care</b>
+			</h5>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12">
+		<div class="card-body bg-white shadow-sm mb-2">
+			@using (Html.BeginForm("Agregar", "Contactos", FormMethod.Post, new { autocomplete = "off" }))
+			{
+				@Html.AntiForgeryToken()
+
+				<div class="row">
+					<div class="col-md-12">
+						@Html.ValidationSummary(true, "")
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12 col-md-4">
+						<div class="form-group">
+							@Html.LabelFor(model => model.Nombre)
+							<div class="input-group input-group-sm mb-3">
+								<div class="input-group-prepend">
+									<span class="input-group-text" id="input-nombre">A</span>
+								</div>
+								@Html.TextBoxFor(model => model.Nombre, "", new { @class = "form-control form-control-sm", aria_describedby =
+							"input-nombre", placeholder = "Su nombre completo" })
+							</div>
+							@Html.ValidationMessageFor(model => model.Nombre)
+						</div>
+					</div>
+
+					<div class="col-sm-12 col-md-4">
+						<div class="form-group">
+							<div class="form-group">
+								@Html.LabelFor(model => model.Correo)
+								<div class="input-group input-group-sm mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text" id="input-email">&commat;</span>
+									</div>
+									@Html.TextBoxFor(model => model.Correo, "", new { @class = "form-control form-control-sm", aria_describedby =
+								"input-email", placeholder = "Su correo electrónico" })
+								</div>
+								@Html.ValidationMessageFor(model => model.Correo)
+							</div>
+						</div>
+					</div>
+
+					<div class="col-sm-12 col-md-4">
+						<div class="form-group">
+							<div class="form-group">
+								@Html.LabelFor(model => model.Telefono)
+								<div class="input-group input-group-sm mb-3">
+									<div class="input-group-prepend">
+										<span class="input-group-text" id="input-telefono">8</span>
+									</div>
+									@Html.TextBoxFor(model => model.Telefono, "", new { @class = "form-control form-control-sm", aria_describedby =
+								"input-telefono", placeholder = "Su número de télefono" })
+								</div>
+								@Html.ValidationMessageFor(model => model.Telefono)
+							</div>
+						</div>
+					</div>
+
+					<div class="col-sm-12">
+						<div class="form-group">
+							@Html.LabelFor(model => model.Mensaje)
+							@Html.TextAreaFor(model => model.Mensaje, new { @class = "form-control form-control-sm", placeholder = "Su mensaje" })
+							@Html.ValidationMessageFor(model => model.Mensaje)
+						</div>
+					</div>
+
+					<div class="col-12">
+						<input value="Enviar mensaje" class="btn btn-sm btn-primary" type="submit" />
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+</div>
+
+@section Scripts{
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

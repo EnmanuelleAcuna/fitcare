@@ -1,0 +1,51 @@
+@{
+	Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es-CR">
+
+<head>
+	<meta charset="utf-8" />
+	<meta content="text/html" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+	<meta http-equiv="X-UA-Compatible Content-Type" content="ie=edge">
+	<title>fitcare</title>
+
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" />
+	<link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+</head>
+
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12 col-md-4 offset-md-4">
+				<img src="~/images/password.svg" alt="¿Olvidó us contraseña?" class="card-img-top mt-4 mb-2 max-height-128px">
+				<h4 class="text-center mt-2 mb-4 font-light text-primary">¿Olvidó su contraseña?</h4>
+
+				<div class="card">
+					<div class="card-body">
+						<div class="form-group">
+							<p class="text-justified">
+								Se ha enviado un correo con instrucciones para establecer la contraseña, por favor revise su correo.
+							</p>
+						</div>
+
+						<div class="w-100 text-center">
+							@Html.ActionLink("Iniciar sesión", "IniciarSesion", "Cuentas", null, new { @class = "btn btn-sm btn-primary btn-block font-bold",
+							title = "Iniciar sesión" })
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+
+</html>

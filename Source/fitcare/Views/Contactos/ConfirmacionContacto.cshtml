@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Contáctenos";
+}
+
+<div class="jumbotron p-4 bg-white shadow-sm">
+    <div class="row">
+        <div class="col-sm-12 text-center">
+            <img class="img-fluid max-height-96px" src="~/images/tick.svg" alt="Rutinas">
+            <h4 class="font-light text-primary my-2">
+                Su mensaje ha sido enviado
+            </h4>
+            <h6 class="font-light my-2">
+                Gracias por enviarnos su mensaje
+            </h6>
+            @Html.ActionLink("Ir a la página de inicio", "Index", "Home", null, new { @class = "btn btn-sm btn-primary" })
+        </div>
+    </div>
+</div>

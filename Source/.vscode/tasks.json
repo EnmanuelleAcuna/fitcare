@@ -1,0 +1,93 @@
+// Predefined variables
+// The following predefined variables are supported:
+// ${userHome} - the path of the user's home folder
+// ${workspaceFolder} - the path of the folder opened in VS Code
+// ${workspaceFolderBasename} - the name of the folder opened in VS Code without any slashes (/)
+// ${file} - the current opened file
+// ${fileWorkspaceFolder} - the current opened file's workspace folder
+// ${relativeFile} - the current opened file relative to workspaceFolder
+// ${relativeFileDirname} - the current opened file's dirname relative to workspaceFolder
+// ${fileBasename} - the current opened file's basename
+// ${fileBasenameNoExtension} - the current opened file's basename with no file extension
+// ${fileExtname} - the current opened file's extension
+// ${fileDirname} - the current opened file's folder path
+// ${fileDirnameBasename} - the current opened file's folder name
+// ${cwd} - the task runner's current working directory upon the startup of VS Code
+// ${lineNumber} - the current selected line number in the active file
+// ${selectedText} - the current selected text in the active file
+// ${execPath} - the path to the running VS Code executable
+// ${defaultBuildTask} - the name of the default build task
+// ${pathSeparator} - the character used by the operating system to separate components in file paths
+// Tip: Use IntelliSense inside string values for tasks.json and launch.json to get a full list of predefined variables.
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Restore dependencies",
+			"command": "dotnet",
+			"type": "shell",
+			"args": [
+				"restore",
+				"${workspaceFolder}/fitcare/fitcare.csproj"
+			],
+			"problemMatcher": [
+				"$msCompile"
+			]
+		},
+		{
+			"label": "Build web project",
+			"command": "dotnet",
+			"type": "shell",
+			"args": [
+				"build",
+				"--no-restore",
+				"${workspaceFolder}/fitcare/fitcare.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			},
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "run",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"run",
+				"--no-build",
+				"${workspaceFolder}/fitcare"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/fitcare/fitcare.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "watch",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"watch",
+				"run",
+				"${workspaceFolder}/fitcare/fitcare.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		}
+	]
+}

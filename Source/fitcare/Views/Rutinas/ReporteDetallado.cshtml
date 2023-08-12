@@ -1,0 +1,179 @@
+﻿@* @model IEnumerable<ReporteRutinaDetalladoViewModel>
+
+@{
+Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+ViewBag.Title = "Reporte de rutinas detallado";
+}
+
+<!-- ============================================================== -->
+<!-- Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<div class="page-breadcrumb">
+<div class="row">
+<div class="col-5 align-self-center">
+<h4 class="page-title">Reporte de Rutinas detallado</h4>
+</div>
+<div class="col-7 align-self-center">
+<div class="d-flex align-items-center justify-content-end">
+<nav aria-label="breadcrumb">
+<ol class="breadcrumb">
+<li class="breadcrumb-item">
+<a href='@Url.Action("Administracion", "Home")'>Administración</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">
+Rutinas
+</li>
+</ol>
+</nav>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- End Bread crumb and right sidebar toggle -->
+<!-- ============================================================== -->
+<!-- ============================================================== -->
+<!-- Container fluid -->
+<!-- ============================================================== -->
+<div class="container-fluid">
+<!-- ============================================================== -->
+<!-- Start Page Content -->
+<!-- ============================================================== -->
+<div class="row">
+<div class="col-12">
+<div class="card shadow-sm">
+<div class="card-body">
+@using (Html.BeginForm("ReporteDetallado", "Rutinas", FormMethod.Post, new { autocomplete = "off" }))
+{
+<div class="row mb-4">
+<div class="col-12">
+<h4>Filtrar por instructores y clientes</h4>
+</div>
+
+<div class="col-sm-12 col-md-6">
+<div class="form-group">
+<label for="idInstructor">Instructores</label>
+@Html.DropDownList("idInstructor", new List<SelectListItem>(ViewBag.ListaInstructores), "Todos los instructores", new { @class = "form-control form-control-sm",
+id = "idInstructor" })
+</div>
+</div>
+
+<div class="col-sm-12 col-md-6">
+<div class="form-group">
+<label for="idCliente">Clientes</label>
+@Html.DropDownList("idCliente", new List<SelectListItem>(ViewBag.ListaClientes), "Todos los clientes", new { @class = "form-control form-control-sm", id =
+"idCliente" })
+</div>
+</div>
+
+<div class="col-sm-12 col-md-4 offset-md-4">
+<button type="submit" class="btn btn-sn btn-info d-block w-100">
+<i class="fa fa-fw fa-filter">&nbsp;</i>Filtrar
+</button>
+</div>
+</div>
+}
+
+<div class="table-responsive">
+<table class="table table-hover table-sm" id="rutinas">
+<caption>
+Reporte generado por el usuario: <span class="font-weight-bold">@User.Identity.Name</span>, el: <span class="font-weight-bold">@DateTime.Now</span>
+</caption>
+@foreach (var rutina in Model)
+{
+<thead class="bg-dark text-light">
+<tr>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().NombreInstructor)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().NombreCliente)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaRegistro)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaInicio)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaFin)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Objetivo)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().DiasRutina)</th>
+<th>@Html.DisplayNameFor(m => m.FirstOrDefault().CantidadEjerciciosRegistrados)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>@rutina.NombreInstructor</td>
+<td>@rutina.NombreCliente</td>
+<td>@rutina.FechaRegistro</td>
+<td>@rutina.FechaInicio</td>
+<td>@rutina.FechaFin</td>
+<td>@rutina.Objetivo</td>
+<td>@rutina.DiasRutina</td>
+<td>@rutina.CantidadEjerciciosRegistrados</td>
+</tr>
+
+@* Ejercicios *@
+@*<tr class="bg-light">
+<td class="font-weight-bold">Ejercicio</td>
+<td class="font-weight-bold">@Html.DisplayNameFor(m => m.FirstOrDefault().Ejercicios.FirstOrDefault().Series)</td>
+<td class="font-weight-bold">@Html.DisplayNameFor(m => m.FirstOrDefault().Ejercicios.FirstOrDefault().Repeticiones)</td>
+<td class="font-weight-bold">@Html.DisplayNameFor(m => m.FirstOrDefault().Ejercicios.FirstOrDefault().MinutosDescanso)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+@foreach (var ejercicio in rutina.Ejercicios)
+{
+<tr>
+<td>@ejercicio.Nombre</td>
+<td>@ejercicio.Series</td>
+<td>@ejercicio.Repeticiones</td>
+<td>@ejercicio.MinutosDescanso</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+}*@
+
+@* Medidas *@
+@*<tr class="bg-light">
+<td class="font-weight-bold">Tipo de medida</td>
+<td class="font-weight-bold">Medida</td>
+<td class="font-weight-bold">@Html.DisplayNameFor(m => m.FirstOrDefault().Medidas.FirstOrDefault().Comentario)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+@foreach (var medida in rutina.Medidas)
+{
+<tr>
+<td>@medida.Nombre</td>
+<td>@medida.Valor</td>
+<td>@medida.Comentario</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+}
+</tbody>
+}
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================== -->
+<!-- End Page Content -->
+<!-- ============================================================== -->
+</div>
+<!-- ============================================================== -->
+<!-- End Container fluid -->
+<!-- ============================================================== -->
+@section Scripts {
+<script type="text/javascript">
+$(document).ready(function ()
+{
+
+});
+</script>
+} *@

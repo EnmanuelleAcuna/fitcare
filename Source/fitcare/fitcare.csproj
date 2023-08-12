@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<TypeScriptTarget>ES6</TypeScriptTarget>
+		<TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<TypeScriptTarget>ES6</TypeScriptTarget>
+		<TypeScriptRemoveComments>True</TypeScriptRemoveComments>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<UserSecretsId>aspnet-fitcare-3ABE0FEB-41D4-41EE-8A2F-6F7B06BEA1D2</UserSecretsId>
+		<AssemblyName>fitcare</AssemblyName>
+		<RootNamespace>fitcare</RootNamespace>
+		<Description></Description>
+		<Copyright></Copyright>
+		<PackageProjectUrl></PackageProjectUrl>
+		<RepositoryUrl>https://dev.azure.com/josealexander/_git/fitcare</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<StartupObject>fitcare.Program</StartupObject>
+		<EnableNETAnalyzers>True</EnableNETAnalyzers>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+		<ErrorReport>none</ErrorReport>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MailKit" Version="3.4.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.20" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.20" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.20">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\images\Instructores\" />
+		<Folder Include="wwwroot\images\Clientes\" />
+		<Folder Include="wwwroot\images\Maquinas\" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,104 @@
+using System;
+using fitcare.Models;
+using fitcare.Models.Contracts;
+using fitcare.Models.DataAccess;
+using fitcare.Models.Entities;
+using fitcare.Models.Identity;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace fitcare;
+
+public class Program
+{
+	public static void Main(string[] args)
+	{
+		WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+		IConfiguration builderConfiguration = builder.Configuration;
+
+		builder.Services.AddLogging(b => b.AddConsole());
+
+		builder.Services.Configure<ConnectionStringOptions>(builderConfiguration.GetSection("ConnectionStrings"));
+		builder.Services.AddOptions<ConnectionStringOptions>();
+
+		builder.Services.AddDbContext<FitcareDBContext>(options => options.UseSqlServer(builderConfiguration.GetConnectionString("DefaultConnection")));
+		builder.Services.AddDbContext<IdentityDBContext>(options => options.UseSqlServer(builderConfiguration.GetConnectionString("DefaultConnection")));
+
+		// ASP.Net Identity
+		builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+		{
+			options.User.RequireUniqueEmail = true;
+			options.SignIn.RequireConfirmedAccount = false;
+			options.Password.RequiredLength = 6;
+		})
+		.AddEntityFrameworkStores<IdentityDBContext>()
+		.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider)
+		.AddUserManager<ApplicationUserManager<ApplicationUser>>();
+
+		builder.Services.Configure<CookiePolicyOptions>(options =>
+		{
+			options.CheckConsentNeeded = context => false;
+			options.MinimumSameSitePolicy = SameSiteMode.Lax;
+		});
+
+		builder.Services.Configure<CookieOptions>(options =>
+		{
+			options.Expires = DateTime.Now.AddMinutes(20);
+			options.SameSite = SameSiteMode.Strict;
+			options.Secure = true;
+		});
+
+		builder.Services.ConfigureApplicationCookie(options =>
+		{
+			options.Cookie.Name = ".AspNetCore.Identity.Application";
+			options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+			options.SlidingExpiration = true;
+			options.LoginPath = "/Cuentas/IniciarSesion";
+			options.Cookie.SameSite = SameSiteMode.Strict;
+		});
+
+		builder.Services.AddScoped<IManager<Provincia>, ProvinciaManager>();
+		builder.Services.AddScoped<IManager<Canton>, CantonManager>();
+		builder.Services.AddScoped<IManager<Distrito>, DistritoManager>();
+		builder.Services.AddTransient<IDivisionTerritorialManager, DivisionTerritorialManager>();
+		builder.Services.AddScoped<IManager<Contacto>, ContactosManager>();
+		// builder.Services.AddTransient<IRepository<Cliente>, DAOCliente>();
+		// builder.Services.AddTransient<IRepository<Instructor>, DAOInstructor>();
+		// builder.Services.AddTransient<IRepository<TipoMaquina>, DAOTipoMaquina>();
+		// builder.Services.AddTransient<IRepository<Maquina>, DAOMaquina>();
+		// builder.Services.AddTransient<IRepository<Accesorio>, DAOAccesorio>();
+		// builder.Services.AddTransient<IRepository<GrupoMuscular>, DAOGrupoMuscular>();
+		// builder.Services.AddTransient<IRepository<TipoEjercicio>, DAOTipoEjercicio>();
+		// builder.Services.AddTransient<IRepository<Ejercicio>, DAOEjercicio>();
+		// builder.Services.AddTransient<IRepository<TipoMedida>, DAOTipoMedida>();
+		// builder.Services.AddTransient<IRepository<Rutina>, DAORutina>();
+		builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+		builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+
+		WebApplication app = builder.Build();
+
+		app.UseExceptionHandler(app.Environment.IsDevelopment() ? "/Error/ErrorDevelopment" : "/Error/Error");
+		app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+		app.UseHttpsRedirection();
+		app.UseStaticFiles();
+		app.UseCookiePolicy();
+		app.UseRouting();
+		app.UseAuthentication();
+		app.UseAuthorization();
+		app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+		app.Run();
+	}
+}
+
+public class ConnectionStringOptions
+{
+	public string DefaultConnection { get; set; }
+}
