@@ -1,0 +1,54 @@
+
+CREATE PROCEDURE PA_INSERTAR_TIPO_USUARIO
+
+    @Tipo_Usuario VARCHAR(255)
+
+AS
+BEGIN
+
+    INSERT INTO TIPO_USUARIO
+    VALUES
+        (@Tipo_Usuario)
+
+END
+GO
+
+CREATE PROCEDURE [dbo].[PA_INSERTAR_TIPO_USUARIO]
+
+    @Tipo_Usuario VARCHAR(255)
+
+AS
+BEGIN
+
+    INSERT INTO TIPO_USUARIO
+    VALUES
+        (@Tipo_Usuario)
+
+END
+
+CREATE PROCEDURE dbo.PA_INSERTAR_TIPO_USUARIO
+
+    @Tipo_Usuario VARCHAR(255)
+
+AS
+BEGIN
+
+    INSERT INTO TIPO_USUARIO
+    VALUES
+        (@Tipo_Usuario)
+
+END
+
+CREATE PROCEDURE PA_TIPO_USUARIO
+
+    @id_Tipo_Usuario INT,
+    @Tipo_Usuario VARCHAR(255)
+
+AS
+BEGIN
+
+    INSERT INTO TIPO_USUARIO
+    VALUES
+        (@id_Tipo_Usuario, @Tipo_Usuario)
+
+END

@@ -1,0 +1,10 @@
+DELIMITER //
+
+CREATE PROCEDURE PA_Novedades_Obtener_Todas()
+BEGIN
+	SELECT * FROM NOVEDADES;
+END //
+
+DELIMITER ;
+
+CALL PA_Novedades_ObtenerTodas();

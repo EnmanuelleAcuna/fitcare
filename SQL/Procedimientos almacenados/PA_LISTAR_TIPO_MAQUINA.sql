@@ -1,0 +1,27 @@
+USE [GimnacioBD]
+GO
+/****** Object:  StoredProcedure [dbo].[PA_LISTAR_TIPO_MAQUINA]    Script Date: 1/7/2019 23:22:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE procedure [dbo].[PA_LISTAR_TIPO_MAQUINA]
+AS
+BEGIN
+    SELECT *
+    FROM TIPO_MAQUINA
+END
+
+CREATE procedure [dbo].[PA_LISTAR_TIPO_MAQUINA]
+AS
+BEGIN
+    SELECT *
+    FROM TIPO_MAQUINA
+END
+
+Create procedure [dbo].[PA_LISTAR_TIPO_MAQUINA]
+AS
+BEGIN
+    SELECT *
+    FROM TIPO_MAQUINA
+END

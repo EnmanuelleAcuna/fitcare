@@ -1,0 +1,38 @@
+
+
+CREATE PROCEDURE [dbo].[PA_INSERTAR_TIPO_EJERCICIO]
+
+    @Nombre_Maquina VARCHAR(255),
+    @Estado VARCHAR(255)
+
+AS
+BEGIN
+
+    INSERT INTO TIPO_MAQUINA
+    VALUES(@Nombre_Maquina, @Estado)
+
+END
+
+CREATE PROCEDURE [dbo].[PA_INSERTAR_TIPO_EJERCICIO]
+
+    @Nombre_Ejercicio VARCHAR(255),
+    @Estado VARCHAR(255)
+
+AS
+BEGIN
+    INSERT INTO Tipo_Ejercicio
+    VALUES(@Nombre_Ejercicio, @Estado)
+END
+
+CREATE PROCEDURE dbo.PA_INSERTAR_TIPO_EJERCICIO
+
+    @Nombre_Maquina VARCHAR(255),
+    @Estado VARCHAR(255)
+
+AS
+BEGIN
+
+    INSERT INTO TIPO_MAQUINA
+    VALUES(@Nombre_Maquina, @Estado)
+
+END

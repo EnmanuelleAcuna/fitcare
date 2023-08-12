@@ -1,0 +1,10 @@
+DELIMITER //
+
+CREATE PROCEDURE PA_Contactos_Obtener_Todos()
+BEGIN
+	SELECT * FROM CONTACTOS;
+END //
+
+DELIMITER ;
+
+CALL  PA_Contactos_Obtener_Todos;

@@ -1,0 +1,12 @@
+DELIMITER //
+
+CREATE PROCEDURE PA_Contactos_Obtener_Por_Id(
+	IN Id INT
+)
+BEGIN
+	SELECT * FROM CONTACTOS AS C WHERE C.Id = Id;
+END //
+
+DELIMITER ;
+
+CALL  PA_Contactos_Obtener_Por_Id (1);

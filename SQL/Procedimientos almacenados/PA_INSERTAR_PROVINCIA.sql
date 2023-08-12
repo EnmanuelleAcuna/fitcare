@@ -1,0 +1,55 @@
+
+CREATE PROCEDURE PA_INSERTAR_PROVINCIA
+
+    @Nombre VARCHAR(100),
+    @Usuario_Crea VARCHAR(50),
+    @Fecha_Crea DATETIME,
+    @Usuario_Modifica VARCHAR(50),
+    @Fecha_Modifica DATETIME,
+    @vc_Estado VARCHAR(3)
+
+AS
+BEGIN
+
+    INSERT INTO PROVINCIA
+    VALUES(@NOMBRE, @USUARIO_CREA, @FECHA_CREA, @USUARIO_MODIFICA,
+            @FECHA_MODIFICA, @VC_ESTADO)
+
+END
+GO
+
+CREATE PROCEDURE [dbo].[PA_INSERTAR_PROVINCIA]
+
+    @Nombre VARCHAR(100),
+    @Usuario_Crea VARCHAR(50),
+    @Fecha_Crea DATETIME,
+    @Usuario_Modifica VARCHAR(50),
+    @Fecha_Modifica DATETIME,
+    @vc_Estado VARCHAR(3)
+
+AS
+BEGIN
+
+    INSERT INTO PROVINCIA
+    VALUES(@NOMBRE, @USUARIO_CREA, @FECHA_CREA, @USUARIO_MODIFICA,
+            @FECHA_MODIFICA, @VC_ESTADO)
+
+END
+
+CREATE PROCEDURE PA_INSERTAR_PROVINCIA
+    @id_Provincia INT,
+    @Nombre VARCHAR(100),
+    @Usuario_Crea VARCHAR(50),
+    @Fecha_Crea DATETIME,
+    @Usuario_Modifica VARCHAR(50),
+    @Fecha_Modifica DATETIME,
+    @vc_Estado VARCHAR(3)
+
+AS
+BEGIN
+
+    INSERT INTO PROVINCIA
+    VALUES(@ID_PROVINCIA, @NOMBRE, @USUARIO_CREA, @FECHA_CREA, @USUARIO_MODIFICA,
+            @FECHA_MODIFICA, @VC_ESTADO)
+
+END
