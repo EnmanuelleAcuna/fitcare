@@ -55,7 +55,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _repoProvincias.CreateAsync(modelo);
+				await _divisionTerritoriaManager.Provincias.CreateAsync(modelo.Entidad());
 				return RedirectToAction(nameof(ListarProvincias));
 			}
 
@@ -66,7 +66,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EditarProvincia(string id)
 		{
-			var provincia = await _repoProvincias.ReadByIdAsync(Factory.NewGUID(id));
+			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(Factory.NewGUID(id));
 			if (provincia == null) return NotFound();
 			return View((EditarProvinciaViewModel)provincia);
 		}
@@ -77,7 +77,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _repoProvincias.UpdateAsync(modelo);
+				await _divisionTerritoriaManager.Provincias.UpdateAsync(modelo);
 				return RedirectToAction(nameof(ListarProvincias));
 			}
 
@@ -89,7 +89,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EliminarProvincia(string id)
 		{
-			var provincia = await _repoProvincias.ReadByIdAsync(Factory.NewGUID(id));
+			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(Factory.NewGUID(id));
 			if (provincia == null) return NotFound();
 			return View((EliminarProvinciaViewModel)provincia);
 		}
@@ -98,14 +98,14 @@ namespace fitcare.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<ActionResult> EliminarProvincia(EliminarProvinciaViewModel modelo)
 		{
-			await _repoProvincias.DeleteAsync(Factory.NewGUID(modelo.Id));
+			await _divisionTerritoriaManager.Provincias.DeleteAsync(Factory.NewGUID(modelo.Id));
 			return RedirectToAction(nameof(ListarProvincias));
 		}
 
 		[HttpGet]
 		public async Task<JsonResult> ObtenerDetalleProvincia(string id)
 		{
-			var provincia = (ProvinciaViewModel)await _repoProvincias.ReadByIdAsync(Factory.NewGUID(id));
+			var provincia = (ProvinciaViewModel)await _divisionTerritoriaManager.Provincias.ReadByIdAsync(Factory.NewGUID(id));
 			return Json(provincia);
 		}
 

@@ -59,9 +59,5 @@ public class AgregarContactoViewModel
 	[StringLength(4000, ErrorMessage = "El mensaje no puede exceder los {0} caracteres.")]
 	public string Mensaje { get; set; }
 
-	public Contacto Entidad()
-	{
-		var contacto = new Contacto(Factory.NewGUID(Guid.NewGuid()), Nombre, Correo, Telefono, Mensaje);
-		return contacto;
-	}
+	public Contacto Entidad() => new(Factory.NewGUID(Guid.NewGuid()), Nombre, Correo, Telefono, Mensaje);
 }

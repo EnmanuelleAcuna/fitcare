@@ -29,14 +29,21 @@ public class AgregarProvinciaViewModel
 
 	public bool Activo { get; set; }
 
-	public Provincia Entidad(string createdBy)
-	{
-		var provincia = new Provincia(Factory.NewGUID((Guid.NewGuid())), Nombre, Activo);
-		return provincia;
-	}
+	public Provincia Entidad() => new(Guid.NewGuid(), Nombre, Activo, "", DateTime.Now);
 }
 
-public class EditarProvinciaViewModel : Provincia { }
+public class EditarProvinciaViewModel : Provincia
+{
+	public EditarProvinciaViewModel(Parameters)
+	{
+
+	}
+
+	public EditarProvinciaViewModel(Provincia entidad)
+	{
+
+	}
+}
 
 public class EliminarProvinciaViewModel : Provincia { }
 
