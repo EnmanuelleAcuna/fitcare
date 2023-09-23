@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
@@ -18,10 +19,10 @@ namespace fitcare.Controllers;
 [Authorize]
 public class ContactosController : BaseController
 {
-	private readonly IManager<Contacto> _contactosManager;
+	private readonly IContactoManager<Contacto> _contactosManager;
 	private readonly ILogger<ContactosController> _logger;
 
-	public ContactosController(IManager<Contacto> repoContactos,
+	public ContactosController(IContactoManager<Contacto> repoContactos,
 							   IDivisionTerritorialManager divisionTerritorialManager,
 							   ApplicationUserManager<ApplicationUser> userManager,
 							   RoleManager<ApplicationRole> roleManager,
@@ -38,23 +39,32 @@ public class ContactosController : BaseController
 	[HttpGet]
 	public async Task<ActionResult> Index()
 	{
-		var listaContactos = (List<ContactoViewModel>)await _contactosManager.ReadAllAsync();
-		return View(listaContactos);
+		var contactos = await _contactosManager.ReadAllAsync();
+		var viewModel = contactos.Select(x => new ContactoViewModel(x));
+		return View(viewModel);
+	}
+
+	[HttpGet]
+	public async Task<JsonResult> Detalle(string id)
+	{
+		var contacto = await _contactosManager.ReadByIdAsync(new Guid(id));
+		var viewModel = new ContactoViewModel(contacto);
+		return Json(viewModel);
 	}
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
 	[AllowAnonymous]
-	public async Task<ActionResult> Agregar(AgregarContactoViewModel modelo)
+	public async Task<ActionResult> Agregar(AgregarContactoViewModel viewModel)
 	{
 		if (ModelState.IsValid)
 		{
-			await _contactosManager.CreateAsync(modelo.Entidad());
+			await _contactosManager.CreateAsync(viewModel.Entidad());
 			return View(nameof(ConfirmacionContacto));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorEnviarInformacion);
-		return View(modelo);
+		return View(viewModel);
 	}
 
 	[HttpGet]
@@ -66,23 +76,23 @@ public class ContactosController : BaseController
 	[HttpGet]
 	public async Task<ActionResult> Eliminar(string id)
 	{
-		var contacto = await _contactosManager.ReadByIdAsync(Factory.NewGUID(id));
+		var contacto = await _contactosManager.ReadByIdAsync(new Guid(id));
 		if (contacto == null) return NotFound();
-		return View(new ContactoViewModel(contacto));
+		var viewModel = new EliminarContactoViewModel(contacto);
+		return View(viewModel);
 	}
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]
-	public async Task<ActionResult> Eliminar(ContactoViewModel modelo)
+	public async Task<ActionResult> Eliminar(EliminarContactoViewModel viewModel)
 	{
-		await _contactosManager.DeleteAsync(Factory.NewGUID(modelo.Id));
-		return RedirectToAction(nameof(Index));
-	}
+		if (ModelState.IsValid)
+		{
+			await _contactosManager.DeleteAsync(new Guid(viewModel.Id));
+			return RedirectToAction(nameof(Index));
+		}
 
-	[HttpGet]
-	public async Task<JsonResult> Detalle(string id)
-	{
-		var contacto = await _contactosManager.ReadByIdAsync(Factory.NewGUID(id));
-		return Json(new ContactoViewModel(contacto));
+		ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Contacto)));
+		return View(viewModel);
 	}
 }

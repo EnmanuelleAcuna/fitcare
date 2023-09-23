@@ -4,6 +4,8 @@ namespace fitcare.Models.ViewModels;
 
 public class BaseViewModel
 {
+	public BaseViewModel() { }
+
 	public BaseViewModel(Base baseModel)
 	{
 		CreadoPor = baseModel.CreadoPor;

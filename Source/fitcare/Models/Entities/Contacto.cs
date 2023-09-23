@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using fitcare.Models.Extras;
 
 namespace fitcare.Models.Entities;
 
@@ -20,7 +19,7 @@ public class Contacto : Base
 	}
 
 	[Key]
-	public Guid Id { get; set; } = Factory.NewGUID(Guid.NewGuid());
+	public Guid Id { get; set; } = Guid.NewGuid();
 	public string NombreCompleto { get; set; }
 	public string CorreoElectronico { get; set; }
 	public string Telefono { get; set; }

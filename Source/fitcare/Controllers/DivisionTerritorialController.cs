@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -44,6 +45,14 @@ namespace fitcare.Controllers
 		}
 
 		[HttpGet]
+		public async Task<JsonResult> ObtenerDetalleProvincia(string id)
+		{
+			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(new Guid(id));
+			var viewModel = new ProvinciaViewModel(provincia);
+			return Json(viewModel);
+		}
+
+		[HttpGet]
 		public ActionResult AgregarProvincia()
 		{
 			return View();
@@ -51,69 +60,77 @@ namespace fitcare.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> AgregarProvincia(AgregarProvinciaViewModel modelo)
+		public async Task<ActionResult> AgregarProvincia(AgregarProvinciaViewModel viewModel)
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Provincias.CreateAsync(modelo.Entidad());
+				await _divisionTerritoriaManager.Provincias.CreateAsync(viewModel.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarProvincias));
 			}
 
 			ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Provincia)));
-			return View(modelo);
+			return View(viewModel);
 		}
 
 		[HttpGet]
 		public async Task<ActionResult> EditarProvincia(string id)
 		{
-			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(Factory.NewGUID(id));
+			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(new Guid(id));
 			if (provincia == null) return NotFound();
-			return View((EditarProvinciaViewModel)provincia);
+			var viewModel = new EditarProvinciaViewModel(provincia);
+			return View(viewModel);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> EditarProvincia(EditarProvinciaViewModel modelo)
+		public async Task<ActionResult> EditarProvincia(EditarProvinciaViewModel viewModel)
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Provincias.UpdateAsync(modelo);
+				await _divisionTerritoriaManager.Provincias.UpdateAsync(viewModel.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarProvincias));
 			}
 
 			ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Provincia)));
-
-			return View(modelo);
+			return View(viewModel);
 		}
 
 		[HttpGet]
 		public async Task<ActionResult> EliminarProvincia(string id)
 		{
-			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(Factory.NewGUID(id));
+			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(new Guid(id));
 			if (provincia == null) return NotFound();
-			return View((EliminarProvinciaViewModel)provincia);
+			var viewModel = new EliminarProvinciaViewModel(provincia);
+			return View(viewModel);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> EliminarProvincia(EliminarProvinciaViewModel modelo)
+		public async Task<ActionResult> EliminarProvincia(EliminarProvinciaViewModel viewModel)
 		{
-			await _divisionTerritoriaManager.Provincias.DeleteAsync(Factory.NewGUID(modelo.Id));
-			return RedirectToAction(nameof(ListarProvincias));
-		}
+			if (ModelState.IsValid)
+			{
+				await _divisionTerritoriaManager.Provincias.DeleteAsync(new Guid(viewModel.Id));
+				return RedirectToAction(nameof(ListarProvincias));
+			}
 
-		[HttpGet]
-		public async Task<JsonResult> ObtenerDetalleProvincia(string id)
-		{
-			var provincia = (ProvinciaViewModel)await _divisionTerritoriaManager.Provincias.ReadByIdAsync(Factory.NewGUID(id));
-			return Json(provincia);
+			ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Provincia)));
+			return View(viewModel);
 		}
 
 		[HttpGet]
 		public async Task<ActionResult> ListarCantones()
 		{
-			var listaCantones = (List<CantonViewModel>)await _repoCantones.ReadAllAsync();
-			return View(listaCantones);
+			var cantones = await _divisionTerritoriaManager.Cantones.ReadAllAsync();
+			var viewModel = cantones.Select
+			return View(cantones);
+		}
+
+		[HttpGet]
+		public async Task<JsonResult> ObtenerDetalleCanton(string id)
+		{
+			var canton = (CantonViewModel)await _repoCantones.ReadByIdAsync(Factory.NewGUID(id));
+			return Json(canton);
 		}
 
 		[HttpGet]
@@ -177,13 +194,6 @@ namespace fitcare.Controllers
 		{
 			await _repoCantones.DeleteAsync(Factory.NewGUID(modelo.Id));
 			return RedirectToAction(nameof(ListarCantones));
-		}
-
-		[HttpGet]
-		public async Task<JsonResult> ObtenerDetalleCanton(string id)
-		{
-			var canton = (CantonViewModel)await _repoCantones.ReadByIdAsync(Factory.NewGUID(id));
-			return Json(canton);
 		}
 
 		[HttpGet]

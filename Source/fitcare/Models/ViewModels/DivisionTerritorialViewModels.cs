@@ -29,23 +29,46 @@ public class AgregarProvinciaViewModel
 
 	public bool Activo { get; set; }
 
-	public Provincia Entidad() => new(Guid.NewGuid(), Nombre, Activo, "", DateTime.Now);
+	public Provincia Entidad() => new(Guid.NewGuid(), Nombre, Activo);
 }
 
-public class EditarProvinciaViewModel : Provincia
+public class EditarProvinciaViewModel : BaseViewModel
 {
-	public EditarProvinciaViewModel(Parameters)
-	{
+	public EditarProvinciaViewModel() : base() { }
 
+	public EditarProvinciaViewModel(Provincia provincia) : base(provincia)
+	{
+		Id = provincia.Id.ToString();
+		Nombre = provincia.Nombre;
+		Activo = provincia.Estado;
 	}
 
-	public EditarProvinciaViewModel(Provincia entidad)
-	{
+	[Required(ErrorMessage = "El id es requerido.")]
+	public string Id { get; set; }
 
-	}
+	[Display(Name = "Nombre de la provincia")]
+	[Required(ErrorMessage = "El nombre es requerido.")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los {0} caracteres.")]
+	public string Nombre { get; set; }
+
+	public bool Activo { get; set; }
+
+	public Provincia Entidad() => new(new Guid(Id), Nombre, Activo);
 }
 
-public class EliminarProvinciaViewModel : Provincia { }
+public class EliminarProvinciaViewModel
+{
+	public EliminarProvinciaViewModel(Provincia provincia)
+	{
+		Id = provincia.Id.ToString();
+		Nombre = provincia.Nombre;
+	}
+
+	[Required(ErrorMessage = "El id es requerido.")]
+	public string Id { get; set; }
+
+	public string Nombre { get; set; }
+}
 
 public class CantonViewModel : Canton { }
 

@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using fitcare.Models.Entities;
-using fitcare.Models.Extras;
 
 namespace fitcare.Models.ViewModels;
 
@@ -59,5 +58,21 @@ public class AgregarContactoViewModel
 	[StringLength(4000, ErrorMessage = "El mensaje no puede exceder los {0} caracteres.")]
 	public string Mensaje { get; set; }
 
-	public Contacto Entidad() => new(Factory.NewGUID(Guid.NewGuid()), Nombre, Correo, Telefono, Mensaje);
+	public Contacto Entidad() => new(Guid.NewGuid(), Nombre, Correo, Telefono, Mensaje);
+}
+
+public class EliminarContactoViewModel
+{
+	public EliminarContactoViewModel(Contacto contacto)
+	{
+		Id = contacto.Id.ToString();
+		Nombre = contacto.NombreCompleto;
+		Mensaje = contacto.Mensaje;
+	}
+
+	[Required(ErrorMessage = "El id es requerido.")]
+	public string Id { get; set; }
+
+	public string Nombre { get; set; }
+	public string Mensaje { get; set; }
 }

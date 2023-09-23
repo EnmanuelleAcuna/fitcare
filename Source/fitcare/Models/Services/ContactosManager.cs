@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace fitcare.Models.DataAccess;
 
-public class ContactosManager : IManager<Contacto>
+public class ContactosManager : IContactoManager<Contacto>
 {
 	private readonly FitcareDBContext _db;
 
@@ -32,22 +32,6 @@ public class ContactosManager : IManager<Contacto>
 	public async Task CreateAsync(Contacto contacto)
 	{
 		await _db.Contactos.AddAsync(contacto);
-		await _db.SaveChangesAsync();
-	}
-
-	public async Task UpdateAsync(Contacto contacto)
-	{
-		Contacto record = await _db.Contactos.FindAsync(contacto.Id);
-
-		if (contacto == null)
-			throw new KeyNotFoundException($"No se encontró un Contacto con el id {contacto.Id}");
-
-		record.NombreCompleto = contacto.NombreCompleto;
-		record.CorreoElectronico = contacto.CorreoElectronico;
-		record.Telefono = contacto.Telefono;
-		record.Mensaje = contacto.Mensaje;
-
-		_db.Contactos.Update(record);
 		await _db.SaveChangesAsync();
 	}
 

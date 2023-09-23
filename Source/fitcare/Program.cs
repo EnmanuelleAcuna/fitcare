@@ -68,7 +68,7 @@ public class Program
 		builder.Services.AddScoped<IManager<Canton>, CantonManager>();
 		builder.Services.AddScoped<IManager<Distrito>, DistritoManager>();
 		builder.Services.AddTransient<IDivisionTerritorialManager, DivisionTerritorialManager>();
-		builder.Services.AddScoped<IManager<Contacto>, ContactosManager>();
+		builder.Services.AddScoped<IContactoManager<Contacto>, ContactosManager>();
 		// builder.Services.AddTransient<IRepository<Cliente>, DAOCliente>();
 		// builder.Services.AddTransient<IRepository<Instructor>, DAOInstructor>();
 		// builder.Services.AddTransient<IRepository<TipoMaquina>, DAOTipoMaquina>();

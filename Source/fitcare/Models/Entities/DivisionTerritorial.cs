@@ -9,7 +9,7 @@ namespace fitcare.Models.Entities;
 [Table("PROVINCIAS", Schema = "fitcare")]
 public class Provincia : Base
 {
-	private Provincia() : base()
+	public Provincia() : base()
 	{
 		Cantones = new HashSet<Canton>();
 		Usuarios = new HashSet<ApplicationUser>();
@@ -17,6 +17,13 @@ public class Provincia : Base
 
 	public Provincia(Guid id, string nombre, bool activo, string creadoPor, DateTime creadoEl)
 	: base(creadoPor, creadoEl)
+	{
+		Id = id;
+		Nombre = nombre;
+		Estado = activo;
+	}
+
+	public Provincia(Guid id, string nombre, bool activo)
 	{
 		Id = id;
 		Nombre = nombre;

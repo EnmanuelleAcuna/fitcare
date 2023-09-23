@@ -43,13 +43,16 @@ public class ProvinciaManager : IManager<Provincia>
 		return provincia;
 	}
 
-	public async Task CreateAsync(Provincia provincia)
+	public async Task CreateAsync(Provincia provincia, string user)
 	{
+		provincia.CreadoEl = DateTime.Now;
+		provincia.CreadoPor = user;
+
 		await _db.Provincias.AddAsync(provincia);
 		await _db.SaveChangesAsync();
 	}
 
-	public async Task UpdateAsync(Provincia provincia)
+	public async Task UpdateAsync(Provincia provincia, string user)
 	{
 		Provincia record = await ReadByIdAsync(provincia.Id);
 
@@ -58,8 +61,8 @@ public class ProvinciaManager : IManager<Provincia>
 
 		record.Nombre = provincia.Nombre;
 		record.Estado = provincia.Estado;
-		record.EditadoEl = provincia.EditadoEl;
-		record.EditadoPor = provincia.EditadoPor;
+		record.EditadoEl = DateTime.Now;
+		record.EditadoPor = user;
 
 		_db.Provincias.Update(record);
 		await _db.SaveChangesAsync();
@@ -99,13 +102,16 @@ public class CantonManager : IManager<Canton>
 		return canton;
 	}
 
-	public async Task CreateAsync(Canton canton)
+	public async Task CreateAsync(Canton canton, string user)
 	{
+		canton.CreadoEl = DateTime.Now;
+		canton.CreadoPor = user;
+
 		await _db.Cantones.AddAsync(canton);
 		await _db.SaveChangesAsync();
 	}
 
-	public async Task UpdateAsync(Canton canton)
+	public async Task UpdateAsync(Canton canton, string user)
 	{
 		Canton record = await ReadByIdAsync(canton.Id);
 
@@ -116,8 +122,8 @@ public class CantonManager : IManager<Canton>
 		record.Estado = canton.Estado;
 		record.IdCantonInec = canton.IdCantonInec;
 		record.IdProvincia = canton.IdProvincia;
-		record.EditadoEl = canton.EditadoEl;
-		record.EditadoPor = canton.EditadoPor;
+		record.EditadoEl = DateTime.Now;
+		record.EditadoPor = user;
 
 		_db.Cantones.Update(record);
 		await _db.SaveChangesAsync();
@@ -157,13 +163,13 @@ public class DistritoManager : IManager<Distrito>
 		return distrito;
 	}
 
-	public async Task CreateAsync(Distrito distrito)
+	public async Task CreateAsync(Distrito distrito, string user)
 	{
 		await _db.Distritos.AddAsync(distrito);
 		await _db.SaveChangesAsync();
 	}
 
-	public async Task UpdateAsync(Distrito distrito)
+	public async Task UpdateAsync(Distrito distrito, string user)
 	{
 		Distrito record = await ReadByIdAsync(distrito.Id);
 

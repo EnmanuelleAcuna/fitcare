@@ -9,8 +9,16 @@ public interface IManager<T>
 {
 	Task<IList<T>> ReadAllAsync();
 	Task<T> ReadByIdAsync(Guid id);
+	Task CreateAsync(T model, string user);
+	Task UpdateAsync(T model, string user);
+	Task DeleteAsync(Guid id);
+}
+
+public interface IContactoManager<T>
+{
+	Task<IList<T>> ReadAllAsync();
+	Task<T> ReadByIdAsync(Guid id);
 	Task CreateAsync(T model);
-	Task UpdateAsync(T model);
 	Task DeleteAsync(Guid id);
 }
 
