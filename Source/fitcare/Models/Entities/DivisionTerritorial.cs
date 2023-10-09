@@ -9,18 +9,10 @@ namespace fitcare.Models.Entities;
 [Table("PROVINCIAS", Schema = "fitcare")]
 public class Provincia : Base
 {
-	public Provincia() : base()
+	private Provincia() : base()
 	{
 		Cantones = new HashSet<Canton>();
 		Usuarios = new HashSet<ApplicationUser>();
-	}
-
-	public Provincia(Guid id, string nombre, bool activo, string creadoPor, DateTime creadoEl)
-	: base(creadoPor, creadoEl)
-	{
-		Id = id;
-		Nombre = nombre;
-		Estado = activo;
 	}
 
 	public Provincia(Guid id, string nombre, bool activo)
@@ -30,16 +22,26 @@ public class Provincia : Base
 		Estado = activo;
 	}
 
-	[Key]
-	public Guid Id { get; set; }
-	public string Nombre { get; set; }
-	public bool Estado { get; set; }
+	public Provincia(Guid id)
+	{
+		Id = id;
+	}
 
-	[InverseProperty("Cantones")]
+	[Key]
+	public Guid Id { get; private set; }
+	public string Nombre { get; private set; }
+	public bool Estado { get; private set; }
+
 	public virtual ICollection<Canton> Cantones { get; set; }
 
-	[InverseProperty("Usuarios")]
+	// [InverseProperty("Usuarios")]
 	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
+
+	public void UpdateFrom(Provincia provincia)
+	{
+		Nombre = provincia.Nombre;
+		Estado = provincia.Estado;
+	}
 }
 
 [Table("CANTONES", Schema = "fitcare")]
@@ -51,31 +53,57 @@ public class Canton : Base
 		Usuarios = new HashSet<ApplicationUser>();
 	}
 
-	public Canton(Guid id, string nombre, bool activo, int idINEC, Provincia provincia, string createdBy, DateTime dateCreated)
+	public Canton(Guid id, string nombre, bool activo, int idINEC, Provincia provincia)
 	{
 		Id = id;
 		Nombre = nombre;
 		Estado = activo;
 		IdCantonInec = idINEC;
+
 		IdProvincia = provincia.Id;
 		Provincia = provincia;
 	}
 
-	[Key]
-	public Guid Id { get; set; }
-	public string Nombre { get; set; }
-	public bool Estado { get; set; }
-	public int IdCantonInec { get; set; }
+	public Canton(Guid id, string nombre, bool activo, int idINEC, Guid idProvincia)
+	{
+		Id = id;
+		Nombre = nombre;
+		Estado = activo;
+		IdCantonInec = idINEC;
 
-	[ForeignKey("Provincia")]
-	public Guid IdProvincia { get; set; }
+		IdProvincia = idProvincia;
+		Provincia = new Provincia(idProvincia);
+	}
+
+	public Canton(Guid id)
+	{
+		Id = id;
+	}
+
+	[Key]
+	public Guid Id { get; private set; }
+	public string Nombre { get; private set; }
+	public bool Estado { get; private set; }
+	[Column("Id_Canton_INEC")]
+	public int IdCantonInec { get; private set; }
+
+	[ForeignKey(nameof(Provincia))]
+	[Column("Id_Provincia")]
+	public Guid IdProvincia { get; private set; }
 	public virtual Provincia Provincia { get; set; }
 
-	[InverseProperty("Distritos")]
 	public virtual ICollection<Distrito> Distritos { get; set; }
 
-	[InverseProperty("Usuarios")]
+	// [InverseProperty("Usuarios")]
 	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
+
+	public void UpdateFrom(Canton canton)
+	{
+		Nombre = canton.Nombre;
+		Estado = canton.Estado;
+		IdCantonInec = canton.IdCantonInec;
+		IdProvincia = canton.IdProvincia;
+	}
 }
 
 [Table("DISTRITOS", Schema = "fitcare")]
@@ -97,15 +125,23 @@ public class Distrito : Base
 	}
 
 	[Key]
-	public Guid Id { get; set; }
-	public string Nombre { get; set; }
-	public bool Estado { get; set; }
-	public int IdDistritoInec { get; set; }
+	public Guid Id { get; private set; }
+	public string Nombre { get; private set; }
+	public bool Estado { get; private set; }
+	public int IdDistritoInec { get; private set; }
 
-	[ForeignKey("Canton")]
-	public Guid IdCanton { get; set; }
+	[ForeignKey(nameof(Canton))]
+	public Guid IdCanton { get; private set; }
 	public virtual Canton Canton { get; set; }
 
-	[InverseProperty("Usuarios")]
+	// [InverseProperty("Usuarios")]
 	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
+
+	public void UpdateFrom(Distrito distrito)
+	{
+		Nombre = distrito.Nombre;
+		Estado = distrito.Estado;
+		IdDistritoInec = distrito.IdDistritoInec;
+		IdCanton = distrito.IdCanton;
+	}
 }

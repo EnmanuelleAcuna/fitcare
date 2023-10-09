@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace fitcare.Models.Entities;
 
 [Table("CONTACTOS", Schema = "fitcare")]
-public class Contacto : Base
+public class Contacto
 {
 	private Contacto() { }
 
@@ -19,10 +19,10 @@ public class Contacto : Base
 	}
 
 	[Key]
-	public Guid Id { get; set; } = Guid.NewGuid();
-	public string NombreCompleto { get; set; }
-	public string CorreoElectronico { get; set; }
-	public string Telefono { get; set; }
-	public string Mensaje { get; set; }
-	public DateTime FechaRegistro { get; set; } = DateTime.Now;
+	public Guid Id { get; private set; } = Guid.NewGuid();
+	public string NombreCompleto { get; private set; }
+	public string CorreoElectronico { get; private set; }
+	public string Telefono { get; private set; }
+	public string Mensaje { get; private set; }
+	public DateTime FechaRegistro { get; private set; } = DateTime.Now;
 }

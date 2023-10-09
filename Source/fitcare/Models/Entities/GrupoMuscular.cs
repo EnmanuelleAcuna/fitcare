@@ -1,6 +1,5 @@
 using System;
 using System.Text.Json;
-using fitcare.Models.Extras;
 
 namespace fitcare.Models.Entities;
 
@@ -8,7 +7,7 @@ public class GrupoMuscular
 {
 	public GrupoMuscular(Guid id, string nombre, string descripcion, bool estado)
 	{
-		Id = Factory.NewGUID(id);
+		Id = id;
 		Nombre = nombre;
 		Descripcion = descripcion;
 		Estado = estado;

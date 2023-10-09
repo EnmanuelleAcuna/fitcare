@@ -45,8 +45,8 @@ public class ProvinciaManager : IManager<Provincia>
 
 	public async Task CreateAsync(Provincia provincia, string user)
 	{
-		provincia.CreadoEl = DateTime.Now;
-		provincia.CreadoPor = user;
+		provincia.DateCreated = DateTime.Now;
+		provincia.CreatedBy = user;
 
 		await _db.Provincias.AddAsync(provincia);
 		await _db.SaveChangesAsync();
@@ -59,10 +59,10 @@ public class ProvinciaManager : IManager<Provincia>
 		if (record == null)
 			throw new KeyNotFoundException($"No se encontró una Provincia con el id {provincia.Id}");
 
-		record.Nombre = provincia.Nombre;
-		record.Estado = provincia.Estado;
-		record.EditadoEl = DateTime.Now;
-		record.EditadoPor = user;
+		record.UpdateFrom(provincia);
+
+		record.DateUpdated = DateTime.Now;
+		record.UpdatedBy = user;
 
 		_db.Provincias.Update(record);
 		await _db.SaveChangesAsync();
@@ -104,8 +104,8 @@ public class CantonManager : IManager<Canton>
 
 	public async Task CreateAsync(Canton canton, string user)
 	{
-		canton.CreadoEl = DateTime.Now;
-		canton.CreadoPor = user;
+		canton.DateCreated = DateTime.Now;
+		canton.CreatedBy = user;
 
 		await _db.Cantones.AddAsync(canton);
 		await _db.SaveChangesAsync();
@@ -118,12 +118,10 @@ public class CantonManager : IManager<Canton>
 		if (record == null)
 			throw new KeyNotFoundException($"No se encontró un canton con el id {canton.Id}");
 
-		record.Nombre = canton.Nombre;
-		record.Estado = canton.Estado;
-		record.IdCantonInec = canton.IdCantonInec;
-		record.IdProvincia = canton.IdProvincia;
-		record.EditadoEl = DateTime.Now;
-		record.EditadoPor = user;
+		record.UpdateFrom(canton);
+
+		record.DateUpdated = DateTime.Now;
+		record.UpdatedBy = user;
 
 		_db.Cantones.Update(record);
 		await _db.SaveChangesAsync();
@@ -165,6 +163,9 @@ public class DistritoManager : IManager<Distrito>
 
 	public async Task CreateAsync(Distrito distrito, string user)
 	{
+		distrito.DateCreated = DateTime.Now;
+		distrito.CreatedBy = user;
+
 		await _db.Distritos.AddAsync(distrito);
 		await _db.SaveChangesAsync();
 	}
@@ -176,12 +177,10 @@ public class DistritoManager : IManager<Distrito>
 		if (record == null)
 			throw new KeyNotFoundException($"No se encontró un canton con el id {distrito.Id}");
 
-		record.Nombre = distrito.Nombre;
-		record.Estado = distrito.Estado;
-		record.IdDistritoInec = distrito.IdDistritoInec;
-		record.IdCanton = distrito.IdCanton;
-		record.EditadoEl = distrito.EditadoEl;
-		record.EditadoPor = distrito.EditadoPor;
+		record.UpdateFrom(distrito);
+
+		record.DateUpdated = distrito.DateUpdated;
+		record.UpdatedBy = distrito.UpdatedBy;
 
 		_db.Distritos.Update(record);
 		await _db.SaveChangesAsync();

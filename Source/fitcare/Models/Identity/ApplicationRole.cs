@@ -25,6 +25,7 @@ public partial class ApplicationRole : IdentityRole
 	// Propiedades
 	public string Description { get; set; }
 
+	[NotMapped]
 	public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 
 	[NotMapped]

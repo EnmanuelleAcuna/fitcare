@@ -8,10 +8,10 @@ public class BaseViewModel
 
 	public BaseViewModel(Base baseModel)
 	{
-		CreadoPor = baseModel.CreadoPor;
-		CreadoEl = baseModel.CreadoEl.ToString("dd/MM/yyyy");
-		EditadoPor = baseModel.EditadoPor;
-		EditadoEl = baseModel.EditadoEl.HasValue ? baseModel.EditadoEl.Value.ToString("dd/MM/yyyy") : string.Empty;
+		CreadoPor = baseModel.CreatedBy;
+		CreadoEl = baseModel.DateCreated.ToString("dd/MM/yyyy");
+		EditadoPor = baseModel.UpdatedBy;
+		EditadoEl = baseModel.DateUpdated.HasValue ? baseModel.DateUpdated.Value.ToString("dd/MM/yyyy") : string.Empty;
 	}
 
 	public string CreadoPor { get; private set; }

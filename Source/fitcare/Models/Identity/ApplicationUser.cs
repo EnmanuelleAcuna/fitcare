@@ -38,6 +38,7 @@ public class ApplicationUser : IdentityUser
 
 	public bool? Active { get; private set; }
 
+	[NotMapped]
 	public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 
 	#region Identity properties that does not need to be mapped in the DB

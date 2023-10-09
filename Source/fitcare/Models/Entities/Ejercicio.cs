@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using fitcare.Models.Extras;
 
 namespace fitcare.Models.Entities;
 
@@ -23,7 +22,7 @@ public class TipoEjercicio : Base
 {
 	public TipoEjercicio(Guid id, string codigo, string nombre, bool estado)
 	{
-		Id = Factory.NewGUID(id);
+		Id = id;
 		Codigo = codigo;
 		Nombre = nombre;
 		Estado = estado;

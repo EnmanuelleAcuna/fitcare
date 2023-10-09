@@ -41,15 +41,7 @@ namespace fitcare.Controllers
 		{
 			var provincias = await _divisionTerritoriaManager.Provincias.ReadAllAsync();
 			var viewModel = provincias.Select(x => new ProvinciaViewModel(x));
-			return View(provincias);
-		}
-
-		[HttpGet]
-		public async Task<JsonResult> ObtenerDetalleProvincia(string id)
-		{
-			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(new Guid(id));
-			var viewModel = new ProvinciaViewModel(provincia);
-			return Json(viewModel);
+			return View(viewModel);
 		}
 
 		[HttpGet]
@@ -122,21 +114,14 @@ namespace fitcare.Controllers
 		public async Task<ActionResult> ListarCantones()
 		{
 			var cantones = await _divisionTerritoriaManager.Cantones.ReadAllAsync();
-			var viewModel = cantones.Select
-			return View(cantones);
-		}
-
-		[HttpGet]
-		public async Task<JsonResult> ObtenerDetalleCanton(string id)
-		{
-			var canton = (CantonViewModel)await _repoCantones.ReadByIdAsync(Factory.NewGUID(id));
-			return Json(canton);
+			var viewModel = cantones.Select(x => new CantonViewModel(x));
+			return View(viewModel);
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> AgregarCanton()
 		{
-			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias(_repoProvincias);
+			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias();
 			return View();
 		}
 
@@ -146,11 +131,11 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _repoCantones.CreateAsync(modelo);
+				await _divisionTerritoriaManager.Cantones.CreateAsync(modelo.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarCantones));
 			}
 
-			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias(_repoProvincias);
+			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias();
 			ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Canton)));
 
 			return View(modelo);
@@ -159,10 +144,11 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EditarCanton(string id)
 		{
-			var canton = await _repoCantones.ReadByIdAsync(Factory.NewGUID(id));
+			var canton = await _divisionTerritoriaManager.Cantones.ReadByIdAsync(new Guid(id));
 			if (canton == null) return NotFound();
-			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias(_repoProvincias);
-			return View((EditarCantonViewModel)canton);
+			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias();
+			var viewModel = new EditarCantonViewModel(canton);
+			return View(viewModel);
 		}
 
 		[HttpPost]
@@ -171,11 +157,11 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _repoCantones.UpdateAsync(modelo);
+				await _divisionTerritoriaManager.Cantones.UpdateAsync(modelo.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarCantones));
 			}
 
-			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias(_repoProvincias);
+			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias();
 			ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Canton)));
 
 			return View(modelo);
@@ -184,93 +170,94 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EliminarCanton(string id)
 		{
-			var canton = await _repoCantones.ReadByIdAsync(Factory.NewGUID(id));
+			var canton = await _divisionTerritoriaManager.Cantones.ReadByIdAsync(new Guid(id));
 			if (canton == null) return NotFound();
-			return View((EliminarCantonViewModel)canton);
-		}
-
-		[HttpPost]
-		public async Task<ActionResult> EliminarCanton(EliminarCantonViewModel modelo)
-		{
-			await _repoCantones.DeleteAsync(Factory.NewGUID(modelo.Id));
-			return RedirectToAction(nameof(ListarCantones));
-		}
-
-		[HttpGet]
-		public async Task<ActionResult> ListarDistritos()
-		{
-			var listaDistritos = (List<DistritoViewModel>)await _repoDistritos.ReadAllAsync();
-			return View(listaDistritos);
-		}
-
-		[HttpGet]
-		public async Task<IActionResult> AgregarDistrito()
-		{
-			ViewBag.ListaCantones = await CargarListaSeleccionCantones(_repoCantones);
-			return View();
+			var viewModel = new EliminarCantonViewModel(canton);
+			return View(viewModel);
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> AgregarDistrito(AgregarDistritoViewModel modelo)
+		public async Task<ActionResult> EliminarCanton(EliminarCantonViewModel viewModel)
 		{
 			if (ModelState.IsValid)
 			{
-				await _repoDistritos.CreateAsync(modelo);
-				return RedirectToAction(nameof(ListarDistritos));
+				await _divisionTerritoriaManager.Cantones.DeleteAsync(new Guid(viewModel.Id));
+				return RedirectToAction(nameof(ListarCantones));
 			}
 
-			ViewBag.ListaCantones = CargarListaSeleccionCantones(_repoCantones);
-			ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Distrito)));
-
-			return View(modelo);
+			ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Canton)));
+			return View(viewModel);
 		}
 
-		[HttpGet]
-		public async Task<ActionResult> EditarDistrito(string id)
-		{
-			var distrito = await _repoDistritos.ReadByIdAsync(Factory.NewGUID(id));
-			if (distrito == null) return NotFound();
-			ViewBag.ListaCantones = await CargarListaSeleccionCantones(_repoCantones);
-			return View((EditarDistritoViewModel)distrito);
-		}
+		// [HttpGet]
+		// public async Task<ActionResult> ListarDistritos()
+		// {
+		// 	var listaDistritos = (List<DistritoViewModel>)await _repoDistritos.ReadAllAsync();
+		// 	return View(listaDistritos);
+		// }
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> EditarDistrito(EditarDistritoViewModel modelo)
-		{
-			if (ModelState.IsValid)
-			{
-				await _repoDistritos.UpdateAsync(modelo);
-				return RedirectToAction(nameof(ListarDistritos));
-			}
+		// [HttpGet]
+		// public async Task<IActionResult> AgregarDistrito()
+		// {
+		// 	ViewBag.ListaCantones = await CargarListaSeleccionCantones(_repoCantones);
+		// 	return View();
+		// }
 
-			ViewBag.ListaCantones = await CargarListaSeleccionCantones(_repoCantones);
-			ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Distrito)));
+		// [HttpPost]
+		// [ValidateAntiForgeryToken]
+		// public async Task<ActionResult> AgregarDistrito(AgregarDistritoViewModel modelo)
+		// {
+		// 	if (ModelState.IsValid)
+		// 	{
+		// 		await _repoDistritos.CreateAsync(modelo);
+		// 		return RedirectToAction(nameof(ListarDistritos));
+		// 	}
 
-			return View(modelo);
-		}
+		// 	ViewBag.ListaCantones = CargarListaSeleccionCantones(_repoCantones);
+		// 	ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Distrito)));
 
-		[HttpGet]
-		public async Task<ActionResult> EliminarDistrito(string id)
-		{
-			var distrito = await _repoDistritos.ReadByIdAsync(Factory.NewGUID(id));
-			if (distrito == null) return NotFound();
-			return View((EliminarDistritoViewModel)distrito);
-		}
+		// 	return View(modelo);
+		// }
 
-		[HttpPost]
-		public async Task<ActionResult> EliminarDistrito(EditarDistritoViewModel modelo)
-		{
-			await _repoDistritos.DeleteAsync(Factory.NewGUID(modelo.Id));
-			return RedirectToAction(nameof(ListarDistritos));
-		}
+		// [HttpGet]
+		// public async Task<ActionResult> EditarDistrito(string id)
+		// {
+		// 	var distrito = await _repoDistritos.ReadByIdAsync(Factory.NewGUID(id));
+		// 	if (distrito == null) return NotFound();
+		// 	ViewBag.ListaCantones = await CargarListaSeleccionCantones(_repoCantones);
+		// 	return View((EditarDistritoViewModel)distrito);
+		// }
 
-		[HttpGet]
-		public async Task<JsonResult> ObtenerDetalleDistrito(string id)
-		{
-			var distrito = (DistritoViewModel)await _repoDistritos.ReadByIdAsync(Factory.NewGUID(id));
-			return Json(distrito);
-		}
+		// [HttpPost]
+		// [ValidateAntiForgeryToken]
+		// public async Task<ActionResult> EditarDistrito(EditarDistritoViewModel modelo)
+		// {
+		// 	if (ModelState.IsValid)
+		// 	{
+		// 		await _repoDistritos.UpdateAsync(modelo);
+		// 		return RedirectToAction(nameof(ListarDistritos));
+		// 	}
+
+		// 	ViewBag.ListaCantones = await CargarListaSeleccionCantones(_repoCantones);
+		// 	ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Distrito)));
+
+		// 	return View(modelo);
+		// }
+
+		// [HttpGet]
+		// public async Task<ActionResult> EliminarDistrito(string id)
+		// {
+		// 	var distrito = await _repoDistritos.ReadByIdAsync(Factory.NewGUID(id));
+		// 	if (distrito == null) return NotFound();
+		// 	return View((EliminarDistritoViewModel)distrito);
+		// }
+
+		// [HttpPost]
+		// public async Task<ActionResult> EliminarDistrito(EditarDistritoViewModel modelo)
+		// {
+		// 	await _repoDistritos.DeleteAsync(Factory.NewGUID(modelo.Id));
+		// 	return RedirectToAction(nameof(ListarDistritos));
+		// }
 	}
 }

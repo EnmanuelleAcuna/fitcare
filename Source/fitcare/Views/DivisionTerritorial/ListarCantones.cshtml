@@ -32,7 +32,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="Agregar" class="btn btn-sm btn-default">Agregar canton</a>
+					<a asp-action="AgregarCanton" class="btn btn-sm btn-default">Agregar canton</a>
 
 					<hr />
 
@@ -57,12 +57,10 @@
 										<td>@Canton.Estado</td>
 										<td>
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<button id="BtnDetalle" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ModalDetalle"
-													data-idcanton="@Canton.Id">Detalle</button>
 												<a class="btn btn-sm btn-secondary" asp-controller="Cantones" asp-action="Editar"
-												asp-route-id="@Canton.Id">Modificar</a>
+													asp-route-id="@Canton.Id">Modificar</a>
 												<a class="btn btn-sm btn-danger" asp-controller="Cantones" asp-action="Eliminar"
-												asp-route-id="@Canton.Id">Eliminar</a>
+													asp-route-id="@Canton.Id">Eliminar</a>
 											</div>
 										</td>
 									</tr>
@@ -75,55 +73,3 @@
 		</div>
 	</div>
 </div>
-
-<partial name="_Detalle" />
-
-@section Scripts {
-	<script type="text/javascript">
-		$('#ModalDetalle').on('show.bs.modal', function (event)
-		{
-			var button = $(event.relatedTarget); // Button that triggered the modal
-			var IdCanton = button.data('idcanton'); // Extract info from data-* attributes
-
-			$("#ModalDetalle").find('.modal-title .nombre').text("Cargando...");
-
-			// Initiate an AJAX request here(and then do the updating in a callback).
-			$.ajax({
-				url: '@Url.Action("Detalle")',
-				data: { Id: IdCanton },
-				dataType: "json",
-				type: 'GET',
-				success: handleData,
-				error: handleError
-			});
-		});
-
-		function handleData(data)
-		{
-			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-			var modal = $("#ModalDetalle");
-			modal.find('.modal-title .nombre').text(data.nombre);
-			modal.find('.modal-body .provincia').text(data.provincia);
-			modal.find('.modal-body .estado').text(data.estado);
-			modal.find('.modal-body .idinec').text(data.idINEC);
-			modal.find('.modal-body .creado-por').text(data.usuarioCrea);
-			modal.find('.modal-body .creado-el').text(data.fechaCreacion);
-			modal.find('.modal-body .modificado-por').text(data.usuarioModifica);
-			modal.find('.modal-body .modificado-el').text(data.fechaModifica);
-		}
-
-		function handleError()
-		{
-			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-			var modal = $("#ModalDetalle");
-			modal.find('.modal-title .nombre').text("Error al obtener la información");
-			modal.find('.modal-body .provincia').text('N/A');
-			modal.find('.modal-body .estado').text('N/A');
-			modal.find('.modal-body .idinec').text('N/A');
-			modal.find('.modal-body .creado-por').text('N/A');
-			modal.find('.modal-body .creado-el').text('N/A');
-			modal.find('.modal-body .modificado-por').text('N/A');
-			modal.find('.modal-body .modificado-el').text('N/A');
-		}
-	</script>
-}

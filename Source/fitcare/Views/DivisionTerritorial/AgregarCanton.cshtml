@@ -18,7 +18,7 @@
                             <a href="@Url.Action("Administracion", "Home")">Administración</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="@Url.Action("Index")">Cantones</a>
+                            <a href="@Url.Action("ListarCantones")">Cantones</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">
                             Agregar
@@ -35,7 +35,7 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    @using (Html.BeginForm("Agregar", "Cantones", FormMethod.Post, new { autocomplete = "off" })) {
+                    @using (Html.BeginForm("AgregarCanton", "DivisionTerritorial", FormMethod.Post, new { autocomplete = "off" })) {
                         @Html.AntiForgeryToken()
 
                         <div class="row">
@@ -55,9 +55,9 @@
 
                             <div class="col-sm-12 col-md-3">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.Provincia.Id)
-                                    @Html.DropDownListFor(model => model.Provincia.Id, new List<SelectListItem>(ViewBag.ListaProvincias), "Seleccione una provincia", new { @class = "form-control form-control-sm" })
-                                    @Html.ValidationMessageFor(model => model.Provincia.Id)
+                                    @Html.LabelFor(model => model.IdProvincia)
+                                    @Html.DropDownListFor(model => model.IdProvincia, new List<SelectListItem>(ViewBag.ListaProvincias), "Seleccione una provincia", new { @class = "form-control form-control-sm" })
+                                    @Html.ValidationMessageFor(model => model.IdProvincia)
                                 </div>
                             </div>
 
@@ -71,15 +71,15 @@
 
                             <div class="col-sm-12 col-md-3">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.Estado)
+                                    @Html.LabelFor(model => model.Activo)
                                     <br />
-                                    @Html.EditorFor(model => model.Estado, "", new { @class = "form-control" })
+                                    @Html.EditorFor(model => model.Activo, "", new { @class = "form-control" })
                                 </div>
                             </div>
 
                             <div class="col-12">
                                 <input value="Guardar" class="btn btn-sm btn-default" type="submit" />
-                                @Html.ActionLink("Regresar", "Index", null, null, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink("Regresar", "ListarCantones", null, null, new { @class = "btn btn-sm btn-secondary" })
                             </div>
                         </div>
                     }

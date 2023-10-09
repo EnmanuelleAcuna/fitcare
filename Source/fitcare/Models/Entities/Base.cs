@@ -8,20 +8,20 @@ public class Base
 
 	public Base(string creadoPor, DateTime creadoEl)
 	{
-		CreadoEl = creadoEl;
-		CreadoPor = creadoPor;
+		DateCreated = creadoEl;
+		CreatedBy = creadoPor;
 	}
 
 	public Base(string creadoPor, DateTime creadoEl, string editadoPor = null, DateTime? editadoEl = null)
 	{
-		CreadoEl = creadoEl;
-		CreadoPor = creadoPor;
-		EditadoEl = editadoEl;
-		EditadoPor = editadoPor;
+		DateCreated = creadoEl;
+		CreatedBy = creadoPor;
+		DateUpdated = editadoEl;
+		UpdatedBy = editadoPor;
 	}
 
-	public DateTime CreadoEl { get; set; }
-	public string CreadoPor { get; set; }
-	public DateTime? EditadoEl { get; set; }
-	public string EditadoPor { get; set; }
+	public DateTime DateCreated { get; set; }
+	public string CreatedBy { get; set; }
+	public DateTime? DateUpdated { get; set; }
+	public string UpdatedBy { get; set; }
 }

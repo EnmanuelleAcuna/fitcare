@@ -80,7 +80,7 @@ public class EditarTipoEjercicioViewModel
 
 	public TipoEjercicio Entidad()
 	{
-		TipoEjercicio tipoEjercicio = new(Factory.NewGUID(Id), Codigo, Nombre, Estado);
+		TipoEjercicio tipoEjercicio = new(new Guid(Id), Codigo, Nombre, Estado);
 		return tipoEjercicio;
 	}
 }

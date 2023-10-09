@@ -10,7 +10,7 @@ public class Rutina
 {
 	public Rutina(Guid id, DateTime fechaRealizacion, DateTime fechaInicio, DateTime fechaFin, string objetivo, ApplicationUser instructor, ApplicationUser cliente, IList<MedidaRutina> medidas, IList<EjercicioRutina> ejercicios)
 	{
-		Id = Factory.NewGUID(id);
+		Id = id;
 		FechaRealizacion = fechaRealizacion;
 		FechaInicio = fechaInicio;
 		FechaFin = fechaFin;
