@@ -12,6 +12,10 @@ public interface IManager<T>
 	Task CreateAsync(T model, string user);
 	Task UpdateAsync(T model, string user);
 	Task DeleteAsync(Guid id);
+	Task UpdateAsync(Canton canton, string v);
+	Task CreateAsync(Canton canton, string v);
+	Task UpdateAsync(Distrito distrito, string v);
+	Task CreateAsync(Distrito distrito, string v);
 }
 
 public interface IContactoManager<T>

@@ -160,33 +160,108 @@ public class EliminarCantonViewModel
 	public string Nombre { get; set; }
 }
 
-// public class DistritoViewModel : Distrito { }
+public class DistritoViewModel : BaseViewModel
+{
+	public DistritoViewModel(Distrito distrito) : base(distrito)
+	{
+		Id = distrito.Id.ToString();
+		Nombre = distrito.Nombre;
+		Estado = distrito.Estado ? "Activo" : "Inactivo";
+		IdINEC = distrito.IdDistritoInec;
+		//IdDistrito = distrito.IdCanton.ToString();
+		Canton = new CantonViewModel(distrito.Canton);
 
-// public class AgregarDistritoViewModel
-// {
-// 	[Required(ErrorMessage = "El id es requerido")]
-// 	public Guid Id { get; private set; }
+	}
+	public string Id { get; set; }
+	public string Nombre { get; set; }
+	public string Estado { get; set; }
+	[Display(Name = "Código INEC")]
+	public int IdINEC { get; set; }
+	public CantonViewModel Canton { get; set; }
+}
 
-// 	[Display(Name = "Nombre del distrito")]
-// 	[Required(ErrorMessage = "El nombre es requerido")]
-// 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
-// 	public string Nombre { get; private set; }
+public class AgregarDistritoViewModel
+{
+	[Required(ErrorMessage = "El id es requerido")]
+	public Guid Id { get; set; }
 
-// 	[Display(Name = "Activo")]
-// 	public bool Estado { get; private set; }
+	[Display(Name = "Nombre del distrito")]
+	[Required(ErrorMessage = "El nombre es requerido")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Código INEC")]
-// 	[Required(ErrorMessage = "El código INEC es requerido")]
-// 	public int IdINEC { get; private set; }
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
-// 	public Canton Canton { get; private set; }
-// }
+	[Display(Name = "Código INEC")]
+	[Required(ErrorMessage = "El código INEC es requerido")]
+	public int IdINEC { get; set; }
 
-// public class EditarDistritoViewModel : Distrito { }
+	public string IdCanton { get; set; }
 
-// public class EliminarDistritoViewModel : Distrito { }
+	public Canton Entidad() => new(Guid.NewGuid(), Nombre, Estado, IdINEC, new Guid(IdCanton));
+}
+
+public class EditarDistritoViewModel : BaseViewModel
+{
+	public EditarDistritoViewModel() : base() { }
+
+	public EditarDistritoViewModel(Distrito distrito) : base(distrito)
+	{
+		Id = distrito.Id.ToString();
+		Nombre = distrito.Nombre;
+		Activo = distrito.Estado;
+		IdINEC = distrito.IdDistritoInec;
+		IdDistrito = distrito.IdCanton.ToString();
+		IdCanton = distrito.IdCanton.ToString();
+	}
+
+	[Required(ErrorMessage = "El id es requerido.")]
+	public string Id { get; set; }
+
+	[Display(Name = "Nombre del distrito")]
+	[Required(ErrorMessage = "El nombre es requerido.")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres.")]
+	public string Nombre { get; set; }
+
+	public bool Activo { get; set; }
+
+	[Display(Name = "Código INEC")]
+	[Required(ErrorMessage = "El código INEC es requerido.")]
+	public int IdINEC { get; set; }
+
+	[Display(Name = "Distrito")]
+	[Required(ErrorMessage = "El distrito es requerida.")]
+	public string IdDistrito { get; set; }
+
+	[Display(Name = "Canton")]
+	[Required(ErrorMessage = "El Canton es requerido.")]
+	public string IdCanton { get; set; }
+
+	public Canton Entidad() =>
+		new(new Guid(Id), Nombre, Activo, IdINEC, new Guid(IdCanton));
+}
+
+public class EliminarDistritoViewModel
+{
+	public EliminarDistritoViewModel() { }
+
+	public EliminarDistritoViewModel(Distrito distrito)
+	{
+		Id = distrito.Id.ToString();
+		Nombre = distrito.Nombre;
+	}
+
+	[Required(ErrorMessage = "El id es requerido.")]
+	public string Id { get; set; }
+
+	public string Nombre { get; set; }
+}
 
 public class CantonesDistritosSelectListItem : SelectListItem
 {
-	public string IdPadre { get; set; }
+	public string IdCanton { get; set; }
 }
+
+
+
