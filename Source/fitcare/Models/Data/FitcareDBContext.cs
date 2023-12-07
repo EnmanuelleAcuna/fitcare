@@ -2,7 +2,7 @@
 
 namespace fitcare.Models.Entities;
 
-public partial class FitcareDBContext : DbContext
+public class FitcareDBContext : DbContext
 {
 	public FitcareDBContext() { }
 
