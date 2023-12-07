@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace fitcare;
 
-public class Program
+class Program
 {
 	public static void Main(string[] args)
 	{
@@ -98,7 +98,7 @@ public class Program
 	}
 }
 
-public class ConnectionStringOptions
+class ConnectionStringOptions
 {
 	public string DefaultConnection { get; set; }
 }
