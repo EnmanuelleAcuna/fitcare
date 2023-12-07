@@ -34,7 +34,6 @@ public class Provincia : Base
 
 	public virtual ICollection<Canton> Cantones { get; set; }
 
-	// [InverseProperty("Usuarios")]
 	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
 
 	public void UpdateFrom(Provincia provincia)
@@ -94,7 +93,6 @@ public class Canton : Base
 
 	public virtual ICollection<Distrito> Distritos { get; set; }
 
-	// [InverseProperty("Usuarios")]
 	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
 
 	public void UpdateFrom(Canton canton)
@@ -124,6 +122,17 @@ public class Distrito : Base
 		Canton = canton;
 	}
 
+	public Distrito(Guid id, string nombre, bool activo, int idINEC, Guid idCanton)
+	{
+		Id = id;
+		Nombre = nombre;
+		Estado = activo;
+		IdDistritoInec = idINEC;
+
+		IdCanton = idCanton;
+		Canton = new Canton(idCanton);
+	}
+
 	[Key]
 	public Guid Id { get; private set; }
 	public string Nombre { get; private set; }
@@ -134,7 +143,6 @@ public class Distrito : Base
 	public Guid IdCanton { get; private set; }
 	public virtual Canton Canton { get; set; }
 
-	// [InverseProperty("Usuarios")]
 	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
 
 	public void UpdateFrom(Distrito distrito)

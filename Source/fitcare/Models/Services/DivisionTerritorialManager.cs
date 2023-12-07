@@ -48,7 +48,7 @@ public class ProvinciaManager : IManager<Provincia>
 		provincia.DateCreated = DateTime.Now;
 		provincia.CreatedBy = user;
 
-		await _db.Provincias.AddAsync(provincia);
+		await _db.AddAsync(provincia);
 		await _db.SaveChangesAsync();
 	}
 
@@ -64,7 +64,7 @@ public class ProvinciaManager : IManager<Provincia>
 		record.DateUpdated = DateTime.Now;
 		record.UpdatedBy = user;
 
-		_db.Provincias.Update(record);
+		_db.Update(record);
 		await _db.SaveChangesAsync();
 	}
 
@@ -75,7 +75,7 @@ public class ProvinciaManager : IManager<Provincia>
 		if (record == null)
 			throw new KeyNotFoundException($"No se encontró una Provincia con el id {id}");
 
-		_db.Provincias.Remove(record);
+		_db.Remove(record);
 		await _db.SaveChangesAsync();
 	}
 }
@@ -97,7 +97,7 @@ public class CantonManager : IManager<Canton>
 		Canton canton = await _db.Cantones.Include(c => c.Provincia).FirstAsync(c => c.Id == id);
 
 		if (canton == null)
-			throw new KeyNotFoundException($"No se encontró un Canton con el id {id}");
+			throw new KeyNotFoundException($"No se encontró un Cantón con el id {id}");
 
 		return canton;
 	}
@@ -107,7 +107,7 @@ public class CantonManager : IManager<Canton>
 		canton.DateCreated = DateTime.Now;
 		canton.CreatedBy = user;
 
-		await _db.Cantones.AddAsync(canton);
+		await _db.AddAsync(canton);
 		await _db.SaveChangesAsync();
 	}
 
@@ -116,14 +116,14 @@ public class CantonManager : IManager<Canton>
 		Canton record = await ReadByIdAsync(canton.Id);
 
 		if (record == null)
-			throw new KeyNotFoundException($"No se encontró un canton con el id {canton.Id}");
+			throw new KeyNotFoundException($"No se encontró un Cantón con el id {canton.Id}");
 
 		record.UpdateFrom(canton);
 
 		record.DateUpdated = DateTime.Now;
 		record.UpdatedBy = user;
 
-		_db.Cantones.Update(record);
+		_db.Update(record);
 		await _db.SaveChangesAsync();
 	}
 
@@ -132,9 +132,9 @@ public class CantonManager : IManager<Canton>
 		Canton record = await ReadByIdAsync(id);
 
 		if (record == null)
-			throw new KeyNotFoundException($"No se encontró un Canton con el id {id}");
+			throw new KeyNotFoundException($"No se encontró un Cantón con el id {id}");
 
-		_db.Cantones.Remove(record);
+		_db.Remove(record);
 		await _db.SaveChangesAsync();
 	}
 }
@@ -166,7 +166,7 @@ public class DistritoManager : IManager<Distrito>
 		distrito.DateCreated = DateTime.Now;
 		distrito.CreatedBy = user;
 
-		await _db.Distritos.AddAsync(distrito);
+		await _db.AddAsync(distrito);
 		await _db.SaveChangesAsync();
 	}
 
@@ -175,14 +175,14 @@ public class DistritoManager : IManager<Distrito>
 		Distrito record = await ReadByIdAsync(distrito.Id);
 
 		if (record == null)
-			throw new KeyNotFoundException($"No se encontró un canton con el id {distrito.Id}");
+			throw new KeyNotFoundException($"No se encontró un Distrito con el id {distrito.Id}");
 
 		record.UpdateFrom(distrito);
 
 		record.DateUpdated = distrito.DateUpdated;
 		record.UpdatedBy = distrito.UpdatedBy;
 
-		_db.Distritos.Update(record);
+		_db.Update(record);
 		await _db.SaveChangesAsync();
 	}
 
@@ -193,7 +193,7 @@ public class DistritoManager : IManager<Distrito>
 		if (record == null)
 			throw new KeyNotFoundException($"No se encontró un Distrito con el id {id}");
 
-		_db.Distritos.Remove(record);
+		_db.Remove(record);
 		await _db.SaveChangesAsync();
 	}
 }

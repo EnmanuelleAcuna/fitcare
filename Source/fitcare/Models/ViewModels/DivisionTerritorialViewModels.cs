@@ -168,10 +168,10 @@ public class DistritoViewModel : BaseViewModel
 		Nombre = distrito.Nombre;
 		Estado = distrito.Estado ? "Activo" : "Inactivo";
 		IdINEC = distrito.IdDistritoInec;
-		//IdDistrito = distrito.IdCanton.ToString();
 		Canton = new CantonViewModel(distrito.Canton);
 
 	}
+
 	public string Id { get; set; }
 	public string Nombre { get; set; }
 	public string Estado { get; set; }
@@ -182,9 +182,6 @@ public class DistritoViewModel : BaseViewModel
 
 public class AgregarDistritoViewModel
 {
-	[Required(ErrorMessage = "El id es requerido")]
-	public Guid Id { get; set; }
-
 	[Display(Name = "Nombre del distrito")]
 	[Required(ErrorMessage = "El nombre es requerido")]
 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
@@ -199,7 +196,8 @@ public class AgregarDistritoViewModel
 
 	public string IdCanton { get; set; }
 
-	public Canton Entidad() => new(Guid.NewGuid(), Nombre, Estado, IdINEC, new Guid(IdCanton));
+	public Distrito Entidad() =>
+		new(Guid.NewGuid(), Nombre, Estado, IdINEC, new Guid(IdCanton));
 }
 
 public class EditarDistritoViewModel : BaseViewModel
@@ -212,7 +210,6 @@ public class EditarDistritoViewModel : BaseViewModel
 		Nombre = distrito.Nombre;
 		Activo = distrito.Estado;
 		IdINEC = distrito.IdDistritoInec;
-		IdDistrito = distrito.IdCanton.ToString();
 		IdCanton = distrito.IdCanton.ToString();
 	}
 
@@ -230,15 +227,11 @@ public class EditarDistritoViewModel : BaseViewModel
 	[Required(ErrorMessage = "El código INEC es requerido.")]
 	public int IdINEC { get; set; }
 
-	[Display(Name = "Distrito")]
-	[Required(ErrorMessage = "El distrito es requerida.")]
-	public string IdDistrito { get; set; }
-
 	[Display(Name = "Canton")]
 	[Required(ErrorMessage = "El Canton es requerido.")]
 	public string IdCanton { get; set; }
 
-	public Canton Entidad() =>
+	public Distrito Entidad() =>
 		new(new Guid(Id), Nombre, Activo, IdINEC, new Guid(IdCanton));
 }
 
@@ -260,8 +253,5 @@ public class EliminarDistritoViewModel
 
 public class CantonesDistritosSelectListItem : SelectListItem
 {
-	public string IdCanton { get; set; }
+	public string IdPadre { get; set; }
 }
-
-
-

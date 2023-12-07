@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using fitcare.Models;
 using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using fitcare.Models.Extras;
@@ -209,18 +207,18 @@ namespace fitcare.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> AgregarDistrito(AgregarDistritoViewModel viewModel)
+		public async Task<ActionResult> AgregarDistrito(AgregarDistritoViewModel modelo)
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Distritos.CreateAsync(viewModel.Entidad(),GetCurrentUser());
+				await _divisionTerritoriaManager.Distritos.CreateAsync(modelo.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarDistritos));
 			}
 
 			ViewBag.ListaCantones = CargarListaSeleccionCantones();
 			ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Distrito)));
 
-			return View(viewModel);
+			return View(modelo);
 		}
 
 		[HttpGet]
@@ -235,14 +233,14 @@ namespace fitcare.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<ActionResult>EditarDistrito(EditarDistritoViewModel modelo)
+		public async Task<ActionResult> EditarDistrito(EditarDistritoViewModel modelo)
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Distritos.UpdateAsync(modelo.Entidad(),GetCurrentUser ());
+				await _divisionTerritoriaManager.Distritos.UpdateAsync(modelo.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarDistritos));
 			}
-			
+
 			ViewBag.ListaCantones = await CargarListaSeleccionCantones();
 			ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Distrito)));
 
@@ -265,17 +263,13 @@ namespace fitcare.Controllers
 			if (ModelState.IsValid)
 			{
 				await _divisionTerritoriaManager.Cantones.DeleteAsync(new Guid(viewModel.Id));
-				return RedirectToAction(nameof(ListarCantones));
+				return RedirectToAction(nameof(ListarDistritos));
 			}
 
-			ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Canton)));
+			ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Distrito)));
 			return View(viewModel);
 		}
 
-		
-			}
-		}
-	
 
-
-
+	}
+}
