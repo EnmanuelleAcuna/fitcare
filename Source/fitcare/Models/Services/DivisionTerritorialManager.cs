@@ -104,6 +104,13 @@ public class CantonManager : IManager<Canton>
 
 	public async Task CreateAsync(Canton canton, string user)
 	{
+		var existingProvincia = await _db.Provincias.FirstOrDefaultAsync(x => x.Id == canton.IdProvincia);
+
+		if (existingProvincia == null)
+			throw new Exception($"La Provincia {canton.IdProvincia} para el Cantón no se ha encontrado en la BD.");
+		else
+			canton.Provincia = existingProvincia;
+
 		canton.DateCreated = DateTime.Now;
 		canton.CreatedBy = user;
 
@@ -163,6 +170,13 @@ public class DistritoManager : IManager<Distrito>
 
 	public async Task CreateAsync(Distrito distrito, string user)
 	{
+		var existingCanton = await _db.Cantones.FirstOrDefaultAsync(x => x.Id == distrito.IdCanton);
+
+		if (existingCanton == null)
+			throw new Exception($"El Cantón {distrito.IdCanton} para el Distrito no se ha encontrado en la BD.");
+		else
+			distrito.Canton = existingCanton;
+
 		distrito.DateCreated = DateTime.Now;
 		distrito.CreatedBy = user;
 

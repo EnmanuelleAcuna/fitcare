@@ -52,14 +52,14 @@
 								{
 									<tr>
 										<td>@Canton.Nombre</td>
-										<td>@Canton.Provincia</td>
+										<td>@Canton.Provincia.Nombre</td>
 										<td>@Canton.IdINEC</td>
 										<td>@Canton.Estado</td>
 										<td>
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<a class="btn btn-sm btn-secondary" asp-controller="Cantones" asp-action="Editar"
+												<a class="btn btn-sm btn-secondary" asp-controller="DivisionTerritorial" asp-action="EditarCanton"
 													asp-route-id="@Canton.Id">Modificar</a>
-												<a class="btn btn-sm btn-danger" asp-controller="Cantones" asp-action="Eliminar"
+												<a class="btn btn-sm btn-danger" asp-controller="DivisionTerritorial" asp-action="EliminarCanton"
 													asp-route-id="@Canton.Id">Eliminar</a>
 											</div>
 										</td>

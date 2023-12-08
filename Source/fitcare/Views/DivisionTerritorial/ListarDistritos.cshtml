@@ -32,7 +32,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="Agregar" class="btn btn-sm btn-default">Agregar distrito</a>
+					<a asp-action="AgregarDistrito" class="btn btn-sm btn-default">Agregar distrito</a>
 
 					<hr />
 
@@ -52,18 +52,14 @@
 								{
 									<tr>
 										<td>@Distrito.Nombre</td>
-										<td>@Distrito.Canton</td>
+										<td>@Distrito.Canton.Nombre</td>
 										<td>@Distrito.Estado</td>
 										<td>@Distrito.IdINEC</td>
 										<td>
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<button id="BtnDetalle" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ModalDetalle"
-													data-iddistrito="@Distrito.Id">
-													Detalle
-												</button>
-												<a class="btn btn-sm btn-secondary" asp-controller="Distritos" asp-action="Editar"
+												<a class="btn btn-sm btn-secondary" asp-controller="DivisionTerritorial" asp-action="EditarDistrito"
 													asp-route-id="@Distrito.Id">Modificar</a>
-												<a class="btn btn-sm btn-danger" asp-controller="Distritos" asp-action="Eliminar"
+												<a class="btn btn-sm btn-danger" asp-controller="DivisionTerritorial" asp-action="EliminarDistrito"
 													asp-route-id="@Distrito.Id">Eliminar</a>
 											</div>
 										</td>
