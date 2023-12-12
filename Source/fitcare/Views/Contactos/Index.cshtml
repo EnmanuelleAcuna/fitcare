@@ -1,33 +1,33 @@
-@* @model IEnumerable<InicioContactoViewModel>
+@model IEnumerable<ContactoViewModel>
 
 @{
-Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-ViewBag.Title = "Contactos";
+	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+	ViewBag.Title = "Contactos";
 }
 
 <!-- ============================================================== -->
 <!-- Bread crumb and right sidebar toggle -->
 <!-- ============================================================== -->
 <div class="page-breadcrumb">
-<div class="row">
-<div class="col-5 align-self-center">
-<h4 class="page-title">Lista de contactos</h4>
-</div>
-<div class="col-7 align-self-center">
-<div class="d-flex align-items-center justify-content-end">
-<nav aria-label="breadcrumb">
-<ol class="breadcrumb">
-<li class="breadcrumb-item">
-<a href="@Url.Action("Administracion", "Home")">Administración</a>
-</li>
-<li class="breadcrumb-item active" aria-current="page">
-Contactos
-</li>
-</ol>
-</nav>
-</div>
-</div>
-</div>
+	<div class="row">
+		<div class="col-5 align-self-center">
+			<h4 class="page-title">Lista de contactos</h4>
+		</div>
+		<div class="col-7 align-self-center">
+			<div class="d-flex align-items-center justify-content-end">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a href="@Url.Action("Administracion", "Home")">Administración</a>
+						</li>
+						<li class="breadcrumb-item active" aria-current="page">
+							Contactos
+						</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
 </div>
 <!-- ============================================================== -->
 <!-- End Bread crumb and right sidebar toggle -->
@@ -36,55 +36,55 @@ Contactos
 <!-- Container fluid -->
 <!-- ============================================================== -->
 <div class="container-fluid">
-<!-- ============================================================== -->
-<!-- Start Page Content -->
-<!-- ============================================================== -->
-<div class="row">
-<div class="col-12">
-<div class="card shadow-sm">
-<div class="card-body">
-<div class="table-responsive">
-<table class="table table-hover table-sm">
-<thead>
-<tr>
-<th>@Html.DisplayNameFor(m => m.FirstOrDefault().NombreCompleto)</th>
-<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaRegistro)</th>
-<th>@Html.DisplayNameFor(m => m.FirstOrDefault().CorreoElectronico)</th>
-<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Telefono)</th>
-<th>Acciones</th>
-</tr>
-</thead>
-<tbody>
-@foreach (var Contacto in Model)
-{
-<tr>
-<td>@Contacto.NombreCompleto</td>
-<td>@Contacto.FechaRegistro</td>
-<td>@Contacto.CorreoElectronico</td>
-<td>@Contacto.Telefono</td>
-<td>
-<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-<button id="BtnDetalle" class="btn btn-sm btn-success" data-toggle="modal"
-data-target="#ModalDetalle"
-data-idcontacto="@Contacto.IdContacto">
-Detalle
-</button>
-<a class="btn btn-sm btn-danger" asp-controller="Contactos" asp-action="Eliminar" asp-route-id="@Contacto.IdContacto">Eliminar</a>
-</div>
-</td>
-</tr>
-}
-</tbody>
-</table>
-</div>
+	<!-- ============================================================== -->
+	<!-- Start Page Content -->
+	<!-- ============================================================== -->
+	<div class="row">
+		<div class="col-12">
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-hover table-sm">
+							<thead>
+								<tr>
+									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
+									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Fecha)</th>
+									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Correo)</th>
+									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Telefono)</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var Contacto in Model)
+								{
+									<tr>
+										<td>@Contacto.Nombre</td>
+										<td>@Contacto.Fecha</td>
+										<td>@Contacto.Correo</td>
+										<td>@Contacto.Telefono</td>
+										<td>
+											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+												<button id="BtnDetalle" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ModalDetalle"
+													data-idcontacto="@Contacto.Id">
+													Detalle
+												</button>
+												<a class="btn btn-sm btn-danger" asp-controller="Contactos" asp-action="Eliminar"
+													asp-route-id="@Contacto.Id">Eliminar</a>
+											</div>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
 
-</div>
-</div>
-</div>
-</div>
-<!-- ============================================================== -->
-<!-- End Page Content -->
-<!-- ============================================================== -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ============================================================== -->
+	<!-- End Page Content -->
+	<!-- ============================================================== -->
 </div>
 <!-- ============================================================== -->
 <!-- End Container fluid -->
@@ -93,42 +93,45 @@ Detalle
 <partial name="_Detalle" />
 
 @section Scripts{
-<script type="text/javascript">
-$('#ModalDetalle').on('show.bs.modal', function (event) {
-var button = $(event.relatedTarget); // Button that triggered the modal
-var IdContacto = button.data('idcontacto'); // Extract info from data-* attributes
+	<script type="text/javascript">
+		$('#ModalDetalle').on('show.bs.modal', function (event)
+		{
+			var button = $(event.relatedTarget); // Button that triggered the modal
+			var IdContacto = button.data('idcontacto'); // Extract info from data-* attributes
 
-$("#ModalDetalle").find('.modal-title .nombre').text("Cargando...");
+			$("#ModalDetalle").find('.modal-title .nombre').text("Cargando...");
 
-// Initiate an AJAX request here(and then do the updating in a callback).
-$.ajax({
-url: '@Url.Action("Detalle")',
-data: { Id: IdContacto },
-dataType: "json",
-type: 'GET',
-success: handleData,
-error: handleError
-});
-});
+			// Initiate an AJAX request here(and then do the updating in a callback).
+			$.ajax({
+				url: '@Url.Action("Detalle")',
+				data: { Id: IdContacto },
+				dataType: "json",
+				type: 'GET',
+				success: handleData,
+				error: handleError
+			});
+		});
 
-function handleData(data) {
-// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-var modal = $("#ModalDetalle");
-modal.find('.modal-title .nombre').text(data.nombreCompleto);
-modal.find('.modal-body .correo').text(data.correoElectronico);
-modal.find('.modal-body .telefono').text(data.telefono);
-modal.find('.modal-body .mensaje').text(data.mensaje);
-modal.find('.modal-body .fecha').text(data.fechaRegistro);
+		function handleData(data)
+		{
+			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+			var modal = $("#ModalDetalle");
+			modal.find('.modal-title .nombre').text(data.nombre);
+			modal.find('.modal-body .correo').text(data.correo);
+			modal.find('.modal-body .telefono').text(data.telefono);
+			modal.find('.modal-body .mensaje').text(data.mensaje);
+			modal.find('.modal-body .fecha').text(data.fecha);
+		}
+
+		function handleError()
+		{
+			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+			var modal = $("#ModalDetalle");
+			modal.find('.modal-title.nombre').text("Error al obtener la información");
+			modal.find('.modal-body.correo').text('N/A');
+			modal.find('.modal-body.telefono').text('N/A');
+			modal.find('.modal-body.mensaje').text('N/A');
+			modal.find('.modal-body.fecha').text('N/A');
+		}
+	</script>
 }
-
-function handleError() {
-// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-var modal = $("#ModalDetalle");
-modal.find('.modal-title.nombre').text("Error al obtener la información");
-modal.find('.modal-body.correo').text('N/A');
-modal.find('.modal-body.telefono').text('N/A');
-modal.find('.modal-body.mensaje').text('N/A');
-modal.find('.modal-body.fecha').text('N/A');
-}
-</script>
-} *@

@@ -37,12 +37,6 @@ namespace fitcare.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult AcercaDe()
-		{
-			return View();
-		}
-
-		[HttpGet]
 		public ActionResult Contacto()
 		{
 			return View();
