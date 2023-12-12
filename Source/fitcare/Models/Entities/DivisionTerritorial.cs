@@ -71,7 +71,6 @@ public class Canton : Base
 		IdCantonInec = idINEC;
 
 		IdProvincia = idProvincia;
-		Provincia = new Provincia(idProvincia);
 	}
 
 	public Canton(Guid id)
@@ -130,16 +129,17 @@ public class Distrito : Base
 		IdDistritoInec = idINEC;
 
 		IdCanton = idCanton;
-		Canton = new Canton(idCanton);
 	}
 
 	[Key]
 	public Guid Id { get; private set; }
 	public string Nombre { get; private set; }
 	public bool Estado { get; private set; }
+	[Column("Id_Distrito_INEC")]
 	public int IdDistritoInec { get; private set; }
 
 	[ForeignKey(nameof(Canton))]
+	[Column("Id_Canton")]
 	public Guid IdCanton { get; private set; }
 	public virtual Canton Canton { get; set; }
 

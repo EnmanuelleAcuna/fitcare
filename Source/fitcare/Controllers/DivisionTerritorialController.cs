@@ -19,7 +19,7 @@ namespace fitcare.Controllers
 	[Authorize]
 	public class DivisionTerritorialController : BaseController
 	{
-		private readonly IDivisionTerritorialManager _divisionTerritoriaManager;
+		private readonly IDivisionTerritorialManager _divisionTerritorialManager;
 		private readonly ILogger<DivisionTerritorialController> _logger;
 
 		public DivisionTerritorialController(IDivisionTerritorialManager divisionTerritorialManager,
@@ -31,14 +31,14 @@ namespace fitcare.Controllers
 											 IWebHostEnvironment environment)
 		: base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
 		{
-			_divisionTerritoriaManager = divisionTerritorialManager;
+			_divisionTerritorialManager = divisionTerritorialManager;
 			_logger = logger;
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> ListarProvincias()
 		{
-			var provincias = await _divisionTerritoriaManager.Provincias.ReadAllAsync();
+			var provincias = await _divisionTerritorialManager.Provincias.ReadAllAsync();
 			var viewModel = provincias.Select(x => new ProvinciaViewModel(x));
 			return View(viewModel);
 		}
@@ -55,7 +55,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Provincias.CreateAsync(viewModel.Entidad(), GetCurrentUser());
+				await _divisionTerritorialManager.Provincias.CreateAsync(viewModel.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarProvincias));
 			}
 
@@ -66,7 +66,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EditarProvincia(string id)
 		{
-			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(new Guid(id));
+			var provincia = await _divisionTerritorialManager.Provincias.ReadByIdAsync(new Guid(id));
 			if (provincia == null) return NotFound();
 			var viewModel = new EditarProvinciaViewModel(provincia);
 			return View(viewModel);
@@ -78,7 +78,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Provincias.UpdateAsync(viewModel.Entidad(), GetCurrentUser());
+				await _divisionTerritorialManager.Provincias.UpdateAsync(viewModel.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarProvincias));
 			}
 
@@ -89,7 +89,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EliminarProvincia(string id)
 		{
-			var provincia = await _divisionTerritoriaManager.Provincias.ReadByIdAsync(new Guid(id));
+			var provincia = await _divisionTerritorialManager.Provincias.ReadByIdAsync(new Guid(id));
 			if (provincia == null) return NotFound();
 			var viewModel = new EliminarProvinciaViewModel(provincia);
 			return View(viewModel);
@@ -101,7 +101,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Provincias.DeleteAsync(new Guid(viewModel.Id));
+				await _divisionTerritorialManager.Provincias.DeleteAsync(new Guid(viewModel.Id));
 				return RedirectToAction(nameof(ListarProvincias));
 			}
 
@@ -112,7 +112,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> ListarCantones()
 		{
-			var cantones = await _divisionTerritoriaManager.Cantones.ReadAllAsync();
+			var cantones = await _divisionTerritorialManager.Cantones.ReadAllAsync();
 			var viewModel = cantones.Select(x => new CantonViewModel(x));
 			return View(viewModel);
 		}
@@ -130,7 +130,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Cantones.CreateAsync(modelo.Entidad(), GetCurrentUser());
+				await _divisionTerritorialManager.Cantones.CreateAsync(modelo.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarCantones));
 			}
 
@@ -143,7 +143,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EditarCanton(string id)
 		{
-			var canton = await _divisionTerritoriaManager.Cantones.ReadByIdAsync(new Guid(id));
+			var canton = await _divisionTerritorialManager.Cantones.ReadByIdAsync(new Guid(id));
 			if (canton == null) return NotFound();
 			ViewBag.ListaProvincias = await CargarListaSeleccionProvincias();
 			var viewModel = new EditarCantonViewModel(canton);
@@ -156,7 +156,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Cantones.UpdateAsync(modelo.Entidad(), GetCurrentUser());
+				await _divisionTerritorialManager.Cantones.UpdateAsync(modelo.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarCantones));
 			}
 
@@ -169,7 +169,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EliminarCanton(string id)
 		{
-			var canton = await _divisionTerritoriaManager.Cantones.ReadByIdAsync(new Guid(id));
+			var canton = await _divisionTerritorialManager.Cantones.ReadByIdAsync(new Guid(id));
 			if (canton == null) return NotFound();
 			var viewModel = new EliminarCantonViewModel(canton);
 			return View(viewModel);
@@ -181,7 +181,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Cantones.DeleteAsync(new Guid(viewModel.Id));
+				await _divisionTerritorialManager.Cantones.DeleteAsync(new Guid(viewModel.Id));
 				return RedirectToAction(nameof(ListarCantones));
 			}
 
@@ -193,7 +193,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> ListarDistritos()
 		{
-			var distritos = await _divisionTerritoriaManager.Distritos.ReadAllAsync();
+			var distritos = await _divisionTerritorialManager.Distritos.ReadAllAsync();
 			var viewModel = distritos.Select(x => new DistritoViewModel(x));
 			return View(viewModel);
 		}
@@ -211,7 +211,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Distritos.CreateAsync(modelo.Entidad(), GetCurrentUser());
+				await _divisionTerritorialManager.Distritos.CreateAsync(modelo.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarDistritos));
 			}
 
@@ -224,9 +224,9 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EditarDistrito(string id)
 		{
-			var distrito = await _divisionTerritoriaManager.Distritos.ReadByIdAsync(new Guid(id));
+			var distrito = await _divisionTerritorialManager.Distritos.ReadByIdAsync(new Guid(id));
 			if (distrito == null) return NotFound();
-			ViewBag.ListaDistrito = await CargarListaSeleccionDistritos();
+			ViewBag.ListaCantones = await CargarListaSeleccionCantones();
 			var viewModel = new EditarDistritoViewModel(distrito);
 			return View(viewModel);
 		}
@@ -237,7 +237,7 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Distritos.UpdateAsync(modelo.Entidad(), GetCurrentUser());
+				await _divisionTerritorialManager.Distritos.UpdateAsync(modelo.Entidad(), GetCurrentUser());
 				return RedirectToAction(nameof(ListarDistritos));
 			}
 
@@ -250,7 +250,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public async Task<ActionResult> EliminarDistrito(string id)
 		{
-			var distrito = await _divisionTerritoriaManager.Distritos.ReadByIdAsync(new Guid(id));
+			var distrito = await _divisionTerritorialManager.Distritos.ReadByIdAsync(new Guid(id));
 			if (distrito == null) return NotFound();
 			var viewModel = new EliminarDistritoViewModel(distrito);
 			return View(viewModel);
@@ -259,17 +259,14 @@ namespace fitcare.Controllers
 		[HttpPost]
 		public async Task<ActionResult> EliminarDistrito(EliminarDistritoViewModel viewModel)
 		{
-
 			if (ModelState.IsValid)
 			{
-				await _divisionTerritoriaManager.Cantones.DeleteAsync(new Guid(viewModel.Id));
+				await _divisionTerritorialManager.Distritos.DeleteAsync(new Guid(viewModel.Id));
 				return RedirectToAction(nameof(ListarDistritos));
 			}
 
 			ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Distrito)));
 			return View(viewModel);
 		}
-
-
 	}
 }

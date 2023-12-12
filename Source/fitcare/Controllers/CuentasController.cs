@@ -103,10 +103,7 @@ public class CuentasController : BaseController
 
 	[HttpGet]
 	[AllowAnonymous]
-	public ActionResult SolicitarContrasena()
-	{
-		return View();
-	}
+	public ActionResult SolicitarContrasena() => View();
 
 	[HttpPost]
 	[AllowAnonymous]
@@ -144,17 +141,11 @@ public class CuentasController : BaseController
 
 	[HttpGet]
 	[AllowAnonymous]
-	public ActionResult SolicitarContrasenaConfirmada()
-	{
-		return View();
-	}
+	public ActionResult SolicitarContrasenaConfirmada() => View();
 
 	[HttpGet]
 	[AllowAnonymous]
-	public ActionResult RestablecerContrasena(string code)
-	{
-		return code == null ? View("Error") : View();
-	}
+	public ActionResult RestablecerContrasena(string code) => code == null ? View("Error") : View();
 
 	[HttpPost]
 	[AllowAnonymous]
@@ -181,10 +172,7 @@ public class CuentasController : BaseController
 
 	[HttpGet]
 	[AllowAnonymous]
-	public ActionResult RestablecerContrasenaConfirmada()
-	{
-		return View();
-	}
+	public ActionResult RestablecerContrasenaConfirmada() => View();
 
 	[HttpGet]
 	public ActionResult ListarUsuarios()
@@ -252,7 +240,7 @@ public class CuentasController : BaseController
 			IList<string> rolesSeleccionados = ObtenerRolesSeleccionados(collection);
 
 			IdentityResult usuarioActualizado = await _userManager.UpdatePersonalInformation(usuario);
-			IdentityResult rolesActualizados = usuarioActualizado.Succeeded ? await ActualizarRolesUsuario(usuario, rolesSeleccionados) : IdentityResult.Failed();
+			IdentityResult rolesActualizados = usuarioActualizado.Succeeded ? await _userManager.ActualizarRolesUsuario(usuario, rolesSeleccionados) : IdentityResult.Failed();
 
 			if (usuarioActualizado.Succeeded && rolesActualizados.Succeeded)
 			{
@@ -314,10 +302,7 @@ public class CuentasController : BaseController
 	}
 
 	[HttpGet]
-	public IActionResult AgregarRol()
-	{
-		return View();
-	}
+	public IActionResult AgregarRol() => View();
 
 	[HttpPost]
 	[ValidateAntiForgeryToken]

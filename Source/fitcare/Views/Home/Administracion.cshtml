@@ -13,32 +13,19 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<h6 class="mb-0"><i class="fa fa-cog text-primary">&nbsp;</i>Bienvenido a las opciones de administración de fit<b>care</b>.</h6>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="row">
 		<div class="col s12">
 			<div class="card-deck">
-				<div class="card">
-					<img src="~/images/admin_1.svg" alt="Administración" class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
-
-					<div class="card-body">
-						@if (User.IsInRole("Administrador"))
-						{
-							<h5 class="card-title font-light text-info"><b>Administración</b></h5>
-							<p class="card-text">
-								Bienvenido a las opciones de administración de fit<b>care</b>.
-							</p>
-						}
-						else
-						{
-							<h5 class="card-title font-light text-info">fit<b>care</b></h5>
-							<p class="card-text">
-								Bienvenido.
-							</p>
-						}
-					</div>
-				</div>
-
 				@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
 				{
 					<div class="card">
@@ -89,11 +76,11 @@
 						<h5 class="card-title text-center font-weight-bold">Rutinas</h5>
 						@if (User.IsInRole("Cliente"))
 						{
-							<p class="card-text">Gestione sus rutinas.</p>
+							<p class="card-text text-center">Gestione sus rutinas.</p>
 						}
 						else
 						{
-							<p class="card-text">Gestine las rutinas de sus clientes.</p>
+							<p class="card-text text-center">Gestione las rutinas de sus clientes.</p>
 						}
 
 						@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
@@ -104,7 +91,7 @@
 							<a href='@Url.Action("ReporteDetallado", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas detallado</a>
 						}
 
-						@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
+						@if (User.IsInRole("Cliente"))
 						{
 							<a href="#" class="btn btn-sm btn-block btn-dark">Mis rutinas</a>
 						}

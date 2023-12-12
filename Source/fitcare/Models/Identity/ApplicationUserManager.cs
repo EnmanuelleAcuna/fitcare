@@ -42,14 +42,29 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 
 	public async Task<IdentityResult> UpdatePersonalInformation(ApplicationUser user)
 	{
-		var userRecord = await _store.FindByIdAsync(user.Id, CancellationToken);
+		var userRecord = await FindByIdAsync(user.Id);
 
 		if (userRecord == null)
 			throw new KeyNotFoundException($"No user was found with the id {user.Id}");
 
 		userRecord.SetNewPersonalInformation(user.Name, user.FirstLastName, user.SecondLastName, user.IdentificationNumber);
 
-		IdentityResult result = await _store.UpdateAsync(userRecord, CancellationToken);
+		IdentityResult result = await UpdateAsync(userRecord);
 		return result;
+	}
+
+	public async Task<IdentityResult> ActualizarRolesUsuario(ApplicationUser user, IEnumerable<string> roles)
+	{
+		var userRecord = await FindByIdAsync(user.Id);
+
+		IList<string> actualRoles = await GetRolesAsync(userRecord);
+
+		IdentityResult rolesUnassigned = await RemoveFromRolesAsync(userRecord, actualRoles);
+
+		if (!rolesUnassigned.Succeeded) return rolesUnassigned;
+
+		IdentityResult rolesAssigned = await AddToRolesAsync(userRecord, roles);
+
+		return rolesAssigned;
 	}
 }

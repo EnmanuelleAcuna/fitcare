@@ -4,6 +4,21 @@
 			<ul id="sidebarnav">
 				@if (User.IsInRole("Administrador"))
 				{
+					@if (User.IsInRole("Cliente") || User.IsInRole("Instructor"))
+					{
+						@* Perfil de cliente *@
+						<li class="sidebar-item">
+							<a class="sidebar-link waves-effect waves-dark sidebar-link" href='#' aria-expanded="false">
+								<i class="mdi mdi-account"></i>
+								<span class="hide-menu">Mi perfil</span>
+							</a>
+						</li>
+					}
+
+					<li>
+						<hr class="my-0 bg-secondary" />
+					</li>
+
 					@* Menu de cuentas *@
 					<li class="sidebar-item dropright">
 						<a class="sidebar-link waves-effect waves-dark sidebar-link  dropdown-toggle" href="#" id="DropdownCuentas" role="button"
@@ -21,27 +36,8 @@
 								<i class="mdi mdi-checkbox-blank"></i>
 								Usuarios
 							</a>
-							<a class="dropdown-item" href='@Url.Action("Inicio", "Instructores")'>
-								<i class="mdi mdi-checkbox-blank"></i>
-								Instructores
-							</a>
-							<a class="dropdown-item" href='@Url.Action("Inicio", "Clientes")'>
-								<i class="mdi mdi-checkbox-blank"></i>
-								Clientes
-							</a>
 						</div>
 					</li>
-
-					@if (User.IsInRole("Cliente") || User.IsInRole("Instructor"))
-					{
-						@* Perfil de cliente *@
-						<li class="sidebar-item">
-							<a class="sidebar-link waves-effect waves-dark sidebar-link" href='#' aria-expanded="false">
-								<i class="mdi mdi-account"></i>
-								<span class="hide-menu">Mi perfil</span>
-							</a>
-						</li>
-					}
 
 					<li>
 						<hr class="my-0 bg-secondary" />

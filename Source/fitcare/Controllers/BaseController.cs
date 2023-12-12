@@ -154,19 +154,6 @@ public class BaseController : Controller
 		return rolesUsuario;
 	}
 
-	public async Task<IdentityResult> ActualizarRolesUsuario(ApplicationUser usuario, IEnumerable<string> roles)
-	{
-		IList<string> rolesActuales = await _userManager.GetRolesAsync(usuario);
-
-		IdentityResult rolesEliminados = await _userManager.RemoveFromRolesAsync(usuario, rolesActuales);
-
-		if (!rolesEliminados.Succeeded) return rolesEliminados;
-
-		IdentityResult rolesAsignados = await _userManager.AddToRolesAsync(usuario, roles);
-
-		return rolesAsignados;
-	}
-
 	public static IEnumerable<SelectListItem> CargarListaSeleccionTiposMaquina(IEnumerable<TipoMaquina> listaTiposMaquina)
 	{
 		IEnumerable<SelectListItem> listaSeleccionTiposMaquina = listaTiposMaquina.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = p.Nombre }).ToList();
