@@ -63,6 +63,8 @@ public class AgregarContactoViewModel
 
 public class EliminarContactoViewModel
 {
+	public EliminarContactoViewModel() { }
+
 	public EliminarContactoViewModel(Contacto contacto)
 	{
 		Id = contacto.Id.ToString();
