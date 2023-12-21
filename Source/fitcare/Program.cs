@@ -69,9 +69,9 @@ class Program
 		builder.Services.AddScoped<IManager<Distrito>, DistritoManager>();
 		builder.Services.AddTransient<IDivisionTerritorialManager, DivisionTerritorialManager>();
 		builder.Services.AddScoped<IContactoManager<Contacto>, ContactosManager>();
+		builder.Services.AddTransient<IManager<TipoMaquina>, TiposMaquinaManager>();
 		// builder.Services.AddTransient<IRepository<Cliente>, DAOCliente>();
 		// builder.Services.AddTransient<IRepository<Instructor>, DAOInstructor>();
-		// builder.Services.AddTransient<IRepository<TipoMaquina>, DAOTipoMaquina>();
 		// builder.Services.AddTransient<IRepository<Maquina>, DAOMaquina>();
 		// builder.Services.AddTransient<IRepository<Accesorio>, DAOAccesorio>();
 		// builder.Services.AddTransient<IRepository<GrupoMuscular>, DAOGrupoMuscular>();
