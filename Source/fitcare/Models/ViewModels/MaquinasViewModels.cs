@@ -1,14 +1,14 @@
-// using fitcare.Models.Contracts;
-// using fitcare.Models.Entities;
-// using fitcare.Models.Extras;
-// using Microsoft.AspNetCore.Http;
-// using System;
-// using System.Collections.Generic;
-// using System.ComponentModel.DataAnnotations;
-// using System.Linq;
-// using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using fitcare.Models.Contracts;
+using fitcare.Models.Entities;
+using fitcare.Models.Extras;
+using Microsoft.AspNetCore.Http;
 
-// namespace fitcare.Models.ViewModels;
+namespace fitcare.Models.ViewModels;
 
 // public class MaquinaViewModel
 // {
@@ -144,96 +144,87 @@
 // 	public string NombresGruposMusculares { get; set; }
 // }
 
-// using fitcare.Models.Entities;
-// using fitcare.Models.Extras;
-// using System;
-// using System.ComponentModel.DataAnnotations;
+public class TipoMaquinaViewModel : BaseViewModel
+{
+	public TipoMaquinaViewModel(TipoMaquina tipoMaquina) : base(tipoMaquina)
+	{
+		IdTipoMaquina = tipoMaquina.Id.ToString();
+		Nombre = tipoMaquina.Nombre;
+		Codigo = tipoMaquina.Codigo;
+		Estado = tipoMaquina.Estado ? "Activo" : "Inactivo";
+	}
 
-// namespace fitcare.Models.ViewModels;
+	public string IdTipoMaquina { get; set; }
 
-// public class InicioTipoMaquinaViewModel
-// {
-// 	public InicioTipoMaquinaViewModel(TipoMaquina tipoMaquina)
-// 	{
-// 		Validators.ValidateTipoMaquina(tipoMaquina);
+	[Display(Name = "Tipo de máquina")]
+	public string Nombre { get; set; }
 
-// 		IdTipoMaquina = tipoMaquina.Id.ToString();
-// 		Nombre = tipoMaquina.Nombre;
-// 		Estado = tipoMaquina.Estado ? "Activo" : "Inactivo";
-// 	}
+	public string Estado { get; set; }
 
-// 	public string IdTipoMaquina { get; set; }
+	[Display(Name = "Código")]
+	public string Codigo { get; set; }
+}
 
-// 	[Display(Name = "Tipo de máquina")]
-// 	public string Nombre { get; set; }
+public class AgregarTipoMaquinaViewModel
+{
+	[Display(Name = "Nombre del tipo de máquina")]
+	[Required(ErrorMessage = "El nombre es requerido")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Estado")]
-// 	public string Estado { get; set; }
-// }
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
-// public class NuevoTipoMaquinaViewModel
-// {
-// 	[Display(Name = "Nombre del tipo de máquina")]
-// 	[Required(ErrorMessage = "El nombre es requerido")]
-// 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
-// 	public string Nombre { get; set; }
+	[Display(Name = "Código del tipo de máquina")]
+	[Required(ErrorMessage = "El código es requerido")]
+	[StringLength(20, ErrorMessage = "El código no puede exceder los 50 caracteres")]
+	public string Codigo { get; set; }
 
-// 	[Display(Name = "Activo")]
-// 	public bool Estado { get; set; }
+	public TipoMaquina Entidad() => new(Guid.NewGuid(), Nombre, Estado, Codigo);
+}
 
-// 	public TipoMaquina Entidad()
-// 	{
-// 		TipoMaquina tipoMaquina = new(Guid.NewGuid(), Nombre, Estado);
-// 		return tipoMaquina;
-// 	}
-// }
+public class EditarTipoMaquinaViewModel : BaseViewModel
+{
+	public EditarTipoMaquinaViewModel() { }
 
-// public class EditarTipoMaquinaViewModel
-// {
-// 	public EditarTipoMaquinaViewModel() { }
+	public EditarTipoMaquinaViewModel(TipoMaquina tipoMaquina) : base(tipoMaquina)
+	{
+		Id = tipoMaquina.Id.ToString();
+		Nombre = tipoMaquina.Nombre;
+		Estado = tipoMaquina.Estado;
+		Codigo = tipoMaquina.Codigo;
+	}
 
-// 	public EditarTipoMaquinaViewModel(TipoMaquina tipoMaquina)
-// 	{
-// 		Validators.ValidateTipoMaquina(tipoMaquina);
+	public string Id { get; set; }
 
-// 		Id = tipoMaquina.Id.ToString();
-// 		Nombre = tipoMaquina.Nombre;
-// 		Estado = tipoMaquina.Estado;
-// 	}
+	[Display(Name = "Nombre del tipo de máquina")]
+	[Required(ErrorMessage = "El nombre es requerido")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
+	public string Nombre { get; set; }
 
-// 	public string Id { get; set; }
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
-// 	[Display(Name = "Nombre del tipo de máquina")]
-// 	[Required(ErrorMessage = "El nombre es requerido")]
-// 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
-// 	public string Nombre { get; set; }
+	[Display(Name = "Código del tipo de máquina")]
+	[Required(ErrorMessage = "El código es requerido")]
+	[StringLength(20, ErrorMessage = "El código no puede exceder los 50 caracteres")]
+	public string Codigo { get; set; }
 
-// 	[Display(Name = "Activo")]
-// 	public bool Estado { get; set; }
+	public TipoMaquina Entidad() => new(new Guid(Id), Nombre, Estado, Codigo);
+}
 
-// 	public TipoMaquina Entidad()
-// 	{
-// 		TipoMaquina tipoMaquina = new(Factory.SetGuid(Id), Nombre, Estado);
-// 		return tipoMaquina;
-// 	}
-// }
+public class EliminarTipoMaquinaViewModel
+{
+	public EliminarTipoMaquinaViewModel() { }
 
-// public class DetalleTipoMaquinaViewModel
-// {
-// 	public DetalleTipoMaquinaViewModel(TipoMaquina tipoMaquina)
-// 	{
-// 		Validators.ValidateTipoMaquina(tipoMaquina);
+	public EliminarTipoMaquinaViewModel(TipoMaquina tipoMaquina)
+	{
+		Id = tipoMaquina.Id.ToString();
+		Nombre = tipoMaquina.Nombre;
+	}
 
-// 		IdTipoMaquina = tipoMaquina.Id.ToString();
-// 		Nombre = tipoMaquina.Nombre;
-// 		Estado = tipoMaquina.Estado ? "Activo" : "Inactivo";
-// 	}
+	[Required(ErrorMessage = "El id es requerido.")]
+	public string Id { get; set; }
 
-// 	public string IdTipoMaquina { get; set; }
-
-// 	[Display(Name = "TipoMaquina")]
-// 	public string Nombre { get; set; }
-
-// 	[Display(Name = "Estado")]
-// 	public string Estado { get; set; }
-// }
+	public string Nombre { get; set; }
+}
