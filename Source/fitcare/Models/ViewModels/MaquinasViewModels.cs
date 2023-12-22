@@ -210,7 +210,7 @@ public class EditarTipoMaquinaViewModel : BaseViewModel
 	[StringLength(20, ErrorMessage = "El código no puede exceder los 50 caracteres")]
 	public string Codigo { get; set; }
 
-	public TipoMaquina Entidad() => new(Guid.NewGuid(), Nombre, Estado, Codigo);
+	public TipoMaquina Entidad() => new(new Guid(Id), Nombre, Estado, Codigo);
 }
 
 public class EliminarTipoMaquinaViewModel
