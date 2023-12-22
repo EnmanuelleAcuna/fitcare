@@ -239,7 +239,7 @@ public class MaquinasController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<JsonResult> Detalle(string id)
+	public async Task<JsonResult> DetalleTipoMaquina(string id)
 	{
 		TipoMaquina tipoMaquina = await _tiposMaquinaManager.ReadByIdAsync(new Guid(id));
 		var modelo = new TipoMaquinaViewModel(tipoMaquina);
