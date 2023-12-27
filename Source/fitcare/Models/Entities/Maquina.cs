@@ -5,17 +5,63 @@ using System.Text.Json;
 
 namespace fitcare.Models.Entities;
 
+[Table("MAQUINAS", Schema = "fitcare")]
 public class Maquina : Base
 {
-	public Guid Id { get; private set; }
-	public string Codigo { get; private set; }
-	public string Nombre { get; private set; }
-	public string CodigoActivo { get; private set; }
-	public bool Estado { get; private set; }
-	public DateTime FechaAdquisicion { get; private set; }
+	public Maquina() : base()
+	{
+		// DetalleRutina = new HashSet<DetalleRutina>();
+	}
 
+	public Maquina(Guid id, string codigo, string nombre, string codigoActivo, bool activo, DateTime fechaAdquisicion, TipoMaquina tipoMaquina)
+	{
+		Id = id;
+		Nombre = nombre;
+		Codigo = codigo;
+		CodigoActivo = codigoActivo;
+		Estado = activo;
+		FechaAdquisicion = fechaAdquisicion;
+
+		IdTipoMaquina = tipoMaquina.Id;
+		TipoMaquina = tipoMaquina;
+
+		// DetalleRutina = new HashSet<DetalleRutina>();
+	}
+
+	public Maquina(Guid id, string codigo, string nombre, string codigoActivo, bool activo, DateTime fechaAdquisicion, Guid idTipoMaquina)
+	{
+		Id = id;
+		Nombre = nombre;
+		Codigo = codigo;
+		CodigoActivo = codigoActivo;
+		Estado = activo;
+		FechaAdquisicion = fechaAdquisicion;
+
+		IdTipoMaquina = idTipoMaquina;
+
+		// DetalleRutina = new HashSet<DetalleRutina>();
+	}
+
+	public Maquina(Guid id)
+	{
+		Id = id;
+
+		// DetalleRutina = new HashSet<DetalleRutina>();
+	}
+
+	public Guid Id { get; private set; }
+	public string Codigo { get; set; }
+	public string Nombre { get; set; }
+	public string CodigoActivo { get; set; }
+	public bool Estado { get; set; }
+	public DateTime FechaAdquisicion { get; set; }
+
+	[ForeignKey(nameof(TipoMaquina))]
+	[Column("Id_Tipo_Maquina")]
+	public Guid IdTipoMaquina { get; set; }
 	public TipoMaquina TipoMaquina { get; set; }
-	public IList<GrupoMuscular> GruposMusculares { get; set; }
+
+	// public virtual ICollection<DetalleRutina> DetalleRutina { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }

@@ -1,97 +1,83 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
 using fitcare.Models.Contracts;
-using fitcare.Models.DataAccess.EntityFramework;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace fitcare.Models;
 
-// public class DAOMaquina : IManager<Maquina>
-// {
-// 	private readonly FitcareDBContext _dbContext;
-// 	private readonly ILogger _logger;
+public class MaquinasManager : IManager<Maquina>
+{
+	private readonly FitcareDBContext _dbContext;
+	private readonly IManager<TipoMaquina> _tiposMaquinaManager;
 
-// 	public DAOMaquina(FitcareDBContext dbContext, ILogger logger)
-// 	{
-// 		_dbContext = dbContext;
-// 		_logger = logger;
-// 	}
+	public MaquinasManager(FitcareDBContext dbContext, IManager<TipoMaquina> tipoMaquinaManager)
+	{
+		_dbContext = dbContext;
+		_tiposMaquinaManager = tipoMaquinaManager;
+	}
 
-// 	public async Task<IList<Maquina>> ReadAllAsync()
-// 	{
-// 		var listaMaquinasBD = await _dbContext.Maquinas
-// 											  .Include(m => m.IdTipoMaquinaNavigation)
-// 											  .ToListAsync();
+	public async Task<IList<Maquina>> ReadAllAsync()
+	{
+		var maquinas = await _dbContext.Maquinas.Include(m => m.TipoMaquina).ToListAsync();
+		return maquinas ?? new List<Maquina>();
+	}
 
-// 		if (listaMaquinasBD == null || listaMaquinasBD.Count == 0)
-// 			return new List<Maquina>();
+	public async Task<Maquina> ReadByIdAsync(Guid id)
+	{
+		var maquina = await _dbContext.Maquinas.Include(m => m.TipoMaquina).FirstAsync(m => m.Id == id);
+		return maquina ?? throw new KeyNotFoundException($"No se encontró un Cantón con el id {id}");
+	}
 
-// 		var listaMaquinas = _mapper.Map<List<Maquina>>(listaMaquinasBD);
-// 		return listaMaquinas;
-// 	}
+	public async Task CreateAsync(Maquina maquina, string user)
+	{
+		var existingTipoMaquina = await _tiposMaquinaManager.ReadByIdAsync(maquina.IdTipoMaquina);
 
-// 	public async Task<Maquina> ReadByIdAsync(Guid id)
-// 	{
-// 		var maquinaBD = await _dbContext.Maquinas
-// 										.Where(m => m.Id.Equals(id))
-// 										.Include(m => m.IdTipoMaquinaNavigation)
-// 										.FirstOrDefaultAsync();
-// 		var maquina = _mapper.Map<Maquina>(maquinaBD);
-// 		return maquina;
-// 	}
+		if (existingTipoMaquina == null)
+			throw new Exception($"El tipo de máquina {maquina.IdTipoMaquina} para la máquina no se ha encontrado en la BD.");
+		else
+			maquina.TipoMaquina = existingTipoMaquina;
 
-// 	public async Task CreateAsync(Maquina maquina)
-// 	{
-// 		var maquinaBD = _mapper.Map<Maquinas>(maquina);
-// 		await _dbContext.Maquinas.AddAsync(maquinaBD);
-// 		await _dbContext.SaveChangesAsync();
-// 	}
+		maquina.CreatedBy = user;
+		maquina.DateCreated = DateTime.Now;
 
-// 	public async Task UpdateAsync(Maquina maquina)
-// 	{
-// 		var maquinaBD = await _dbContext.Maquinas
-// 										.Where(m => m.Id.Equals(maquina.Id))
-// 										.Include(m => m.IdTipoMaquinaNavigation)
-// 										.FirstOrDefaultAsync();
+		await _dbContext.AddAsync(maquina);
+		await _dbContext.SaveChangesAsync();
+	}
 
-// 		if (maquinaBD == null)
-// 		{
-// 			_logger.LogInformation("No se encontró una máquina con el id", maquina.Id);
-// 			await Task.CompletedTask;
-// 		}
+	public async Task UpdateAsync(Maquina maquina, string user)
+	{
+		var record = await ReadByIdAsync(maquina.Id);
 
-// 		maquinaBD.Codigo = maquina.Codigo;
-// 		maquinaBD.Nombre = maquina.Nombre;
-// 		maquinaBD.NumeroActivo = maquina.CodigoActivo;
-// 		maquinaBD.Estado = maquina.Estado;
-// 		maquinaBD.IdTipoMaquina = maquina.TipoMaquina.Id;
-// 		maquinaBD.FechaAdquisicion = maquina.FechaAdquisicion;
-// 		maquinaBD.UpdatedBy = maquina.EditadoPor;
-// 		maquinaBD.DateUpdated = maquina.EditadoEl;
+		if (record == null)
+			throw new KeyNotFoundException($"No se encontró una máquina con el id {maquina.Id}");
 
-// 		_dbContext.Maquinas.Update(maquinaBD);
-// 		await _dbContext.SaveChangesAsync();
-// 	}
+		record.Codigo = maquina.Codigo;
+		record.Nombre = maquina.Nombre;
+		record.CodigoActivo = maquina.CodigoActivo;
+		record.Estado = maquina.Estado;
+		record.IdTipoMaquina = maquina.TipoMaquina.Id;
+		record.FechaAdquisicion = maquina.FechaAdquisicion;
 
-// 	public async Task DeleteAsync(Guid id)
-// 	{
-// 		Maquinas maquinaBD = await _dbContext.Maquinas.FindAsync(id);
+		record.UpdatedBy = user;
+		record.DateUpdated = DateTime.Now;
 
-// 		if (maquinaBD == null)
-// 		{
-// 			_logger.LogInformation("No se encontró una máquina con el id", id);
-// 			await Task.CompletedTask;
-// 		}
+		_dbContext.Update(record);
+		await _dbContext.SaveChangesAsync();
+	}
 
-// 		_dbContext.Maquinas.Remove(maquinaBD);
-// 		await _dbContext.SaveChangesAsync();
-// 	}
-// }
+	public async Task DeleteAsync(Guid id)
+	{
+		var record = await ReadByIdAsync(id);
+
+		if (record == null)
+			throw new KeyNotFoundException($"No se encontró una máquina con el id {id}");
+
+		_dbContext.Remove(record);
+		await _dbContext.SaveChangesAsync();
+	}
+}
 
 public class TiposMaquinaManager : IManager<TipoMaquina>
 {
