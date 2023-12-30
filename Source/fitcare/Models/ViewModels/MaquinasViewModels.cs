@@ -10,139 +10,126 @@ using Microsoft.AspNetCore.Http;
 
 namespace fitcare.Models.ViewModels;
 
-// public class MaquinaViewModel
-// {
-// 	public MaquinaViewModel() { }
+public class MaquinaViewModel : BaseViewModel
+{
+	public MaquinaViewModel(Maquina maquina) : base(maquina)
+	{
+		Id = maquina.Id.ToString();
+		Codigo = maquina.Codigo;
+		Nombre = maquina.Nombre;
+		CodigoActivo = maquina.CodigoActivo;
+		Estado = maquina.Estado ? "Activo" : "Inactivo";
+		FechaAdquisicion = maquina.FechaAdquisicion;
+		TipoMaquina = new TipoMaquinaViewModel(maquina.TipoMaquina);
+	}
 
-// 	public MaquinaViewModel(Maquina maquina)
-// 	{
-// 		Id = maquina.Id.ToString();
-// 		Codigo = maquina.Codigo;
-// 		NombreTipoMaquina = maquina.TipoMaquina.Nombre;
-// 		Nombre = maquina.Nombre;
-// 		NumeroActivo = maquina.CodigoActivo;
-// 		Estado = maquina.Estado ? "Activo" : "Inactivo";
-// 		Activo = maquina.Estado;
-// 		FechaAdquisicion = maquina.FechaAdquisicion;
-// 		URLImagen = maquina.Imagen.URL;
+	public string Id { get; set; }
+	public string Nombre { get; set; }
 
-// 		GruposMusculares = maquina.GruposMusculares;
-// 	}
+	[Display(Name = "Código")]
+	public string Codigo { get; set; }
 
-// 	public string Id { get; set; }
+	[Display(Name = "Código de activo")]
+	public string CodigoActivo { get; set; }
 
-// 	[Display(Name = "Tipo de máquina")]
-// 	public string NombreTipoMaquina { get; set; }
+	[Display(Name = "Fecha de adquisición")]
+	public DateTime FechaAdquisicion { get; set; }
 
-// 	[Display(Name = "Código")]
-// 	[Required(ErrorMessage = "El código es requerido")]
-// 	[StringLength(100, ErrorMessage = "El código no puede exceder los 100 caracteres")]
-// 	public string Codigo { get; set; }
+	public string Estado { get; set; }
+	public TipoMaquinaViewModel TipoMaquina { get; set; }
+}
 
-// 	[Required(ErrorMessage = "El nombre es requerido")]
-// 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
-// 	public string Nombre { get; set; }
+public class AgregarMaquinaViewModel
+{
+	[Required(ErrorMessage = "El nombre es requerido.")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres.")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Activo #")]
-// 	[Required(ErrorMessage = "El número de activo es requerido")]
-// 	[StringLength(100, ErrorMessage = "El número de activo no puede exceder los 100 caracteres")]
-// 	public string NumeroActivo { get; set; }
+	[Display(Name = "Código")]
+	[Required(ErrorMessage = "El codigo es requerido.")]
+	[StringLength(50, ErrorMessage = "El codigo no puede exceder los 50 caracteres.")]
+	public string Codigo { get; set; }
 
-// 	[Display(Name = "Fecha de adquisición")]
-// 	[Required(ErrorMessage = "La fecha de adquisición es requerida")]
-// 	[DataType(DataType.Date, ErrorMessage = "La fecha no tiene formato correcto.")]
-// 	public DateTime FechaAdquisicion { get; set; }
+	[Display(Name = "Código de activo")]
+	[Required(ErrorMessage = "El codigo de activo es requerido.")]
+	[StringLength(50, ErrorMessage = "El codigo de activo no puede exceder los 50 caracteres.")]
+	public string CodigoActivo { get; set; }
 
-// 	public string Estado { get; set; }
+	[Display(Name = "Fecha de adquisición")]
+	[Required(ErrorMessage = "La fecha de adquisición es requerida")]
+	[DataType(DataType.Date, ErrorMessage = "La fecha no tiene formato correcto.")]
+	public DateTime FechaAdquisicion { get; set; }
 
-// 	public bool Activo { get; set; }
+	[Display(Name = "Tipo de máquina")]
+	[Required(ErrorMessage = "Debe indicar el tipo de máquina")]
+	public string IdTipoMaquina { get; set; }
 
-// 	[Display(Name = "Imagen")]
-// 	public Uri URLImagen { get; set; }
+	public bool Activo { get; set; }
 
-// 	public IList<GrupoMuscular> GruposMusculares { get; set; }
-// 	public ICollection<string> AllKeys;
+	public Maquina Entidad() => new(Guid.NewGuid(), Codigo, Nombre, CodigoActivo, Activo, Convert.ToDateTime(FechaAdquisicion), new Guid(IdTipoMaquina));
+}
 
-// 	public IDataCRUDBase<TipoMaquina> _repoTiposMaquina;
-// 	public IDataCRUDBase<GrupoMuscular> _repoGruposMusculares;
+public class EditarMaquinaViewModel : BaseViewModel
+{
+	public EditarMaquinaViewModel() { }
 
-// 	public void SetDependencies(IDataCRUDBase<TipoMaquina> repoTiposMaquina, IDataCRUDBase<GrupoMuscular> repoGruposMusculares)
-// 	{
-// 		_repoGruposMusculares = repoGruposMusculares;
-// 		_repoTiposMaquina = repoTiposMaquina;
-// 	}
+	public EditarMaquinaViewModel(Maquina maquina) : base(maquina)
+	{
+		Id = maquina.Id.ToString();
+		Nombre = maquina.Nombre;
+		Codigo = maquina.Codigo;
+		CodigoActivo = maquina.CodigoActivo;
+		FechaAdquisicion = maquina.FechaAdquisicion;
+		IdTipoMaquina = maquina.TipoMaquina.Id.ToString();
+		Activo = maquina.Estado;
+	}
 
-// 	public async Task AsignarGruposMusculares()
-// 	{
-// 		GruposMusculares = new List<GrupoMuscular>();
+	[Required(ErrorMessage = "El id es requerido.")]
+	public string Id { get; set; }
 
-// 		// Recorrer los accesorios chequeados y tomar el id que es el id del accesorio y crear un
-// 		// objeto accesorio asignando la propiedad id obtenida del collection,
-// 		// los mismo para maquinas y grupos musculares
-// 		foreach (string key in AllKeys.Skip(6))
-// 		{
-// 			if (key[..1].Equals("G", StringComparison.OrdinalIgnoreCase))
-// 			{
-// 				string idGrupoMuscular = key[2..];
-// 				GrupoMuscular grupoMuscular = await _repoGruposMusculares.ReadByIdAsync(Factory.SetGuid(idGrupoMuscular));
-// 				GruposMusculares.Add(grupoMuscular);
-// 			}
-// 		}
-// 	}
-// }
+	[Required(ErrorMessage = "El nombre es requerido.")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres.")]
+	public string Nombre { get; set; }
 
-// public class NuevaMaquinaViewModel : MaquinaViewModel
-// {
-// 	[Display(Name = "Tipo de máquina")]
-// 	[Required(ErrorMessage = "Debe indicar el tipo de máquina")]
-// 	public string IdTipoMaquina { get; set; }
+	[Display(Name = "Código")]
+	[Required(ErrorMessage = "El codigo es requerido.")]
+	[StringLength(50, ErrorMessage = "El codigo no puede exceder los 50 caracteres.")]
+	public string Codigo { get; set; }
 
-// 	[Required(ErrorMessage = "La imagen es requerida")]
-// 	public IFormFile Imagen { get; set; }
+	[Display(Name = "Código de activo")]
+	[Required(ErrorMessage = "El codigo de activo es requerido.")]
+	[StringLength(50, ErrorMessage = "El codigo de activo no puede exceder los 50 caracteres.")]
+	public string CodigoActivo { get; set; }
 
-// 	public async Task<Maquina> Entidad(IFormCollection collection)
-// 	{
-// 		AllKeys = collection.Keys;
-// 		await AsignarGruposMusculares();
-// 		TipoMaquina tipoMaquina = await _repoTiposMaquina.ReadByIdAsync(Factory.SetGuid(IdTipoMaquina));
-// 		Maquina maquina = new(Guid.NewGuid(), Codigo, Nombre, NumeroActivo, Activo, Convert.ToDateTime(FechaAdquisicion), tipoMaquina, GruposMusculares);
-// 		return maquina;
-// 	}
-// }
+	[Display(Name = "Fecha de adquisición")]
+	[Required(ErrorMessage = "La fecha de adquisición es requerida")]
+	[DataType(DataType.Date, ErrorMessage = "La fecha no tiene formato correcto.")]
+	public DateTime FechaAdquisicion { get; set; }
 
-// public class EditarMaquinaViewModel : MaquinaViewModel
-// {
-// 	public EditarMaquinaViewModel() { }
+	[Display(Name = "Tipo de máquina")]
+	[Required(ErrorMessage = "Debe indicar el tipo de máquina")]
+	public string IdTipoMaquina { get; set; }
 
-// 	public EditarMaquinaViewModel(Maquina maquina) : base(maquina)
-// 	{
-// 		Validators.ValidateList<GrupoMuscular>(maquina.GruposMusculares, nameof(GrupoMuscular));
+	public bool Activo { get; set; }
 
-// 		IdTipoMaquina = maquina.TipoMaquina.Id.ToString();
-// 		GruposMusculares = maquina.GruposMusculares;
-// 	}
+	public Maquina Entidad() => new(new Guid(Id), Codigo, Nombre, CodigoActivo, Activo, Convert.ToDateTime(FechaAdquisicion), new Guid(IdTipoMaquina));
+}
 
-// 	[Display(Name = "Tipo de máquina")]
-// 	[Required(ErrorMessage = "Debe indicar el tipo de máquina")]
-// 	public string IdTipoMaquina { get; set; }
+public class EliminarMaquinaViewModel
+{
+	public EliminarMaquinaViewModel() { }
 
-// 	[Display(Name = "Nueva imagen")]
-// 	public IFormFile Imagen { get; set; }
+	public EliminarMaquinaViewModel(Maquina maquina)
+	{
+		Id = maquina.Id.ToString();
+		Nombre = maquina.Nombre;
+	}
 
-// 	public async Task<Maquina> Entidad(IFormCollection collection)
-// 	{
-// 		AllKeys = collection.Keys;
-// 		await AsignarGruposMusculares();
-// 		TipoMaquina tipoMaquina = await _repoTiposMaquina.ReadByIdAsync(Factory.SetGuid(IdTipoMaquina));
-// 		Maquina maquina = new(Factory.SetGuid(Id), Codigo, Nombre, NumeroActivo, Activo, Convert.ToDateTime(FechaAdquisicion), tipoMaquina, GruposMusculares);
-// 		return maquina;
-// 	}
-// }
+	[Required(ErrorMessage = "El id es requerido.")]
+	public string Id { get; set; }
 
-// public class DetalleMaquinaViewModel : MaquinaViewModel
-// {
-// 	public string NombresGruposMusculares { get; set; }
-// }
+	public string Nombre { get; set; }
+}
 
 public class TipoMaquinaViewModel : BaseViewModel
 {

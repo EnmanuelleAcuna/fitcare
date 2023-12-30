@@ -69,6 +69,14 @@ public class BaseController : Controller
 
 	public string GetCurrentUser() => User.Identity.Name;
 
+	public string CurrentUser
+	{
+		get
+		{
+			return User.Identity.Name;
+		}
+	}
+
 	public IActionResult RedirectToLocal(string returnUrl)
 	{
 		if (Url.IsLocalUrl(returnUrl))

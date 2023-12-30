@@ -20,137 +20,97 @@ namespace fitcare.Controllers;
 [Authorize]
 public class MaquinasController : BaseController
 {
-	// 		private readonly IDataCRUDBase<Maquina> _repoMaquinas;
-	// 		private readonly IDataCRUDBase<TipoMaquina> _repoTiposMaquina;
-	// 		private readonly IDataCRUDBase<GrupoMuscular> _repoGruposMusculares;
-	// 		private readonly ILogger<MaquinasController> _logger;
-	// 		private readonly string NOMBRE_CARPETA_IMAGENES = "Maquinas";
-
-	// 		public MaquinasController(IDataCRUDBase<Maquina> repoMaquinas,
-	// 								  IDataCRUDBase<TipoMaquina> repoTiposMaquina,
-	// 								  IDataCRUDBase<GrupoMuscular> repoGruposMusculares,
-	// 								  UserManager<ApplicationUser> userManager,
-	// 								  RoleManager<ApplicationRole> roleManager,
-	// 								  IConfiguration configuration,
-	// 								  IHttpContextAccessor contextAccesor,
-	// 								  ILogger<MaquinasController> logger,
-	// 								  IWebHostEnvironment environment,
-	// 								  IDataCRUDBase<Imagen> repoImagenes)
-	// 		: base(userManager, roleManager, configuration, contextAccesor, environment, repoImagenes)
-	// 		{
-	// 			_repoMaquinas = repoMaquinas;
-	// 			_repoTiposMaquina = repoTiposMaquina;
-	// 			_repoGruposMusculares = repoGruposMusculares;
-	// 			_logger = logger;
-	// 		}
-
-	// 		[HttpGet]
-	// 		public async Task<IActionResult> Index()
-	// 		{
-	// 			IEnumerable<Maquina> maquinas = await _repoMaquinas.ReadAllAsync();
-	// 			await CargarImagenMaquinas(maquinas);
-	// 			IEnumerable<MaquinaViewModel> modeloVista = maquinas.Select(c => new MaquinaViewModel(c)).ToList();
-	// 			return View(modeloVista);
-	// 		}
-
-	// 		[HttpGet]
-	// 		public async Task<IActionResult> Nuevo()
-	// 		{
-	// 			ViewBag.GruposMusculares = CargarListaSeleccionGruposMusculares(await _repoGruposMusculares.ReadAllAsync());
-	// 			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _repoTiposMaquina.ReadAllAsync());
-	// 			return View();
-	// 		}
-
-	// 		[HttpPost]
-	// 		[ValidateAntiForgeryToken]
-	// 		public async Task<IActionResult> Nuevo(NuevaMaquinaViewModel modeloVista, IFormCollection collection)
-	// 		{
-	// 			if (!ModelState.IsValid)
-	// 			{
-	// 				ViewBag.GruposMusculares = CargarListaSeleccionGruposMusculares(await _repoGruposMusculares.ReadAllAsync());
-	// 				ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _repoTiposMaquina.ReadAllAsync());
-	// 				ModelState.AddModelError("", Messages.MensajeModeloInvalido);
-	// 				return View(modeloVista);
-	// 			}
-
-	// 			modeloVista.SetDependencies(_repoTiposMaquina, _repoGruposMusculares);
-	// 			Maquina maquina = await modeloVista.Entidad(collection);
-	// 			Imagen imagen = await GuardarImagenAsync(maquina.Id, modeloVista.Imagen, NOMBRE_CARPETA_IMAGENES);
-	// 			if (imagen is null) throw new Exception(Messages.MensajeErrorGuardandoArchivo);
-	// 			await _repoMaquinas.CreateAsync(maquina);
-	// 			return RedirectToAction(nameof(Index));
-	// 		}
-
-	// 		[HttpGet]
-	// 		public async Task<IActionResult> Editar(string id)
-	// 		{
-	// 			Maquina maquina = await _repoMaquinas.ReadByIdAsync(Factory.SetGuid(id));
-	// 			maquina.SetImagen(await ObtenerImagen(maquina.Id));
-	// 			EditarMaquinaViewModel modelo = new(maquina);
-
-	// 			ViewBag.GruposMusculares = CargarListaSeleccionGruposMusculares(await _repoGruposMusculares.ReadAllAsync());
-	// 			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _repoTiposMaquina.ReadAllAsync());
-
-	// 			return View(modelo);
-	// 		}
-
-	// 		[HttpPost]
-	// 		[ValidateAntiForgeryToken]
-	// 		public async Task<IActionResult> Editar(EditarMaquinaViewModel modeloVista, IFormCollection collection)
-	// 		{
-	// 			if (!ModelState.IsValid)
-	// 			{
-	// 				ViewBag.GruposMusculares = CargarListaSeleccionGruposMusculares(await _repoGruposMusculares.ReadAllAsync());
-	// 				ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _repoTiposMaquina.ReadAllAsync());
-	// 				ModelState.AddModelError("", Messages.MensajeModeloInvalido);
-	// 				return View(modeloVista);
-	// 			}
-
-	// 			modeloVista.SetDependencies(_repoTiposMaquina, _repoGruposMusculares);
-
-	// 			Maquina maquina = await modeloVista.Entidad(collection);
-
-	// 			if (modeloVista.Imagen is not null)
-	// 			{
-	// 				Imagen imagen = await ActualizarImagenAsync(maquina.Id, modeloVista.Imagen, NOMBRE_CARPETA_IMAGENES);
-	// 				if (imagen is null) throw new Exception(Messages.MensajeErrorGuardandoArchivo);
-	// 			}
-
-	// 			await _repoMaquinas.UpdateAsync(maquina);
-	// 			return RedirectToAction(nameof(Index));
-	// 		}
-
-	// 		[HttpGet]
-	// 		public async Task<IActionResult> Eliminar(string id)
-	// 		{
-	// 			Maquina maquina = await _repoMaquinas.ReadByIdAsync(Factory.SetGuid(id));
-	// 			maquina.SetImagen(await ObtenerImagen(maquina.Id));
-	// 			EditarMaquinaViewModel modeloVista = new(maquina);
-	// 			return View(modeloVista);
-	// 		}
-
-	// 		[HttpPost]
-	// 		public async Task<IActionResult> Eliminar(EditarMaquinaViewModel modelo)
-	// 		{
-	// 			Guid idMaquina = Factory.SetGuid(modelo.Id);
-	// 			await _repoMaquinas.DeleteAsync(idMaquina);
-	// 			await EliminarImagenAsync(idMaquina);
-	// 			return RedirectToAction(nameof(Index));
-	// 		}
-
-	// 		[HttpGet]
-	// 		public async Task<JsonResult> Detalle(string id)
-	// 		{
-	// 			Maquina maquina = await _repoMaquinas.ReadByIdAsync(Factory.SetGuid(id));
-	// 			maquina.SetImagen(await ObtenerImagen(maquina.Id));
-	// 			MaquinaViewModel modelo = new(maquina);
-	// 			return Json(modelo);
-	// 		}
-
 	private readonly IManager<TipoMaquina> _tiposMaquinaManager;
+	private readonly IManager<Maquina> _maquinasManager;
 	private readonly ILogger<MaquinasController> _logger;
 
+	[HttpGet]
+	public async Task<IActionResult> ListarMaquinas()
+	{
+		var maquinas = await _maquinasManager.ReadAllAsync();
+		var modeloVista = maquinas.Select(x => new MaquinaViewModel(x)).ToList();
+		return View(modeloVista);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> AgregarMaquina()
+	{
+		ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquinaManager.ReadAllAsync());
+		return View();
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> AgregarMaquina(AgregarMaquinaViewModel modeloVista)
+	{
+		if (!ModelState.IsValid)
+		{
+			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquinaManager.ReadAllAsync());
+			ModelState.AddModelError("", Messages.MensajeModeloInvalido);
+			return View(modeloVista);
+		}
+
+		await _maquinasManager.CreateAsync(modeloVista.Entidad(), CurrentUser);
+		return RedirectToAction(nameof(ListarMaquinas));
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> EditarMaquina(string id)
+	{
+		var maquina = await _maquinasManager.ReadByIdAsync(new Guid(id));
+		if (maquina == null) return NotFound();
+		ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquinaManager.ReadAllAsync());
+		var modelo = new EditarMaquinaViewModel(maquina);
+		return View(modelo);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> EditarMaquina(EditarMaquinaViewModel modeloVista)
+	{
+		if (!ModelState.IsValid)
+		{
+			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquinaManager.ReadAllAsync());
+			ModelState.AddModelError("", Messages.MensajeModeloInvalido);
+			return View(modeloVista);
+		}
+
+		await _maquinasManager.UpdateAsync(modeloVista.Entidad(), CurrentUser);
+		return RedirectToAction(nameof(Index));
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> EliminarMaquina(string id)
+	{
+		var maquina = await _maquinasManager.ReadByIdAsync(new Guid(id));
+		if (maquina == null) return NotFound();
+		EliminarMaquinaViewModel modeloVista = new(maquina);
+		return View(modeloVista);
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> EliminarMaquina(EliminarMaquinaViewModel modelo)
+	{
+		if (!ModelState.IsValid)
+		{
+			ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Maquina)));
+			return View(modelo);
+		}
+
+		await _maquinasManager.DeleteAsync(new Guid(modelo.Id));
+		return RedirectToAction(nameof(ListarMaquinas));
+	}
+
+	[HttpGet]
+	public async Task<JsonResult> Detalle(string id)
+	{
+		Maquina maquina = await _maquinasManager.ReadByIdAsync(new Guid(id));
+		var modelo = new MaquinaViewModel(maquina);
+		return Json(modelo);
+	}
+
 	public MaquinasController(IManager<TipoMaquina> tiposMaquinaManager,
+							  IManager<Maquina> maquinasManager,
 							  IDivisionTerritorialManager divisionTerritorialManager,
 							  ApplicationUserManager<ApplicationUser> userManager,
 							  RoleManager<ApplicationRole> roleManager,
@@ -161,6 +121,7 @@ public class MaquinasController : BaseController
 	: base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
 	{
 		_tiposMaquinaManager = tiposMaquinaManager;
+		_maquinasManager = maquinasManager;
 		_logger = logger;
 	}
 
