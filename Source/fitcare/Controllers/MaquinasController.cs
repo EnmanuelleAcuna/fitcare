@@ -76,7 +76,7 @@ public class MaquinasController : BaseController
 		}
 
 		await _maquinasManager.UpdateAsync(modeloVista.Entidad(), CurrentUser);
-		return RedirectToAction(nameof(Index));
+		return RedirectToAction(nameof(ListarMaquinas));
 	}
 
 	[HttpGet]
@@ -102,7 +102,7 @@ public class MaquinasController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<JsonResult> Detalle(string id)
+	public async Task<JsonResult> DetalleMaquina(string id)
 	{
 		Maquina maquina = await _maquinasManager.ReadByIdAsync(new Guid(id));
 		var modelo = new MaquinaViewModel(maquina);

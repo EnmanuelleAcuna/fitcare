@@ -57,7 +57,7 @@ public class MaquinasManager : IManager<Maquina>
 		record.Nombre = maquina.Nombre;
 		record.CodigoActivo = maquina.CodigoActivo;
 		record.Estado = maquina.Estado;
-		record.IdTipoMaquina = maquina.TipoMaquina.Id;
+		record.IdTipoMaquina = maquina.IdTipoMaquina;
 		record.FechaAdquisicion = maquina.FechaAdquisicion;
 
 		record.UpdatedBy = user;
