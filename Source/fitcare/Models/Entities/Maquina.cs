@@ -52,7 +52,10 @@ public class Maquina : Base
 	public Guid Id { get; private set; }
 	public string Codigo { get; set; }
 	public string Nombre { get; set; }
+
+	[Column("NumeroActivo")]
 	public string CodigoActivo { get; set; }
+
 	public bool Estado { get; set; }
 	public DateTime FechaAdquisicion { get; set; }
 

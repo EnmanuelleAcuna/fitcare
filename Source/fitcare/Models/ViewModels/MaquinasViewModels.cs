@@ -1,12 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
-using fitcare.Models.Extras;
-using Microsoft.AspNetCore.Http;
 
 namespace fitcare.Models.ViewModels;
 
