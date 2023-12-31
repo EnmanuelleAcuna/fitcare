@@ -1,13 +1,10 @@
-@* @model NuevaMaquinaViewModel
+@model AgregarMaquinaViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewBag.Title = "Máquinas";
 }
 
-<!-- ============================================================== -->
-<!-- Bread crumb -->
-<!-- ============================================================== -->
 <div class="page-breadcrumb">
     <div class="row">
         <div class="col-5 align-self-center">
@@ -21,7 +18,7 @@
                             <a href="@Url.Action("Administracion", "Home")">Administración</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="@Url.Action("Index")">Máquinas</a>
+                            <a href="@Url.Action("ListarMaquinas")">Máquinas</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">
                             Agregar
@@ -32,21 +29,13 @@
         </div>
     </div>
 </div>
-<!-- ============================================================== -->
-<!-- End Bread crumb -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- Container fluid  -->
-<!-- ============================================================== -->
+
 <div class="container-fluid">
-    <!-- ============================================================== -->
-    <!-- Start Page Content -->
-    <!-- ============================================================== -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    @using (Html.BeginForm("Nuevo", "Maquinas", FormMethod.Post, new { autocomplete = "off", enctype = "multipart/form-data" }))
+                    @using (Html.BeginForm("AgregarMaquina", "Maquinas", FormMethod.Post, new { autocomplete = "off", enctype = "multipart/form-data" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -75,9 +64,9 @@
 
                             <div class="col-sm-12 col-md-4">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.NumeroActivo)
-                                    @Html.TextBoxFor(model => model.NumeroActivo, "", new { @class = "form-control form-control-sm", placeholder = "Digite el número de activo de la máquina" })
-                                    @Html.ValidationMessageFor(model => model.NumeroActivo, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.CodigoActivo)
+                                    @Html.TextBoxFor(model => model.CodigoActivo, "", new { @class = "form-control form-control-sm", placeholder = "Digite el número de activo de la máquina" })
+                                    @Html.ValidationMessageFor(model => model.CodigoActivo, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
@@ -105,44 +94,12 @@
                                     @Html.EditorFor(model => model.Activo, "", new { @class = "form-control" })
                                 </div>
                             </div>
-
-                            <div class="col-sm-12 col-md-4">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.Imagen)
-                                    @Html.TextBoxFor(model => model.Imagen, new { @class = "form-control form-control-sm", type = "file" })
-                                    @Html.ValidationMessageFor(model => model.Imagen, "", new { @class = "text-danger d-block" })
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-2">
-                            <div class="col-sm-12">
-                                Grupos musculares
-                            </div>
-                            <div class="col-sm-12 mt-2">
-                                <div class="row">
-                                    @foreach (var GrupoMuscular in ViewBag.GruposMusculares)
-                                    {
-                                        <div class="col-sm-12 col-md-4 d-inline">
-                                            <div class="row">
-                                                <div class="col-1 d-inline">
-                                                    <input type="checkbox" id="G_@GrupoMuscular.Value" name="G_@GrupoMuscular.Value" />
-                                                </div>
-                                                <div class="clearfix"></div>
-                                                <div class="col-10">
-                                                    <label for="G_@GrupoMuscular.Value">@GrupoMuscular.Text</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
                         </div>
 
                         <div class="row mt-2">
                             <div class="col-12">
                                 <input value="Guardar" class="btn btn-sm btn-default" type="submit" />
-                                @Html.ActionLink("Regresar", "Index", null, null, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink("Regresar", "ListarMaquinas", null, null, new { @class = "btn btn-sm btn-secondary" })
                             </div>
                         </div>
                     }
@@ -150,15 +107,8 @@
             </div>
         </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- End Page Content -->
-    <!-- ============================================================== -->
 </div>
-<!-- ============================================================== -->
-<!-- End Container fluid  -->
-<!-- ============================================================== -->
+
 @section Scripts{
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-} *@
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
