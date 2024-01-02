@@ -72,7 +72,7 @@ public class Maquina : Base
 [Table("TIPOS_MAQUINA", Schema = "fitcare")]
 public class TipoMaquina : Base
 {
-	public TipoMaquina()
+	public TipoMaquina() : base()
 	{
 		Maquinas = new HashSet<Maquina>();
 	}
@@ -83,11 +83,15 @@ public class TipoMaquina : Base
 		Nombre = nombre;
 		Estado = estado;
 		Codigo = codigo;
+
+		Maquinas = new HashSet<Maquina>();
 	}
 
 	public TipoMaquina(Guid id)
 	{
 		Id = id;
+
+		Maquinas = new HashSet<Maquina>();
 	}
 
 	public Guid Id { get; set; }
