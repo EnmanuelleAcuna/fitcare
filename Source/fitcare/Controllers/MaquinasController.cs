@@ -24,6 +24,22 @@ public class MaquinasController : BaseController
 	private readonly IManager<Maquina> _maquinasManager;
 	private readonly ILogger<MaquinasController> _logger;
 
+	public MaquinasController(IManager<TipoMaquina> tiposMaquinaManager,
+						  IManager<Maquina> maquinasManager,
+						  IDivisionTerritorialManager divisionTerritorialManager,
+						  ApplicationUserManager<ApplicationUser> userManager,
+						  RoleManager<ApplicationRole> roleManager,
+						  IConfiguration configuration,
+						  IHttpContextAccessor contextAccesor,
+						  ILogger<MaquinasController> logger,
+						  IWebHostEnvironment environment)
+						  : base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
+	{
+		_tiposMaquinaManager = tiposMaquinaManager;
+		_maquinasManager = maquinasManager;
+		_logger = logger;
+	}
+
 	[HttpGet]
 	public async Task<IActionResult> ListarMaquinas()
 	{
@@ -107,22 +123,6 @@ public class MaquinasController : BaseController
 		Maquina maquina = await _maquinasManager.ReadByIdAsync(new Guid(id));
 		var modelo = new MaquinaViewModel(maquina);
 		return Json(modelo);
-	}
-
-	public MaquinasController(IManager<TipoMaquina> tiposMaquinaManager,
-							  IManager<Maquina> maquinasManager,
-							  IDivisionTerritorialManager divisionTerritorialManager,
-							  ApplicationUserManager<ApplicationUser> userManager,
-							  RoleManager<ApplicationRole> roleManager,
-							  IConfiguration configuration,
-							  IHttpContextAccessor contextAccesor,
-							  ILogger<MaquinasController> logger,
-							  IWebHostEnvironment environment)
-	: base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
-	{
-		_tiposMaquinaManager = tiposMaquinaManager;
-		_maquinasManager = maquinasManager;
-		_logger = logger;
 	}
 
 	[HttpGet]
