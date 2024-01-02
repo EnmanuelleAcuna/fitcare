@@ -1,17 +1,13 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Data;
-// using System.Linq;
-// using System.Threading.Tasks;
-// using fitcare.Models.Contracts;
-// using fitcare.Models.DataAccess.EntityFramework;
-// using fitcare.Models.Entities;
-// using Microsoft.EntityFrameworkCore;
-// using Microsoft.EntityFrameworkCore.Storage;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using fitcare.Models.Contracts;
+using fitcare.Models.Entities;
+using Microsoft.EntityFrameworkCore;
 
-// namespace fitcare.Models.DataAccess;
+namespace fitcare.Models.DataAccess;
 
-// public class DAOEjercicio : IDataCRUDBase<Ejercicio>
+// public class EjerciciosManager : IManager<Ejercicio>
 // {
 // 	private readonly Fitcare_DB_Context _dbContext;
 
@@ -149,55 +145,63 @@
 // 	}
 // }
 
-// public class DAOTipoEjercicio : IDataCRUDBase<TipoEjercicio>
-// {
-// 	private readonly Fitcare_DB_Context _dbContext;
+public class TiposEjercicioManager : IManager<TipoEjercicio>
+{
+	private readonly FitcareDBContext _dbContext;
 
-// 	public DAOTipoEjercicio(Fitcare_DB_Context dbContext)
-// 	{
-// 		_dbContext = dbContext;
-// 	}
+	public TiposEjercicioManager(FitcareDBContext dbContext) => _dbContext = dbContext;
 
-// 	public async Task<IList<TipoEjercicio>> ReadAllAsync()
-// 	{
-// 		IList<TiposEjercicio> listaTiposEjercicioBD = await _dbContext.TiposEjercicio.ToListAsync();
-// 		return listaTiposEjercicioBD.Select(x => x.ConvertDBModelToDomain()).ToList();
-// 	}
+	public async Task<IList<TipoEjercicio>> ReadAllAsync()
+	{
+		var tiposEjercicio = await _dbContext.TiposEjercicio.ToListAsync();
+		return tiposEjercicio ?? new List<TipoEjercicio>();
+	}
 
-// 	public async Task<TipoEjercicio> ReadByIdAsync(Guid id)
-// 	{
-// 		TiposEjercicio tipoEjercicioBD = await _dbContext.TiposEjercicio.FindAsync(id);
-// 		return tipoEjercicioBD.ConvertDBModelToDomain();
-// 	}
+	public async Task<TipoEjercicio> ReadByIdAsync(Guid id)
+	{
+		TipoEjercicio tipoEjercicio = await _dbContext.TiposEjercicio.FindAsync(id);
 
-// 	public async Task CreateAsync(TipoEjercicio tipoEjercicio)
-// 	{
-// 		TiposEjercicio tipoEjercicioBD = new(tipoEjercicio);
-// 		_dbContext.TiposEjercicio.Add(tipoEjercicioBD);
-// 		_dbContext.Entry(tipoEjercicioBD).State = EntityState.Added;
-// 		await _dbContext.SaveChangesAsync();
-// 	}
+		if (tipoEjercicio == null)
+			throw new KeyNotFoundException($"No se encontró el tipo  de ejercicio con el id {id}");
 
-// 	public async Task UpdateAsync(TipoEjercicio tipoEjercicio)
-// 	{
-// 		TiposEjercicio tipoEjercicioBD = await _dbContext.TiposEjercicio.FindAsync(tipoEjercicio.Id);
+		return tipoEjercicio;
+	}
 
-// 		// Actualizar campos necesarios en BD
-// 		tipoEjercicioBD.Codigo = tipoEjercicio.Codigo;
-// 		tipoEjercicioBD.Nombre = tipoEjercicio.Nombre;
-// 		tipoEjercicioBD.Estado = tipoEjercicio.Estado;
+	public async Task CreateAsync(TipoEjercicio tipoEjercicio, string user)
+	{
+		tipoEjercicio.DateCreated = DateTime.Now;
+		tipoEjercicio.CreatedBy = user;
 
-// 		_dbContext.TiposEjercicio.Update(tipoEjercicioBD);
-// 		_dbContext.Entry(tipoEjercicioBD).State = EntityState.Modified;
-// 		await _dbContext.SaveChangesAsync();
-// 	}
+		await _dbContext.AddAsync(tipoEjercicio);
+		await _dbContext.SaveChangesAsync();
+	}
 
-// 	public async Task DeleteAsync(Guid id)
-// 	{
-// 		TiposEjercicio tipoEjercicioBD = await _dbContext.TiposEjercicio.FindAsync(id);
+	public async Task UpdateAsync(TipoEjercicio tipoEjercicio, string user)
+	{
+		TipoEjercicio record = await ReadByIdAsync(tipoEjercicio.Id);
 
-// 		_dbContext.TiposEjercicio.Remove(tipoEjercicioBD);
-// 		_dbContext.Entry(tipoEjercicioBD).State = EntityState.Deleted;
-// 		await _dbContext.SaveChangesAsync();
-// 	}
-// }
+		if (record == null)
+			throw new KeyNotFoundException($"No se encontró el tipo  de ejercicio con el id {tipoEjercicio.Id}");
+
+		record.Codigo = tipoEjercicio.Codigo;
+		record.Nombre = tipoEjercicio.Nombre;
+		record.Estado = tipoEjercicio.Estado;
+
+		record.DateUpdated = DateTime.Now;
+		record.UpdatedBy = user;
+
+		_dbContext.Update(record);
+		await _dbContext.SaveChangesAsync();
+	}
+
+	public async Task DeleteAsync(Guid id)
+	{
+		TipoEjercicio record = await ReadByIdAsync(id);
+
+		if (record == null)
+			throw new KeyNotFoundException($"No se encontró el tipo  de ejercicio con el id {id}");
+
+		_dbContext.Remove(record);
+		await _dbContext.SaveChangesAsync();
+	}
+}

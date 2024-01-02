@@ -13,7 +13,7 @@ namespace fitcare.Models.DataAccess.EntityFramework
         public DateTime? DateUpdated { get; set; }
         public string UpdatedBy { get; set; }
 
-        public virtual Ejercicios IdEjercicioNavigation { get; set; }
+        // public virtual Ejercicios IdEjercicioNavigation { get; set; }
         public virtual GruposMusculares IdGrupoMuscularNavigation { get; set; }
     }
 }

@@ -1,14 +1,14 @@
-@model IEnumerable<TipoMaquinaViewModel>
+﻿@model IEnumerable<TipoEjercicioViewModel>
 
 @{
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-	ViewBag.Title = "Tipos de máquina";
+	ViewBag.Title = "Tipos de ejercicio";
 }
 
 <div class="page-breadcrumb">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h4 class="page-title">Lista de tipos de máquina</h4>
+			<h4 class="page-title">Lista de tipos de ejercicio</h4>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -18,7 +18,7 @@
 							<a href="@Url.Action("Administracion", "Home")">Administración</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
-							Tipos de máquina
+							Tipos de ejercicio
 						</li>
 					</ol>
 				</nav>
@@ -32,7 +32,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="AgregarTipoMaquina" class="btn btn-sm btn-default">Agregar tipo de máquina</a>
+					<a asp-action="AgregarTipoEjercicio" class="btn btn-sm btn-default">Agregar tipo de ejercicio</a>
 
 					<hr />
 
@@ -40,27 +40,28 @@
 						<table class="table table-hover table-sm">
 							<thead>
 								<tr>
+									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Codigo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Estado)</th>
-									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Codigo)</th>
 									<th>Acciones</th>
 								</tr>
 							</thead>
 							<tbody>
-								@foreach (var TipoMaquina in Model)
+								@foreach (var TipoEjercicio in Model)
 								{
 									<tr>
-										<td>@TipoMaquina.Nombre</td>
-										<td>@TipoMaquina.Estado</td>
-										<td>@TipoMaquina.Codigo</td>
+										<td>@TipoEjercicio.Codigo</td>
+										<td>@TipoEjercicio.Nombre</td>
+										<td>@TipoEjercicio.Estado</td>
+
 										<td>
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
 												<button id="BtnDetalle" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ModalDetalle"
-													data-idtipomaquina="@TipoMaquina.IdTipoMaquina">Detalle</button>
-												<a class="btn btn-sm btn-secondary" asp-controller="Maquinas" asp-action="EditarTipoMaquina"
-													asp-route-id="@TipoMaquina.IdTipoMaquina">Modificar</a>
-												<a class="btn btn-sm btn-danger" asp-controller="Maquinas" asp-action="EliminarTipoMaquina"
-													asp-route-id="@TipoMaquina.IdTipoMaquina">Eliminar</a>
+													data-idtipoejercicio="@TipoEjercicio.IdTipoEjercicio">Detalle</button>
+												<a class="btn btn-sm btn-secondary" asp-controller="Ejercicios" asp-action="EditarTipoEjercicio"
+													asp-route-id="@TipoEjercicio.IdTipoEjercicio">Modificar</a>
+												<a class="btn btn-sm btn-danger" asp-controller="Ejercicios" asp-action="EliminarTipoEjercicio"
+													asp-route-id="@TipoEjercicio.IdTipoEjercicio">Eliminar</a>
 											</div>
 										</td>
 									</tr>
@@ -74,21 +75,21 @@
 	</div>
 </div>
 
-<partial name="_DetalleTipoMaquina" />
+<partial name="_DetalleTipoEjercicio" />
 
 @section Scripts {
 	<script type="text/javascript">
 		$('#ModalDetalle').on('show.bs.modal', function (event)
 		{
 			var button = $(event.relatedTarget); // Button that triggered the modal
-			var IdTipoMaquina = button.data('idtipomaquina'); // Extract info from data-* attributes
+			var IdTipoEjercicio = button.data('idtipoejercicio'); // Extract info from data-* attributes
 
 			$("#ModalDetalle").find('.modal-title .nombre').text("Cargando...");
 
 			// Initiate an AJAX request here(and then do the updating in a callback).
 			$.ajax({
-				url: '@Url.Action("DetalleTipoMaquina")',
-				data: { Id: IdTipoMaquina },
+				url: '@Url.Action("DetalleTipoEjercicio")',
+				data: { Id: IdTipoEjercicio },
 				dataType: "json",
 				type: 'GET',
 				success: handleData,
@@ -98,11 +99,13 @@
 
 		function handleData(data)
 		{
+			console.log(data);
+
 			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 			var modal = $("#ModalDetalle");
+			modal.find('.modal-body .codigo').text(data.codigo);
 			modal.find('.modal-title .nombre').text(data.nombre);
 			modal.find('.modal-body .estado').text(data.estado);
-			modal.find('.modal-body .codigo').text(data.codigo);
 			modal.find('.modal-body .creado-por').text(data.creadoPor);
 			modal.find('.modal-body .creado-el').text(data.creadoEl);
 			modal.find('.modal-body .modificado-por').text(data.editadoPor);
@@ -113,9 +116,9 @@
 		{
 			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 			var modal = $("#ModalDetalle");
+			modal.find('.modal-body .codigo').text('N/A');
 			modal.find('.modal-title .nombre').text("Error al obtener la información");
 			modal.find('.modal-body .estado').text('N/A');
-			modal.find('.modal-body .codigo').text('N/A');
 			modal.find('.modal-body .creado-por').text('N/A');
 			modal.find('.modal-body .creado-el').text('N/A');
 			modal.find('.modal-body .modificado-por').text('N/A');

@@ -25,15 +25,15 @@ public class MaquinasController : BaseController
 	private readonly ILogger<MaquinasController> _logger;
 
 	public MaquinasController(IManager<TipoMaquina> tiposMaquinaManager,
-						  IManager<Maquina> maquinasManager,
-						  IDivisionTerritorialManager divisionTerritorialManager,
-						  ApplicationUserManager<ApplicationUser> userManager,
-						  RoleManager<ApplicationRole> roleManager,
-						  IConfiguration configuration,
-						  IHttpContextAccessor contextAccesor,
-						  ILogger<MaquinasController> logger,
-						  IWebHostEnvironment environment)
-						  : base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
+						  	  IManager<Maquina> maquinasManager,
+						  	  IDivisionTerritorialManager divisionTerritorialManager,
+						  	  ApplicationUserManager<ApplicationUser> userManager,
+						  	  RoleManager<ApplicationRole> roleManager,
+						  	  IConfiguration configuration,
+						  	  IHttpContextAccessor contextAccesor,
+						  	  ILogger<MaquinasController> logger,
+						  	  IWebHostEnvironment environment)
+							  : base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
 	{
 		_tiposMaquinaManager = tiposMaquinaManager;
 		_maquinasManager = maquinasManager;

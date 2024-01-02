@@ -71,11 +71,11 @@ class Program
 		builder.Services.AddScoped<IContactoManager<Contacto>, ContactosManager>();
 		builder.Services.AddTransient<IManager<TipoMaquina>, TiposMaquinaManager>();
 		builder.Services.AddTransient<IManager<Maquina>, MaquinasManager>();
+		builder.Services.AddTransient<IManager<TipoEjercicio>, TiposEjercicioManager>();
 		// builder.Services.AddTransient<IRepository<Cliente>, DAOCliente>();
 		// builder.Services.AddTransient<IRepository<Instructor>, DAOInstructor>();
 		// builder.Services.AddTransient<IRepository<Accesorio>, DAOAccesorio>();
 		// builder.Services.AddTransient<IRepository<GrupoMuscular>, DAOGrupoMuscular>();
-		// builder.Services.AddTransient<IRepository<TipoEjercicio>, DAOTipoEjercicio>();
 		// builder.Services.AddTransient<IRepository<Ejercicio>, DAOEjercicio>();
 		// builder.Services.AddTransient<IRepository<TipoMedida>, DAOTipoMedida>();
 		// builder.Services.AddTransient<IRepository<Rutina>, DAORutina>();
