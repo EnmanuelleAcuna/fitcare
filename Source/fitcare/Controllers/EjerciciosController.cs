@@ -103,7 +103,7 @@ public class EjerciciosController : BaseController
 	}
 
 	[HttpPost]
-	public async Task<ActionResult> Eliminar(EliminarEjercicioViewModel modelo)
+	public async Task<ActionResult> EliminarEjercicio(EliminarEjercicioViewModel modelo)
 	{
 		if (!ModelState.IsValid)
 		{

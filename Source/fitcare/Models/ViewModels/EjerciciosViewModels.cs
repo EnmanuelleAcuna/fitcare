@@ -6,7 +6,7 @@ namespace fitcare.Models.ViewModels;
 
 public class EjercicioViewModel : BaseViewModel
 {
-	public EjercicioViewModel(Ejercicio ejercicio)
+	public EjercicioViewModel(Ejercicio ejercicio) : base(ejercicio)
 	{
 		Id = ejercicio.Id.ToString();
 		Codigo = ejercicio.Codigo;

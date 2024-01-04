@@ -1,13 +1,10 @@
-@* @model EditarEjercicioViewModel
+@model EditarEjercicioViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewBag.Title = "Ejercicios";
 }
 
-<!-- ============================================================== -->
-<!-- Bread crumb -->
-<!-- ============================================================== -->
 <div class="page-breadcrumb">
     <div class="row">
         <div class="col-5 align-self-center">
@@ -21,7 +18,7 @@
                             <a href="@Url.Action("Administracion", "Home")">Administración</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="@Url.Action("Inicio")">Ejercicios</a>
+                            <a href="@Url.Action("ListarEjercicios")">Ejercicios</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">
                             Modificar
@@ -32,21 +29,13 @@
         </div>
     </div>
 </div>
-<!-- ============================================================== -->
-<!-- End Bread crumb -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- Container fluid  -->
-<!-- ============================================================== -->
+
 <div class="container-fluid">
-    <!-- ============================================================== -->
-    <!-- Start Page Content -->
-    <!-- ============================================================== -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    @using (Html.BeginForm("Editar", "Ejercicios", FormMethod.Post, new { autocomplete = "off" }))
+                    @using (Html.BeginForm("EditarEjercicio", "Ejercicios", FormMethod.Post, new { autocomplete = "off" }))
                     {
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(model => model.Id)
@@ -76,9 +65,9 @@
 
                             <div class="col-sm-12 col-md-3">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.TipoEjercicio)
-                                    @Html.DropDownListFor(model => model.TipoEjercicio, new List<SelectListItem>(ViewBag.ListaTiposEjercicio), "Seleccione un tipo de ejercicio", new { @class = "form-control form-control-sm" })
-                                    @Html.ValidationMessageFor(model => model.TipoEjercicio)
+                                    @Html.LabelFor(model => model.IdTipoEjercicio)
+                                    @Html.DropDownListFor(model => model.IdTipoEjercicio, new List<SelectListItem>(ViewBag.ListaTiposEjercicio), "Seleccione un tipo de ejercicio", new { @class = "form-control form-control-sm" })
+                                    @Html.ValidationMessageFor(model => model.IdTipoEjercicio)
                                 </div>
                             </div>
 
@@ -91,82 +80,10 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-sm-12">
-                                Accesorios
-                            </div>
-                            <div class="col-sm-12 mt-2">
-                                <div class="row">
-                                    @foreach (var Accesorio in ViewBag.Accesorios)
-                                    {
-                                        <div class="col-sm-12 col-md-3 d-inline">
-                                            <div class="row">
-                                                <div class="col-1 d-inline">
-                                                    <input type="checkbox" id="A_@Accesorio.Value" name="A_@Accesorio.Value" value="@Accesorio.Value" />
-                                                </div>
-                                                <div class="clearfix"></div>
-                                                <div class="col-10">
-                                                    <label for="A_@Accesorio.Value">@Accesorio.Text</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-2">
-                            <div class="col-sm-12">
-                                Máquinas
-                            </div>
-                            <div class="col-sm-12 mt-2">
-                                <div class="row">
-                                    @foreach (var Maquina in ViewBag.Maquinas)
-                                    {
-                                        <div class="col-sm-12 col-md-3 d-inline">
-                                            <div class="row">
-                                                <div class="col-1 d-inline">
-                                                    <input type="checkbox" id="M_@Maquina.Value" name="M_@Maquina.Value" value="@Maquina.Value" />
-                                                </div>
-                                                <div class="clearfix"></div>
-                                                <div class="col-10">
-                                                    <label for="M_@Maquina.Value">@Maquina.Text</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row mt-2">
-                            <div class="col-sm-12">
-                                Grupos musculares
-                            </div>
-                            <div class="col-sm-12 mt-2">
-                                <div class="row">
-                                    @foreach (var GrupoMuscular in ViewBag.GruposMusculares)
-                                    {
-                                        <div class="col-sm-12 col-md-3 d-inline">
-                                            <div class="row">
-                                                <div class="col-1 d-inline">
-                                                    <input type="checkbox" id="G_@GrupoMuscular.Value" name="G_@GrupoMuscular.Value" value="@GrupoMuscular.Value" />
-                                                </div>
-                                                <div class="clearfix"></div>
-                                                <div class="col-10">
-                                                    <label for="G_@GrupoMuscular.Value">@GrupoMuscular.Text</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="row mt-2">
                             <div class="col-12">
                                 <input value="Guardar" class="btn btn-sm btn-default" type="submit" />
-                                @Html.ActionLink("Regresar", "Inicio", null, null, new { @class = "btn btn-sm btn-secondary" })
+                                @Html.ActionLink("Regresar", "ListarEjercicios", null, null, new { @class = "btn btn-sm btn-secondary" })
                             </div>
                         </div>
                     }
@@ -174,59 +91,8 @@
             </div>
         </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- End Page Content -->
-    <!-- ============================================================== -->
 </div>
-<!-- ============================================================== -->
-<!-- End Container fluid  -->
-<!-- ============================================================== -->
+
 @section Scripts {
-    @{
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        MarcarCheckbox();
-    });
-
-    function MarcarCheckbox() {
-        const AccesoriosEjercicio = @Html.Raw(@Json.Serialize(@Model.Accesorios));
-        const MaquinasEjercicio = @Html.Raw(@Json.Serialize(@Model.Maquinas));
-        const GruposMuscularesEjercicio = @Html.Raw(@Json.Serialize(@Model.GruposMusculares));
-
-        // Recorrer todos los elementos HTML que son CheckBox
-        $("input[type=checkbox]").each(function () {
-            var IdCheckbox = this.value;
-
-            // Marcar los accesorios
-            $.each(AccesoriosEjercicio, function (index, value) {
-                var AccesorioEjercicio = value.id;
-
-                if (IdCheckbox == AccesorioEjercicio) {
-                    $('#A_' + IdCheckbox).prop("checked", true);
-                }
-            });
-
-            // Marcar las máquinas
-            $.each(MaquinasEjercicio, function (index, value) {
-                var MaquinaEjercicio = value.id;
-
-                if (IdCheckbox == MaquinaEjercicio) {
-                    $('#M_' + IdCheckbox).prop("checked", true);
-                }
-            });
-
-            // Marcar los grupos musculares
-            $.each(GruposMuscularesEjercicio, function (index, value) {
-                var GrupoMuscularEjercicio = value.id;
-
-                if (IdCheckbox == GrupoMuscularEjercicio) {
-                    $('#G_' + IdCheckbox).prop("checked", true);
-                }
-            });
-        });
-    }
-</script>
-} *@

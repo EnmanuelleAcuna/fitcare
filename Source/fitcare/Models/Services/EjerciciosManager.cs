@@ -50,15 +50,15 @@ public class EjerciciosManager : IManager<Ejercicio>
 	{
 		var record = await ReadByIdAsync(ejercicio.Id);
 
-		ejercicio.Codigo = ejercicio.Codigo;
-		ejercicio.Nombre = ejercicio.Nombre;
-		ejercicio.Estado = ejercicio.Estado;
-		ejercicio.IdTipoEjercicio = ejercicio.TipoEjercicio.Id;
+		record.Codigo = ejercicio.Codigo;
+		record.Nombre = ejercicio.Nombre;
+		record.Estado = ejercicio.Estado;
+		record.IdTipoEjercicio = ejercicio.IdTipoEjercicio;
 
 		record.UpdatedBy = user;
 		record.DateUpdated = DateTime.Now;
 
-		_dbContext.Update(ejercicio);
+		_dbContext.Update(record);
 		await _dbContext.SaveChangesAsync();
 	}
 
