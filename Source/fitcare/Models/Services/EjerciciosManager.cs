@@ -7,143 +7,69 @@ using Microsoft.EntityFrameworkCore;
 
 namespace fitcare.Models.DataAccess;
 
-// public class EjerciciosManager : IManager<Ejercicio>
-// {
-// 	private readonly Fitcare_DB_Context _dbContext;
+public class EjerciciosManager : IManager<Ejercicio>
+{
+	private readonly FitcareDBContext _dbContext;
+	private readonly IManager<TipoEjercicio> _tiposEjercicioManager;
 
-// 	public DAOEjercicio(Fitcare_DB_Context dbContext)
-// 	{
-// 		_dbContext = dbContext;
-// 	}
+	public EjerciciosManager(FitcareDBContext dbContext, IManager<TipoEjercicio> tiposEjercicioManager)
+	{
+		_dbContext = dbContext;
+		_tiposEjercicioManager = tiposEjercicioManager;
+	}
 
-// 	public async Task<IList<Ejercicio>> ReadAllAsync()
-// 	{
-// 		IList<Ejercicios> listaEjerciciosBD = await _dbContext.Ejercicios.Include(z => z.IdTipoEjercicioNavigation)
-// 																		 .Include(g => g.IdGrupoMuscular)
-// 																		 .Include(x => x.IdAccesorio)
-// 																		 .Include(y => y.IdMaquina).ThenInclude(tm => tm.IdTipoMaquinaNavigation)
-// 																		 .ToListAsync();
-// 		return listaEjerciciosBD.Select(x => x.ConvertDBModelToDomain()).ToList();
-// 	}
+	public async Task<IList<Ejercicio>> ReadAllAsync()
+	{
+		var ejercicios = await _dbContext.Ejercicios.Include(z => z.TipoEjercicio).ToListAsync();
+		return ejercicios ?? new List<Ejercicio>();
+	}
 
-// 	public async Task<Ejercicio> ReadByIdAsync(Guid id)
-// 	{
-// 		Ejercicios ejercicioBD = await _dbContext.Ejercicios.Where(x => x.Id.Equals(id))
-// 															.Include(z => z.IdTipoEjercicioNavigation)
-// 															.Include(g => g.IdGrupoMuscular)
-// 															.Include(x => x.IdAccesorio)
-// 															.Include(y => y.IdMaquina).ThenInclude(tm => tm.IdTipoMaquinaNavigation)
-// 															.FirstOrDefaultAsync();
-// 		return ejercicioBD.ConvertDBModelToDomain();
-// 	}
+	public async Task<Ejercicio> ReadByIdAsync(Guid id)
+	{
+		var ejercicio = await _dbContext.Ejercicios.Include(z => z.TipoEjercicio).FirstOrDefaultAsync(z => z.Id == id);
+		return ejercicio ?? throw new KeyNotFoundException($"No se encontró un ejercicio con el id {id}");
+	}
 
-// 	public async Task CreateAsync(Ejercicio ejercicio)
-// 	{
-// 		using IDbContextTransaction transaction = _dbContext.Database.BeginTransaction();
+	public async Task CreateAsync(Ejercicio ejercicio, string user)
+	{
+		var existingTipoEjercicio = await _tiposEjercicioManager.ReadByIdAsync(ejercicio.IdTipoEjercicio);
 
-// 		Ejercicios EjercicioBD = new(ejercicio);
-// 		_dbContext.Ejercicios.Add(EjercicioBD);
+		if (existingTipoEjercicio == null)
+			throw new Exception($"El tipo de ejercicio {ejercicio.IdTipoEjercicio} para el ejercicio no se ha encontrado en la BD.");
+		else
+			ejercicio.TipoEjercicio = existingTipoEjercicio;
 
-// 		_dbContext.Entry(EjercicioBD).State = EntityState.Added;
+		ejercicio.CreatedBy = user;
+		ejercicio.DateCreated = DateTime.Now;
 
-// 		AsignarAccesorios(ejercicio, EjercicioBD);
-// 		AsignarMaquinas(ejercicio, EjercicioBD);
-// 		AsignarGruposMusculares(ejercicio, EjercicioBD);
+		await _dbContext.AddAsync(ejercicio);
+		await _dbContext.SaveChangesAsync();
+	}
 
-// 		await _dbContext.SaveChangesAsync();
-// 		transaction.Commit();
-// 	}
+	public async Task UpdateAsync(Ejercicio ejercicio, string user)
+	{
+		var record = await ReadByIdAsync(ejercicio.Id);
 
-// 	public async Task UpdateAsync(Ejercicio ejercicio)
-// 	{
-// 		using IDbContextTransaction transaction = _dbContext.Database.BeginTransaction();
+		ejercicio.Codigo = ejercicio.Codigo;
+		ejercicio.Nombre = ejercicio.Nombre;
+		ejercicio.Estado = ejercicio.Estado;
+		ejercicio.IdTipoEjercicio = ejercicio.TipoEjercicio.Id;
 
-// 		Ejercicios ejercicioBD = await _dbContext.Ejercicios.Where(x => x.Id.Equals(ejercicio.Id))
-// 																.Include(z => z.IdTipoEjercicioNavigation)
-// 																.Include(g => g.IdGrupoMuscular)
-// 																.Include(x => x.IdAccesorio)
-// 																.Include(y => y.IdMaquina).ThenInclude(tm => tm.IdTipoMaquinaNavigation)
-// 																.FirstOrDefaultAsync();
+		record.UpdatedBy = user;
+		record.DateUpdated = DateTime.Now;
 
-// 		// Actualizar campos necesarios en BD
-// 		ejercicioBD.Codigo = ejercicio.Codigo;
-// 		ejercicioBD.Nombre = ejercicio.Nombre;
-// 		ejercicioBD.Estado = ejercicio.Estado;
-// 		ejercicioBD.IdTipoEjercicio = ejercicio.TipoEjercicio.Id;
+		_dbContext.Update(ejercicio);
+		await _dbContext.SaveChangesAsync();
+	}
 
-// 		_dbContext.Ejercicios.Update(ejercicioBD);
+	public async Task DeleteAsync(Guid id)
+	{
+		var record = await ReadByIdAsync(id);
 
-// 		_dbContext.Entry(ejercicioBD).State = EntityState.Modified;
-
-// 		AsignarAccesorios(ejercicio, ejercicioBD);
-// 		AsignarMaquinas(ejercicio, ejercicioBD);
-// 		AsignarGruposMusculares(ejercicio, ejercicioBD);
-
-// 		await _dbContext.SaveChangesAsync();
-// 		transaction.Commit();
-// 	}
-
-// 	public async Task DeleteAsync(Guid id)
-// 	{
-// 		using IDbContextTransaction transaction = _dbContext.Database.BeginTransaction();
-
-// 		Ejercicios ejercicioBD = await _dbContext.Ejercicios.Where(x => x.Id.Equals(id))
-// 																.Include(z => z.IdTipoEjercicioNavigation)
-// 																.Include(g => g.IdGrupoMuscular)
-// 																.Include(x => x.IdAccesorio)
-// 																.Include(y => y.IdMaquina).ThenInclude(tm => tm.IdTipoMaquinaNavigation)
-// 																.FirstOrDefaultAsync();
-
-// 		ejercicioBD.IdAccesorio.Clear();
-// 		ejercicioBD.IdMaquina.Clear();
-// 		ejercicioBD.IdGrupoMuscular.Clear();
-
-// 		_dbContext.Ejercicios.Remove(ejercicioBD);
-
-// 		_dbContext.Entry(ejercicioBD).State = EntityState.Deleted;
-
-// 		await _dbContext.SaveChangesAsync();
-// 		transaction.Commit();
-// 	}
-
-// 	internal void AsignarAccesorios(Ejercicio ejercicio, Ejercicios ejercicioBD)
-// 	{
-// 		// Limpiar los accesorios existentes cuando se está modificando el ejercicio
-// 		if (_dbContext.Entry(ejercicioBD).State.Equals(EntityState.Modified)) ejercicioBD.IdAccesorio.Clear();
-
-// 		// Recorrer la lista de accesorios relacionados que contiene la entidad y buscar cada accesorio y agregarlo a la relacion con ejercicio
-// 		foreach (Accesorio accesorio in ejercicio.Accesorios)
-// 		{
-// 			Accesorios accesorioBD = _dbContext.Accesorios.Find(accesorio.Id);
-// 			if (accesorioBD != null) ejercicioBD.IdAccesorio.Add(accesorioBD);
-// 		}
-// 	}
-
-// 	internal void AsignarMaquinas(Ejercicio ejercicio, Ejercicios ejercicioBD)
-// 	{
-// 		// Limpiar las maquinas existentes cuando se está modificando el ejercicio
-// 		if (_dbContext.Entry(ejercicioBD).State.Equals(EntityState.Modified)) ejercicioBD.IdMaquina.Clear();
-
-// 		// Recorrer la lista de máquinas relacionadss que contiene la entidad y buscar cada maquina y agregarlo a la relacion con ejercicio
-// 		foreach (var maquina in ejercicio.Maquinas)
-// 		{
-// 			Maquinas maquinaBD = _dbContext.Maquinas.Find(maquina.Id);
-// 			if (maquinaBD != null) ejercicioBD.IdMaquina.Add(maquinaBD);
-// 		}
-// 	}
-
-// 	internal void AsignarGruposMusculares(Ejercicio ejercicio, Ejercicios ejercicioBD)
-// 	{
-// 		// Limpiar los grupos musuclares existentes cuando se está modificando el ejercicio
-// 		if (_dbContext.Entry(ejercicioBD).State.Equals(EntityState.Modified)) ejercicioBD.IdGrupoMuscular.Clear();
-
-// 		foreach (GrupoMuscular grupoMuscular in ejercicio.GruposMusculares)
-// 		{
-// 			GruposMusculares grupoMuscularBD = _dbContext.GruposMusculares.Find(grupoMuscular.Id);
-// 			if (grupoMuscularBD != null) ejercicioBD.IdGrupoMuscular.Add(grupoMuscularBD);
-// 		}
-// 	}
-// }
+		_dbContext.Remove(record);
+		await _dbContext.SaveChangesAsync();
+	}
+}
 
 public class TiposEjercicioManager : IManager<TipoEjercicio>
 {

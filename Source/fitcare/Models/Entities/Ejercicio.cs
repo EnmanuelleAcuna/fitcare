@@ -8,40 +8,52 @@ namespace fitcare.Models.Entities;
 [Table("EJERCICIOS", Schema = "fitcare")]
 public class Ejercicio : Base
 {
+	public Ejercicio() : base()
+	{
+		//DetalleRutina = new HashSet<DetalleRutina>();
+	}
+
+	public Ejercicio(Guid id, string codigo, string nombre, bool estado, TipoEjercicio tipoEjercicio)
+	{
+		Id = id;
+		Codigo = codigo;
+		Nombre = nombre;
+		Estado = estado;
+
+		TipoEjercicio = tipoEjercicio;
+		IdTipoEjercicio = tipoEjercicio.Id;
+
+		//DetalleRutina = new HashSet<DetalleRutina>();
+	}
+
+	public Ejercicio(Guid id, string codigo, string nombre, bool estado, Guid idTipoEjercicio)
+	{
+		Id = id;
+		Codigo = codigo;
+		Nombre = nombre;
+		Estado = estado;
+
+		IdTipoEjercicio = idTipoEjercicio;
+
+		//DetalleRutina = new HashSet<DetalleRutina>();
+	}
+
+	public Ejercicio(Guid id) => Id = id;
+
 	public Guid Id { get; set; }
 	public string Codigo { get; set; }
 	public string Nombre { get; set; }
 	public bool Estado { get; set; }
 
+	[ForeignKey(nameof(TipoEjercicio))]
+	[Column("Id_Tipo_Ejercicio")]
+	public Guid IdTipoEjercicio { get; set; }
 	public TipoEjercicio TipoEjercicio { get; set; }
-	public IList<Maquina> Maquinas { get; set; }
-	public IList<GrupoMuscular> GruposMusculares { get; set; }
+
+	// public virtual ICollection<DetalleRutina> DetalleRutina { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
-
-// public partial class Ejercicios
-// {
-// 	public Ejercicios()
-// 	{
-// 		DetalleRutina = new HashSet<DetalleRutina>();
-// 		GruposMuscularesEjercicio = new HashSet<GruposMuscularesEjercicio>();
-// 	}
-
-// 	public Guid Id { get; set; }
-// 	public Guid IdTipoEjercicio { get; set; }
-// 	public string Codigo { get; set; }
-// 	public string Nombre { get; set; }
-// 	public bool Estado { get; set; }
-// 	public DateTime DateCreated { get; set; }
-// 	public string CreatedBy { get; set; }
-// 	public DateTime? DateUpdated { get; set; }
-// 	public string UpdatedBy { get; set; }
-
-// 	public virtual TiposEjercicio IdTipoEjercicioNavigation { get; set; }
-// 	public virtual ICollection<DetalleRutina> DetalleRutina { get; set; }
-// 	public virtual ICollection<GruposMuscularesEjercicio> GruposMuscularesEjercicio { get; set; }
-// }
 
 [Table("TIPOS_EJERCICIO", Schema = "fitcare")]
 public class TipoEjercicio : Base

@@ -120,8 +120,6 @@ public static class Validators
 		}
 
 		ValidateTipoEjercicio(ejercicio.TipoEjercicio);
-		ValidateList(ejercicio.GruposMusculares, nameof(ejercicio.GruposMusculares));
-		ValidateList(ejercicio.Maquinas, nameof(ejercicio.Maquinas));
 	}
 
 	public static void ValidateTipoMedida(TipoMedida tipoMedida)

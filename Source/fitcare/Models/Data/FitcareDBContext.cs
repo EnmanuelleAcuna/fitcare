@@ -15,9 +15,9 @@ public class FitcareDBContext : DbContext
 	public virtual DbSet<TipoMaquina> TiposMaquina { get; set; }
 	public virtual DbSet<Maquina> Maquinas { get; set; }
 	public virtual DbSet<TipoEjercicio> TiposEjercicio { get; set; }
+	public virtual DbSet<Ejercicio> Ejercicios { get; set; }
 	// public virtual DbSet<DetalleMedidas> DetalleMedidas { get; set; }
 	// public virtual DbSet<DetalleRutina> DetalleRutina { get; set; }
-	// public virtual DbSet<Ejercicios> Ejercicios { get; set; }
 	// public virtual DbSet<GruposMusculares> GruposMusculares { get; set; }
 	// public virtual DbSet<GruposMuscularesEjercicio> GruposMuscularesEjercicio { get; set; }
 	// public virtual DbSet<Rutinas> Rutinas { get; set; }

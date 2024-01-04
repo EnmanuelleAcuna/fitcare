@@ -27,7 +27,7 @@ public class MaquinasManager : IManager<Maquina>
 	public async Task<Maquina> ReadByIdAsync(Guid id)
 	{
 		var maquina = await _dbContext.Maquinas.Include(m => m.TipoMaquina).FirstAsync(m => m.Id == id);
-		return maquina ?? throw new KeyNotFoundException($"No se encontró un Cantón con el id {id}");
+		return maquina ?? throw new KeyNotFoundException($"No se encontró una máquina con el id {id}");
 	}
 
 	public async Task CreateAsync(Maquina maquina, string user)

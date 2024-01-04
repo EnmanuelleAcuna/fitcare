@@ -20,10 +20,12 @@ namespace fitcare.Controllers;
 [Authorize]
 public class EjerciciosController : BaseController
 {
+	private readonly IManager<Ejercicio> _ejerciciosManager;
 	private readonly IManager<TipoEjercicio> _tiposEjercicioManager;
 	private readonly ILogger<EjerciciosController> _logger;
 
-	public EjerciciosController(IManager<TipoEjercicio> tiposEjercicioManager,
+	public EjerciciosController(IManager<Ejercicio> ejerciciosManager,
+								IManager<TipoEjercicio> tiposEjercicioManager,
 								IDivisionTerritorialManager divisionTerritorialManager,
 								ApplicationUserManager<ApplicationUser> userManager,
 								RoleManager<ApplicationRole> roleManager,
@@ -33,110 +35,93 @@ public class EjerciciosController : BaseController
 								IWebHostEnvironment environment)
 	: base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
 	{
+		_ejerciciosManager = ejerciciosManager;
 		_tiposEjercicioManager = tiposEjercicioManager;
 		_logger = logger;
 	}
 
-	// [HttpGet]
-	// public async Task<ActionResult> Inicio()
-	// {
-	// 	IEnumerable<Ejercicio> listaEjercicios = await _repoEjercicios.ReadAllAsync();
-	// 	IEnumerable<InicioEjercicioViewModel> modelo = listaEjercicios.Select(x => new InicioEjercicioViewModel(x)).ToList();
-	// 	return View(modelo);
-	// }
+	[HttpGet]
+	public async Task<ActionResult> ListarEjercicios()
+	{
+		var ejercicios = await _ejerciciosManager.ReadAllAsync();
+		var modelo = ejercicios.Select(x => new EjercicioViewModel(x)).ToList();
+		return View(modelo);
+	}
 
-	// [HttpGet]
-	// public async Task<ActionResult> Nuevo()
-	// {
-	// 	await CargarViewBags();
-	// 	return View();
-	// }
+	[HttpGet]
+	public async Task<ActionResult> AgregarEjercicio()
+	{
+		ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicioManager.ReadAllAsync());
+		return View();
+	}
 
-	// [HttpPost]
-	// [ValidateAntiForgeryToken]
-	// public async Task<ActionResult> Nuevo(NuevoEjercicioViewModel modelo, IFormCollection collection)
-	// {
-	// 	if (ModelState.IsValid)
-	// 	{
-	// 		modelo.SetDependencies(_repoAccesorios, _repoMaquinas, _repoGruposMusculares, _repoTiposEjercicio);
-	// 		Ejercicio ejercicio = await modelo.Entidad(collection);
-	// 		await _repoEjercicios.CreateAsync(ejercicio);
-	// 		return RedirectToAction("Inicio");
-	// 	}
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<ActionResult> AgregarEjercicio(AgregarEjercicioViewModel modelo)
+	{
+		if (!ModelState.IsValid)
+		{
+			ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicioManager.ReadAllAsync());
+			ModelState.AddModelError("", Messages.MensajeModeloInvalido);
+			return View(modelo);
+		}
 
-	// 	// Si se llega a este punto, hubo un error
-	// 	await CargarViewBags();
-	// 	ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Ejercicio)));
-	// 	return View(modelo);
-	// }
+		await _ejerciciosManager.CreateAsync(modelo.Entidad(), GetCurrentUser());
+		return RedirectToAction(nameof(ListarEjercicios));
+	}
 
-	// [HttpGet]
-	// public async Task<ActionResult> Editar(string id)
-	// {
-	// 	Ejercicio ejercicio = await _repoEjercicios.ReadByIdAsync(Factory.SetGuid(id));
-	// 	EditarEjercicioViewModel modelo = new(ejercicio);
+	[HttpGet]
+	public async Task<ActionResult> EditarEjercicio(string id)
+	{
+		var ejercicio = await _ejerciciosManager.ReadByIdAsync(new Guid(id));
+		ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicioManager.ReadAllAsync());
+		var modelo = new EditarEjercicioViewModel(ejercicio);
+		return View(modelo);
+	}
 
-	// 	await CargarViewBags();
-	// 	return View(modelo);
-	// }
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<ActionResult> EditarEjercicio(EditarEjercicioViewModel modelo)
+	{
+		if (!ModelState.IsValid)
+		{
+			ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicioManager.ReadAllAsync());
+			ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Ejercicio)));
+			return View(modelo);
+		}
 
-	// [HttpPost]
-	// [ValidateAntiForgeryToken]
-	// public async Task<ActionResult> Editar(EditarEjercicioViewModel modelo, IFormCollection collection)
-	// {
-	// 	if (ModelState.IsValid)
-	// 	{
-	// 		modelo.SetDependencies(_repoAccesorios, _repoMaquinas, _repoGruposMusculares, _repoTiposEjercicio);
-	// 		Ejercicio ejercicio = await modelo.Entidad(collection);
-	// 		await _repoEjercicios.UpdateAsync(ejercicio);
-	// 		return RedirectToAction("Inicio");
-	// 	}
+		await _ejerciciosManager.UpdateAsync(modelo.Entidad(), GetCurrentUser());
+		return RedirectToAction(nameof(ListarEjercicios));
+	}
 
-	// 	// Si se llega a este punto, hubo un error
-	// 	await CargarViewBags();
-	// 	ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Ejercicio)));
-	// 	return View(modelo);
-	// }
+	[HttpGet]
+	public async Task<ActionResult> EliminarEjercicio(string id)
+	{
+		var ejercicio = await _ejerciciosManager.ReadByIdAsync(new Guid(id));
+		var modelo = new EliminarEjercicioViewModel(ejercicio);
+		return View(modelo);
+	}
 
-	// [HttpGet]
-	// public async Task<ActionResult> Eliminar(string id)
-	// {
-	// 	Ejercicio ejercicio = await _repoEjercicios.ReadByIdAsync(Factory.SetGuid(id));
-	// 	EditarEjercicioViewModel modelo = new(ejercicio);
+	[HttpPost]
+	public async Task<ActionResult> Eliminar(EliminarEjercicioViewModel modelo)
+	{
+		if (!ModelState.IsValid)
+		{
+			ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Ejercicio)));
+			return View(modelo);
+		}
 
-	// 	return View(modelo);
-	// }
+		await _ejerciciosManager.DeleteAsync(new Guid(modelo.Id));
+		return RedirectToAction(nameof(ListarEjercicios));
+	}
 
-	// [HttpPost]
-	// public async Task<ActionResult> Eliminar(EditarEjercicioViewModel modelo)
-	// {
-	// 	Guid idObjeto = Factory.SetGuid(modelo.Id);
-	// 	await _repoEjercicios.DeleteAsync(idObjeto);
-
-	// 	return RedirectToAction("Inicio");
-	// }
-
-	// [HttpGet]
-	// public async Task<JsonResult> Detalle(string id)
-	// {
-	// 	Ejercicio ejercicio = await _repoEjercicios.ReadByIdAsync(Factory.SetGuid(id));
-	// 	Bitacora registroBitacoraAgregar = await DAOBitacora.ReadNewestByIdObjetoAsync(ejercicio.Id, AccionesBitacora.Agregar);
-	// 	Bitacora registroBitacoraModificar = await DAOBitacora.ReadNewestByIdObjetoAsync(ejercicio.Id, AccionesBitacora.Modificar);
-	// 	EjerciciosViewModel modelo = new(ejercicio, registroBitacoraAgregar, registroBitacoraModificar);
-
-
-	// 	//Ejercicio ejercicio = await _repoEjercicios.ReadByIdAsync(Factory.SetGuid(id));
-	// 	DetalleEjercicioViewModel modeloVista = new(ejercicio);
-
-	// 	return Json(modeloVista);
-	// }
-
-	// private async Task CargarViewBags()
-	// {
-	// 	ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _repoTiposEjercicio.ReadAllAsync());
-	// 	ViewBag.Maquinas = CargarListaSeleccionMaquinas(await _repoMaquinas.ReadAllAsync());
-	// 	ViewBag.GruposMusculares = CargarListaSeleccionGruposMusculares(await _repoGruposMusculares.ReadAllAsync());
-	// }
+	[HttpGet]
+	public async Task<JsonResult> DetalleEjercicio(string id)
+	{
+		var ejercicio = await _ejerciciosManager.ReadByIdAsync(new Guid(id));
+		var modelo = new EjercicioViewModel(ejercicio);
+		return Json(modelo);
+	}
 
 	[HttpGet]
 	public async Task<ActionResult> ListarTiposEjercicio()
