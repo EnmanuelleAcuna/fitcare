@@ -5,7 +5,7 @@ using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace fitcare.Models.DataAccess;
+namespace fitcare.Models;
 
 public class ContactosManager : IContactoManager<Contacto>
 {

@@ -16,6 +16,6 @@ namespace fitcare.Models.DataAccess.EntityFramework
         public string UpdatedBy { get; set; }
 
         public virtual Rutinas IdRutinaNavigation { get; set; }
-        public virtual TiposMedida IdTipoMedidaNavigation { get; set; }
+        // public virtual TiposMedida IdTipoMedidaNavigation { get; set; }
     }
 }

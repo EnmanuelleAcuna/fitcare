@@ -1,7 +1,6 @@
 using System;
 using fitcare.Models;
 using fitcare.Models.Contracts;
-using fitcare.Models.DataAccess;
 using fitcare.Models.Entities;
 using fitcare.Models.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -73,11 +72,11 @@ class Program
 		builder.Services.AddTransient<IManager<Maquina>, MaquinasManager>();
 		builder.Services.AddTransient<IManager<TipoEjercicio>, TiposEjercicioManager>();
 		builder.Services.AddTransient<IManager<Ejercicio>, EjerciciosManager>();
+		builder.Services.AddTransient<IManager<TipoMedida>, TiposMedidaManager>();
 		// builder.Services.AddTransient<IRepository<Cliente>, DAOCliente>();
 		// builder.Services.AddTransient<IRepository<Instructor>, DAOInstructor>();
 		// builder.Services.AddTransient<IRepository<Accesorio>, DAOAccesorio>();
 		// builder.Services.AddTransient<IRepository<GrupoMuscular>, DAOGrupoMuscular>();
-		// builder.Services.AddTransient<IRepository<TipoMedida>, DAOTipoMedida>();
 		// builder.Services.AddTransient<IRepository<Rutina>, DAORutina>();
 		builder.Services.AddScoped<IEmailSender, EmailSender>();
 

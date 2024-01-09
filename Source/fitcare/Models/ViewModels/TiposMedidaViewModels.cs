@@ -1,113 +1,88 @@
-// using fitcare.Models.Entities;
-// using fitcare.Models.Extras;
-// using System;
-// using System.ComponentModel.DataAnnotations;
+using System;
+using System.ComponentModel.DataAnnotations;
+using fitcare.Models.Entities;
 
-// namespace fitcare.Models.ViewModels;
+namespace fitcare.Models.ViewModels;
 
-// public class InicioTipoMedidaViewModel
-// {
-// 	public InicioTipoMedidaViewModel(TipoMedida Modelo)
-// 	{
-// 		Validators.ValidateTipoMedida(Modelo);
+public class TipoMedidaViewModel : BaseViewModel
+{
+	public TipoMedidaViewModel(TipoMedida modelo) : base(modelo)
+	{
+		Id = modelo.Id.ToString();
+		Codigo = modelo.Codigo;
+		Nombre = modelo.Nombre;
+		Estado = modelo.Estado ? "Activo" : "Inactivo";
+	}
 
-// 		Id = Modelo.Id.ToString();
-// 		Codigo = Modelo.Codigo;
-// 		Nombre = Modelo.Nombre;
-// 		Estado = Modelo.Estado ? "Activo" : "Inactivo";
-// 	}
+	public string Id { get; set; }
 
-// 	public string Id { get; set; }
+	[Display(Name = "Código")]
+	public string Codigo { get; set; }
 
-// 	[Display(Name = "Código")]
-// 	public string Codigo { get; set; }
+	[Display(Name = "Tipo de medida")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Tipo de medida")]
-// 	public string Nombre { get; set; }
+	public string Estado { get; set; }
+}
 
-// 	[Display(Name = "Estado")]
-// 	public string Estado { get; set; }
-// }
+public class AgregarTipoMedidaViewModel
+{
+	[Display(Name = "Código")]
+	[Required(ErrorMessage = "El código es requerido")]
+	[StringLength(50, ErrorMessage = "El código no puede exceder los 50 caracteres")]
+	public string Codigo { get; set; }
 
-// public class NuevoTipoMedidaViewModel
-// {
-// 	[Display(Name = "Código")]
-// 	[Required(ErrorMessage = "El código es requerido")]
-// 	[StringLength(50, ErrorMessage = "El código no puede exceder los 50 caracteres")]
-// 	public string Codigo { get; set; }
+	[Display(Name = "Nombre")]
+	[Required(ErrorMessage = "El nombre es requerido")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Nombre")]
-// 	[Required(ErrorMessage = "El nombre es requerido")]
-// 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
-// 	public string Nombre { get; set; }
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
-// 	[Display(Name = "Activo")]
-// 	public bool Estado { get; set; }
+	public TipoMedida Entidad() => new(Guid.NewGuid(), Codigo, Nombre, Estado);
+}
 
-// 	public TipoMedida Entidad()
-// 	{
-// 		TipoMedida tipoMedida = new(Guid.NewGuid(), Codigo, Nombre, Estado);
-// 		return tipoMedida;
-// 	}
-// }
+public class EditarTipoMedidaViewModel : BaseViewModel
+{
+	public EditarTipoMedidaViewModel() { }
 
-// public class EditarTipoMedidaViewModel
-// {
-// 	// Constructores
-// 	public EditarTipoMedidaViewModel() { }
+	public EditarTipoMedidaViewModel(TipoMedida tipoMedida) : base(tipoMedida)
+	{
+		Id = tipoMedida.Id.ToString();
+		Codigo = tipoMedida.Codigo;
+		Nombre = tipoMedida.Nombre;
+		Estado = tipoMedida.Estado;
+	}
 
-// 	public EditarTipoMedidaViewModel(TipoMedida tipoMedida)
-// 	{
-// 		Validators.ValidateTipoMedida(tipoMedida);
+	public string Id { get; set; }
 
-// 		Id = tipoMedida.Id.ToString();
-// 		Codigo = tipoMedida.Codigo;
-// 		Nombre = tipoMedida.Nombre;
-// 		Estado = tipoMedida.Estado;
-// 	}
+	[Display(Name = "Código")]
+	[Required(ErrorMessage = "El código es requerido")]
+	[StringLength(50, ErrorMessage = "El código no puede exceder los 50 caracteres")]
+	public string Codigo { get; set; }
 
-// 	public string Id { get; set; }
+	[Display(Name = "Nombre")]
+	[Required(ErrorMessage = "El nombre es requerido")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Código")]
-// 	[Required(ErrorMessage = "El código es requerido")]
-// 	[StringLength(50, ErrorMessage = "El código no puede exceder los 50 caracteres")]
-// 	public string Codigo { get; set; }
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
-// 	[Display(Name = "Nombre")]
-// 	[Required(ErrorMessage = "El nombre es requerido")]
-// 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
-// 	public string Nombre { get; set; }
+	public TipoMedida Entidad() => new(new Guid(Id), Codigo, Nombre, Estado);
+}
 
-// 	[Display(Name = "Activo")]
-// 	public bool Estado { get; set; }
+public class EliminarTipoMedidaViewModel
+{
+	public EliminarTipoMedidaViewModel() { }
 
-// 	public TipoMedida Entidad()
-// 	{
-// 		TipoMedida tipoMedida = new(Factory.SetGuid(Id), Codigo, Nombre, Estado);
-// 		return tipoMedida;
-// 	}
-// }
+	public EliminarTipoMedidaViewModel(TipoMedida tipoMedida)
+	{
+		IdTipoMedida = tipoMedida.Id.ToString();
+		Nombre = tipoMedida.Nombre;
+	}
 
-// public class DetalleTipoMedidaViewModel
-// {
-// 	public DetalleTipoMedidaViewModel(TipoMedida tipoMedida)
-// 	{
-// 		Validators.ValidateTipoMedida(tipoMedida);
-
-// 		IdTipoMedida = tipoMedida.Id.ToString();
-// 		Codigo = tipoMedida.Codigo;
-// 		Nombre = tipoMedida.Nombre;
-// 		Estado = tipoMedida.Estado ? "Activo" : "Inactivo";
-// 	}
-
-// 	public string IdTipoMedida { get; set; }
-
-// 	[Display(Name = "Código")]
-// 	public string Codigo { get; set; }
-
-// 	[Display(Name = "Tipo de medida")]
-// 	public string Nombre { get; set; }
-
-// 	[Display(Name = "Estado")]
-// 	public string Estado { get; set; }
-// }
+	public string IdTipoMedida { get; set; }
+	public string Nombre { get; set; }
+}
