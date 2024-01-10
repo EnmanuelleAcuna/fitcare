@@ -52,7 +52,7 @@ public class TiposMedidaManager : IManager<TipoMedida>
 		record.UpdatedBy = user;
 		record.DateUpdated = DateTime.UtcNow;
 
-		_dbContext.TiposMedida.Update(tipoMedida);
+		_dbContext.TiposMedida.Update(record);
 		await _dbContext.SaveChangesAsync();
 	}
 

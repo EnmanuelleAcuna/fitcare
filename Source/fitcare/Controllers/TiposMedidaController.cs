@@ -93,7 +93,7 @@ namespace fitcare.Controllers
 		{
 			TipoMedida tipoMedida = await _tiposMedidaManager.ReadByIdAsync(new Guid(id));
 			if (tipoMedida == null) return NotFound();
-			EditarTipoMedidaViewModel modelo = new(tipoMedida);
+			EliminarTipoMedidaViewModel modelo = new(tipoMedida);
 			return View(modelo);
 		}
 

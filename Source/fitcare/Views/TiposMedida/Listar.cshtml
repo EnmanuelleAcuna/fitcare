@@ -1,13 +1,10 @@
-﻿@* @model IEnumerable<InicioTipoMedidaViewModel>
+﻿@model IEnumerable<TipoMedidaViewModel>
 
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     ViewBag.Title = "Tipos de medida";
 }
 
-<!-- ============================================================== -->
-<!-- Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
 <div class="page-breadcrumb">
     <div class="row">
         <div class="col-5 align-self-center">
@@ -29,21 +26,13 @@
         </div>
     </div>
 </div>
-<!-- ============================================================== -->
-<!-- End Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- Container fluid  -->
-<!-- ============================================================== -->
+
 <div class="container-fluid">
-    <!-- ============================================================== -->
-    <!-- Start Page Content -->
-    <!-- ============================================================== -->
     <div class="row">
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <a asp-action="Nuevo" class="btn btn-sm btn-default">Agregar tipo de medida</a>
+                    <a asp-action="Agregar" class="btn btn-sm btn-default">Agregar tipo de medida</a>
 
                     <hr />
 
@@ -84,13 +73,7 @@
             </div>
         </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- End Page Content -->
-    <!-- ============================================================== -->
 </div>
-<!-- ============================================================== -->
-<!-- End Container fluid  -->
-<!-- ============================================================== -->
 
 <partial name="_Detalle" />
 
@@ -120,10 +103,10 @@
         modal.find('.modal-title .nombre').text(data.nombre);
         modal.find('.modal-body .codigo').text(data.codigo);
         modal.find('.modal-body .estado').text(data.estado);
-        modal.find('.modal-body .creado-por').text(data.usuarioCrea);
-        modal.find('.modal-body .creado-el').text(data.fechaCreacion);
-        modal.find('.modal-body .modificado-por').text(data.usuarioModifica);
-        modal.find('.modal-body .modificado-el').text(data.fechaModifica);
+        modal.find('.modal-body .creado-por').text(data.creadoPor);
+        modal.find('.modal-body .creado-el').text(data.creadoEl);
+        modal.find('.modal-body .modificado-por').text(data.editadoPor);
+        modal.find('.modal-body .modificado-el').text(data.editadoEl);
     }
 
     function handleError() {
@@ -137,4 +120,4 @@
         modal.find('.modal-body .modificado-el').text('N/A');
     }
 </script>
-} *@
+}
