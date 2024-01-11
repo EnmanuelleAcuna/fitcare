@@ -1,115 +1,77 @@
-// using fitcare.Models.Entities;
-// using fitcare.Models.Extras;
-// using System;
-// using System.ComponentModel.DataAnnotations;
+using fitcare.Models.Entities;
+using System;
+using System.ComponentModel.DataAnnotations;
 
-// namespace fitcare.Models.ViewModels;
+namespace fitcare.Models.ViewModels;
 
-// public class InicioGrupoMuscularViewModel
-// {
-// 	public InicioGrupoMuscularViewModel(GrupoMuscular grupoMuscular)
-// 	{
-// 		Validators.ValidateGrupoMuscular(grupoMuscular);
+public class GrupoMuscularViewModel : BaseViewModel
+{
+	public GrupoMuscularViewModel(GrupoMuscular grupoMuscular) : base(grupoMuscular)
+	{
+		IdGrupoMuscular = grupoMuscular.Id.ToString();
+		Nombre = grupoMuscular.Nombre;
+		Descripcion = grupoMuscular.Descripcion;
+	}
 
-// 		IdGrupoMuscular = grupoMuscular.Id.ToString();
-// 		Nombre = grupoMuscular.Nombre;
-// 		Descripcion = grupoMuscular.Descripcion;
-// 		Estado = grupoMuscular.Estado ? "Activo" : "Inactivo";
-// 	}
+	public string IdGrupoMuscular { get; set; }
 
-// 	public string IdGrupoMuscular { get; set; }
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Nombre")]
-// 	public string Nombre { get; set; }
+	[Display(Name = "Descripcion")]
+	public string Descripcion { get; set; }
+}
 
-// 	[Display(Name = "Descripcion")]
-// 	public string Descripcion { get; set; }
+public class AgregarGrupoMuscularViewModel
+{
+	[Display(Name = "Nombre del grupo muscular")]
+	[Required(ErrorMessage = "El nombre es requerido")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Estado")]
-// 	public string Estado { get; set; }
-// }
+	[Display(Name = "Descripción")]
+	[Required(ErrorMessage = "La descripción es requerida.")]
+	[StringLength(4000, ErrorMessage = "El nombre no puede exceder los 4000 caracteres")]
+	public string Descripcion { get; set; }
 
-// public class NuevoGrupoMuscularViewModel
-// {
-// 	[Display(Name = "Nombre del grupo muscular")]
-// 	[Required(ErrorMessage = "El nombre es requerido")]
-// 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
-// 	public string Nombre { get; set; }
+	public GrupoMuscular Entidad() => new(Guid.NewGuid(), Nombre, Descripcion);
+}
 
-// 	[Display(Name = "Descripción")]
-// 	[Required(ErrorMessage = "La descripción es requerida.")]
-// 	[StringLength(4000, ErrorMessage = "El nombre no puede exceder los 4000 caracteres")]
-// 	public string Descripcion { get; set; }
+public class EditarGrupoMuscularViewModel : BaseViewModel
+{
+	public EditarGrupoMuscularViewModel() { }
 
-// 	[Display(Name = "Activo")]
-// 	public bool Estado { get; set; }
+	public EditarGrupoMuscularViewModel(GrupoMuscular grupoMuscular) : base(grupoMuscular)
+	{
+		Id = grupoMuscular.Id.ToString();
+		Nombre = grupoMuscular.Nombre;
+		Descripcion = grupoMuscular.Descripcion;
+	}
 
-// 	public GrupoMuscular Entidad()
-// 	{
-// 		GrupoMuscular grupoMuscular = new(Guid.NewGuid(), Nombre, Descripcion, Estado);
-// 		return grupoMuscular;
-// 	}
-// }
+	[Required(ErrorMessage = "El id es requerido")]
+	public string Id { get; set; }
 
-// public class EditarGrupoMuscularViewModel
-// {
-// 	public EditarGrupoMuscularViewModel() { }
+	[Display(Name = "Nombre del grupo muscular")]
+	[Required(ErrorMessage = "El nombre es requerido")]
+	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
+	public string Nombre { get; set; }
 
-// 	public EditarGrupoMuscularViewModel(GrupoMuscular grupoMuscular)
-// 	{
-// 		Validators.ValidateGrupoMuscular(grupoMuscular);
+	[Display(Name = "Descripción")]
+	[Required(ErrorMessage = "ELa descripción es requerida.")]
+	[StringLength(4000, ErrorMessage = "El nombre no puede exceder los 4000 caracteres")]
+	public string Descripcion { get; set; }
 
-// 		Id = grupoMuscular.Id.ToString();
-// 		Nombre = grupoMuscular.Nombre;
-// 		Descripcion = grupoMuscular.Descripcion;
-// 		Estado = grupoMuscular.Estado;
-// 	}
+	public GrupoMuscular Entidad() => new(new Guid(Id), Nombre, Descripcion);
+}
 
-// 	[Required(ErrorMessage = "El id es requerido")]
-// 	public string Id { get; set; }
+public class EliminarGrupoMuscularViewModel
+{
+	public EliminarGrupoMuscularViewModel(GrupoMuscular grupoMuscular)
+	{
+		IdGrupoMuscular = grupoMuscular.Id.ToString();
+		Nombre = grupoMuscular.Nombre;
+	}
 
-// 	[Display(Name = "Nombre del grupo muscular")]
-// 	[Required(ErrorMessage = "El nombre es requerido")]
-// 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
-// 	public string Nombre { get; set; }
+	public string IdGrupoMuscular { get; set; }
 
-// 	[Display(Name = "Descripción")]
-// 	[Required(ErrorMessage = "ELa descripción es requerida.")]
-// 	[StringLength(4000, ErrorMessage = "El nombre no puede exceder los 4000 caracteres")]
-// 	public string Descripcion { get; set; }
-
-// 	[Display(Name = "Activo")]
-// 	public bool Estado { get; set; }
-
-// 	public GrupoMuscular Entidad()
-// 	{
-// 		GrupoMuscular grupomuscular = new(Factory.SetGuid(Id), Nombre, Descripcion, Estado);
-// 		return grupomuscular;
-// 	}
-// }
-
-// public class DetalleGrupoMuscularViewModel : RegistroBitacoraViewModel
-// {
-// 	public DetalleGrupoMuscularViewModel(GrupoMuscular grupoMuscular, Bitacora registroBitacoraAgregar, Bitacora registroBitacoraModificar)
-// 	:base(registroBitacoraAgregar, registroBitacoraModificar)
-
-// 	{
-// 		Validators.ValidateGrupoMuscular(grupoMuscular);
-
-// 		IdGrupoMuscular = grupoMuscular.Id.ToString();
-// 		Nombre = grupoMuscular.Nombre;
-// 		Descripcion = grupoMuscular.Descripcion;
-// 		Estado = grupoMuscular.Estado ? "Activo" : "Inactivo";
-// 	}
-
-// 	public string IdGrupoMuscular { get; set; }
-
-// 	[Display(Name = "Nombre")]
-// 	public string Nombre { get; set; }
-
-// 	[Display(Name = "Descripción")]
-// 	public string Descripcion { get; set; }
-
-// 	[Display(Name = "Estado")]
-// 	public string Estado { get; set; }
-// }
+	public string Nombre { get; set; }
+}

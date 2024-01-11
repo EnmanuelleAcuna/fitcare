@@ -73,10 +73,10 @@ class Program
 		builder.Services.AddTransient<IManager<TipoEjercicio>, TiposEjercicioManager>();
 		builder.Services.AddTransient<IManager<Ejercicio>, EjerciciosManager>();
 		builder.Services.AddTransient<IManager<TipoMedida>, TiposMedidaManager>();
+		builder.Services.AddTransient<IManager<GrupoMuscular>, DAOGrupoMuscular>();
 		// builder.Services.AddTransient<IRepository<Cliente>, DAOCliente>();
 		// builder.Services.AddTransient<IRepository<Instructor>, DAOInstructor>();
 		// builder.Services.AddTransient<IRepository<Accesorio>, DAOAccesorio>();
-		// builder.Services.AddTransient<IRepository<GrupoMuscular>, DAOGrupoMuscular>();
 		// builder.Services.AddTransient<IRepository<Rutina>, DAORutina>();
 		builder.Services.AddScoped<IEmailSender, EmailSender>();
 
