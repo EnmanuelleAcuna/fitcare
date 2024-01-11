@@ -48,6 +48,9 @@ public class DAOGrupoMuscular : IManager<GrupoMuscular>
 		record.Nombre = grupoMuscular.Nombre;
 		record.Descripcion = grupoMuscular.Descripcion;
 
+		record.UpdatedBy = user;
+		record.DateUpdated = DateTime.UtcNow;
+
 		_dbContext.GruposMusculares.Update(record);
 		await _dbContext.SaveChangesAsync();
 	}

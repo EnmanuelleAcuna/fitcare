@@ -65,6 +65,8 @@ public class EditarGrupoMuscularViewModel : BaseViewModel
 
 public class EliminarGrupoMuscularViewModel
 {
+	public EliminarGrupoMuscularViewModel() {}
+
 	public EliminarGrupoMuscularViewModel(GrupoMuscular grupoMuscular)
 	{
 		IdGrupoMuscular = grupoMuscular.Id.ToString();

@@ -92,17 +92,17 @@ namespace fitcare.Controllers
 		public async Task<ActionResult> Eliminar(string id)
 		{
 			GrupoMuscular grupoMuscular = await _gruposMuscularesManager.ReadByIdAsync(new Guid(id));
-			EditarGrupoMuscularViewModel modelo = new(grupoMuscular);
+			EliminarGrupoMuscularViewModel modelo = new(grupoMuscular);
 
 			return View(modelo);
 		}
 
 		[HttpPost]
-		public async Task<ActionResult> Eliminar(EditarGrupoMuscularViewModel modelo)
+		public async Task<ActionResult> Eliminar(EliminarGrupoMuscularViewModel modelo)
 		{
 			if (ModelState.IsValid)
 			{
-				await _gruposMuscularesManager.DeleteAsync(new Guid(modelo.Id));
+				await _gruposMuscularesManager.DeleteAsync(new Guid(modelo.IdGrupoMuscular));
 				return RedirectToAction(nameof(Listar));
 			}
 

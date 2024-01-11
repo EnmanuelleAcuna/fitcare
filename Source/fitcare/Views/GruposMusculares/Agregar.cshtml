@@ -1,4 +1,4 @@
-﻿@model EditarGrupoMuscularViewModel
+﻿@model AgregarGrupoMuscularViewModel
 
 @{
 	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -8,7 +8,7 @@
 <div class="page-breadcrumb">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h4 class="page-title">Modificar grupo muscular</h4>
+			<h4 class="page-title">Agregar nuevo grupo muscular</h4>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -21,7 +21,7 @@
 							<a href="@Url.Action("Listar")">Grupos musculares</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
-							Modificar
+							Agregar
 						</li>
 					</ol>
 				</nav>
@@ -35,10 +35,9 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					@using (Html.BeginForm("Editar", "GruposMusculares", FormMethod.Post, new { autocomplete = "off" }))
+					@using (Html.BeginForm("Agregar", "GruposMusculares", FormMethod.Post, new { autocomplete = "off" }))
 					{
 						@Html.AntiForgeryToken()
-						@Html.HiddenFor(model => model.Id)
 
 						<div class="row">
 							<div class="col-md-12">
@@ -50,8 +49,8 @@
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
 									@Html.LabelFor(model => model.Nombre)
-									@Html.TextBoxFor(model => model.Nombre, "", new { @class = "form-control form-control-sm" })
-									@Html.ValidationMessageFor(Model => Model.Nombre)
+									@Html.TextBoxFor(model => model.Nombre, "", new { @class = "form-control form-control-sm", placeholder = "Digite el nombre del nuevo grupo muscular" })
+									@Html.ValidationMessageFor(model => model.Nombre)
 								</div>
 							</div>
 
@@ -65,7 +64,7 @@
 
 							<div class="col-12">
 								<input value="Guardar" class="btn btn-sm btn-default" type="submit" />
-									@Html.ActionLink("Regresar", "Listar", null, null, new { @class = "btn btn-sm btn-secondary" })
+								@Html.ActionLink("Regresar", "Listar", null, null, new { @class = "btn btn-sm btn-secondary" })
 							</div>
 						</div>
 					}
