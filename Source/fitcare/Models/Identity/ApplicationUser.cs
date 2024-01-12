@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
+using fitcare.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 
 namespace fitcare.Models.Identity;
@@ -28,6 +29,15 @@ public class ApplicationUser : IdentityUser
 		Active = activo;
 	}
 
+	public ApplicationUser(string id, Guid idProvincia, Guid idCanton, Guid idDistrito, DateTime fechaIngreso)
+	{
+		Id = id;
+		IdProvincia = idProvincia;
+		IdCanton = idCanton;
+		IdDistrito = idDistrito;
+		FechaIngreso = fechaIngreso;
+	}
+
 	public string IdentificationNumber { get; private set; }
 	public string Name { get; private set; }
 	public string FirstLastName { get; private set; }
@@ -37,6 +47,22 @@ public class ApplicationUser : IdentityUser
 	public DateTime SetLastSession(DateTime value) => LastSession = value;
 
 	public bool? Active { get; private set; }
+
+	[ForeignKey(nameof(Provincia))]
+	public Guid IdProvincia { get; set; }
+	public Provincia Provincia { get; set; }
+
+	[ForeignKey(nameof(Canton))]
+	public Guid IdCanton { get; set; }
+	public Provincia Canton { get; set; }
+
+	[ForeignKey(nameof(Distrito))]
+	public Guid IdDistrito { get; set; }
+	public Provincia Distrito { get; set; }
+
+	public string URLFotografia { get; set; }
+
+	public DateTime? FechaIngreso { get; set; }
 
 	[NotMapped]
 	public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
@@ -75,10 +101,10 @@ public class ApplicationUser : IdentityUser
 
 	public void SetNewPersonalInformation(string name, string firstLastName, string secondLastName, string identification)
 	{
-		this.Name = name;
-		this.FirstLastName = firstLastName;
-		this.SecondLastName = secondLastName;
-		this.IdentificationNumber = identification;
+		Name = name;
+		FirstLastName = firstLastName;
+		SecondLastName = secondLastName;
+		IdentificationNumber = identification;
 	}
 
 	public override string ToString() => JsonSerializer.Serialize(this);

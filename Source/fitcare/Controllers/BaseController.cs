@@ -249,23 +249,16 @@ public class BaseController : Controller
 	// 	await _repoImagenes.DeleteAsync(idObjeto);
 	// }
 
-	private Uri GuardarImagenDisco(IFormFile archivoSubido, string carpeta)
+	public string GuardarImagenDisco(IFormFile archivo)
 	{
-		ValidarArchivoSubido(archivoSubido);
+		var filePath = Path.Combine(_environment.WebRootPath, "images", archivo.FileName);
 
-		string relativePath = $"images\\{carpeta}";
-		string absolutePath = Path.Combine(_environment.WebRootPath, relativePath);
-		string relativePathWithFileName = $"{relativePath}/{Guid.NewGuid()}{Path.GetExtension(archivoSubido.FileName)}";
-		string absolutePathWithFileName = Path.Combine(_environment.WebRootPath, relativePathWithFileName);
-
-		if (!Directory.Exists(absolutePath)) Directory.CreateDirectory(absolutePath);
-
-		using (Stream fileStream = new FileStream(absolutePathWithFileName, FileMode.Create))
+		using (var stream = new FileStream(filePath, FileMode.Create))
 		{
-			archivoSubido.CopyTo(fileStream);
+			archivo.CopyTo(stream);
 		}
 
-		return new UriBuilder("https", "localhost", 44321, relativePathWithFileName).Uri;
+		return filePath;
 	}
 
 	private void EliminarImagenDisco(Uri uri)

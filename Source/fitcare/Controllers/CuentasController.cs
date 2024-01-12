@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using fitcare.Models.Contracts;
@@ -386,6 +387,50 @@ public class CuentasController : BaseController
 		AddErrors(rolEliminado);
 
 		ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(ApplicationRole)));
+
+		return View(modelo);
+	}
+
+	public ActionResult ListarInstructores()
+	{
+		return View();
+	}
+
+	public ActionResult AgregarInstructor()
+	{
+		// Cargar los usuarios que no son instructor.
+		return View();
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> RegistrarInstructor()
+	{
+		ViewBag.Provincias = await CargarListaSeleccionProvincias();
+		ViewBag.Cantones = await CargarListaSeleccionCantones();
+		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+
+		return View();
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> RegistrarInstructor(AgregarInstructorViewModel modelo)
+	{
+		if (ModelState.IsValid)
+		{
+			var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
+
+			var usuarioRegistradoComoInstructor = await _userManager.RegistrarUsuarioComoInstructor(modelo.Entidad(), rutaFotografia);
+
+			if (usuarioRegistradoComoInstructor.Succeeded) return RedirectToAction(nameof(ListarInstructores));
+
+			AddErrors(usuarioRegistradoComoInstructor);
+		}
+
+		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(ApplicationUser)));
+
+		ViewBag.Provincias = await CargarListaSeleccionProvincias();
+		ViewBag.Cantones = await CargarListaSeleccionCantones();
+		ViewBag.Distritos = await CargarListaSeleccionDistritos();
 
 		return View(modelo);
 	}

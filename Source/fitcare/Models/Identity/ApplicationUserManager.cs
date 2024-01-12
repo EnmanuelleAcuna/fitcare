@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -57,6 +58,9 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 	{
 		var userRecord = await FindByIdAsync(user.Id);
 
+		if (userRecord == null)
+			throw new KeyNotFoundException($"No user was found with the id {user.Id}");
+
 		IList<string> actualRoles = await GetRolesAsync(userRecord);
 
 		IdentityResult rolesUnassigned = await RemoveFromRolesAsync(userRecord, actualRoles);
@@ -66,5 +70,33 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		IdentityResult rolesAssigned = await AddToRolesAsync(userRecord, roles);
 
 		return rolesAssigned;
+	}
+
+	public async Task<IdentityResult> RegistrarUsuarioComoInstructor(ApplicationUser user, string filePath)
+	{
+		var userRecord = await FindByIdAsync(user.Id);
+
+		if (userRecord == null)
+			throw new KeyNotFoundException($"No user was found with the id {user.Id}");
+
+		IList<string> roles = await GetRolesAsync(user);
+
+		bool isInstructor = roles.Any(role => role.Equals("Instructor", StringComparison.OrdinalIgnoreCase));
+
+		if (!isInstructor)
+		{
+			roles.Add("Instructor");
+			var rolesActualizados = await ActualizarRolesUsuario(user, roles);
+			if (!rolesActualizados.Succeeded) return rolesActualizados;
+		}
+
+		userRecord.IdProvincia = user.IdProvincia;
+		userRecord.IdCanton = user.IdCanton;
+		userRecord.IdDistrito = user.IdDistrito;
+		userRecord.URLFotografia = filePath;
+		userRecord.FechaIngreso = user.FechaIngreso;
+
+		IdentityResult result = await UpdateAsync(userRecord);
+		return result;
 	}
 }

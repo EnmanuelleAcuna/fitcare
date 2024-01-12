@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using fitcare.Models.Identity;
+using Microsoft.AspNetCore.Http;
 
 namespace fitcare.Models.ViewModels;
 
@@ -55,6 +56,7 @@ public class UsuarioViewModel
 		IdUsuario = usuario.Id;
 		Nombre = string.Format(new CultureInfo("es-CR"), "{0} {1} {2}", usuario.Name, usuario.FirstLastName, usuario.SecondLastName);
 		Correo = usuario.Email;
+		NumeroIdentificacion = usuario.IdentificationNumber;
 		Estado = (bool)usuario.Active ? "Activo" : "Inactivo";
 	}
 
@@ -64,6 +66,8 @@ public class UsuarioViewModel
 
 	[Display(Name = "Correo electrónico")]
 	public string Correo { get; set; }
+
+	public string NumeroIdentificacion { get; set; }
 
 	public string Estado { get; set; }
 }
@@ -174,6 +178,34 @@ public class EditarUsuarioViewModel
 		ApplicationUser usuario = new(IdUsuario, CorreoElectronico, CorreoElectronico, Nombre, PrimerApellido, SegundoApellido, NumeroIdentificacion, DateTime.Now, true);
 		return usuario;
 	}
+}
+
+public class AgregarInstructorViewModel : UsuarioViewModel
+{
+	public AgregarInstructorViewModel(ApplicationUser user) : base(user) { }
+
+	[Display(Name = "Provincia")]
+	[Required(ErrorMessage = "La Provincia es requerida.")]
+	public string IdProvincia { get; set; }
+
+	[Display(Name = "Cantón")]
+	[Required(ErrorMessage = "El Cantón es requerido.")]
+	public string IdCanton { get; set; }
+
+	[Display(Name = "Distrito")]
+	[Required(ErrorMessage = "El Distrito es requerido.")]
+	public string IdDistrito { get; set; }
+
+	[Display(Name = "Fotografía")]
+	[Required(ErrorMessage = "La fotografía es requerida.")]
+	public IFormFile ProfilePicture { get; set; }
+
+	[Display(Name = "Fecha de ingreso")]
+	[Required(ErrorMessage = "La fecha de ingreso es requerida")]
+	[DataType(DataType.Date, ErrorMessage = "La fecha no tiene formato correcto.")]
+	public DateTime FechaIngreso { get; set; }
+
+	public ApplicationUser Entidad() => new(IdUsuario, new Guid(IdProvincia), new Guid(IdCanton), new Guid(IdDistrito), FechaIngreso);
 }
 
 public class ClienteInstructorViewModel
