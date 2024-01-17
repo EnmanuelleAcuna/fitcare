@@ -12,7 +12,6 @@ public class Provincia : Base
 	private Provincia() : base()
 	{
 		Cantones = new HashSet<Canton>();
-		Usuarios = new HashSet<ApplicationUser>();
 	}
 
 	public Provincia(Guid id, string nombre, bool activo)
@@ -20,11 +19,15 @@ public class Provincia : Base
 		Id = id;
 		Nombre = nombre;
 		Estado = activo;
+
+		Cantones = new HashSet<Canton>();
 	}
 
 	public Provincia(Guid id)
 	{
 		Id = id;
+
+		Cantones = new HashSet<Canton>();
 	}
 
 	[Key]
@@ -33,8 +36,6 @@ public class Provincia : Base
 	public bool Estado { get; private set; }
 
 	public virtual ICollection<Canton> Cantones { get; set; }
-
-	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
 
 	public void UpdateFrom(Provincia provincia)
 	{
@@ -49,7 +50,6 @@ public class Canton : Base
 	private Canton() : base()
 	{
 		Distritos = new HashSet<Distrito>();
-		Usuarios = new HashSet<ApplicationUser>();
 	}
 
 	public Canton(Guid id, string nombre, bool activo, int idINEC, Provincia provincia)
@@ -61,6 +61,8 @@ public class Canton : Base
 
 		IdProvincia = provincia.Id;
 		Provincia = provincia;
+
+		Distritos = new HashSet<Distrito>();
 	}
 
 	public Canton(Guid id, string nombre, bool activo, int idINEC, Guid idProvincia)
@@ -71,11 +73,15 @@ public class Canton : Base
 		IdCantonInec = idINEC;
 
 		IdProvincia = idProvincia;
+
+		Distritos = new HashSet<Distrito>();
 	}
 
 	public Canton(Guid id)
 	{
 		Id = id;
+
+		Distritos = new HashSet<Distrito>();
 	}
 
 	[Key]
@@ -92,8 +98,6 @@ public class Canton : Base
 
 	public virtual ICollection<Distrito> Distritos { get; set; }
 
-	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
-
 	public void UpdateFrom(Canton canton)
 	{
 		Nombre = canton.Nombre;
@@ -107,9 +111,7 @@ public class Canton : Base
 public class Distrito : Base
 {
 	private Distrito() : base()
-	{
-		Usuarios = new HashSet<ApplicationUser>();
-	}
+	{ }
 
 	public Distrito(Guid id, string nombre, bool activo, int idINEC, Canton canton)
 	{
@@ -142,8 +144,6 @@ public class Distrito : Base
 	[Column("Id_Canton")]
 	public Guid IdCanton { get; private set; }
 	public virtual Canton Canton { get; set; }
-
-	public virtual ICollection<ApplicationUser> Usuarios { get; set; }
 
 	public void UpdateFrom(Distrito distrito)
 	{

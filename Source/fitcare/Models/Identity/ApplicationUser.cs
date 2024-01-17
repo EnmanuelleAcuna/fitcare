@@ -49,16 +49,16 @@ public class ApplicationUser : IdentityUser
 	public bool? Active { get; private set; }
 
 	[ForeignKey(nameof(Provincia))]
-	public Guid IdProvincia { get; set; }
+	public Guid? IdProvincia { get; set; }
 	public Provincia Provincia { get; set; }
 
 	[ForeignKey(nameof(Canton))]
-	public Guid IdCanton { get; set; }
-	public Provincia Canton { get; set; }
+	public Guid? IdCanton { get; set; }
+	public Canton Canton { get; set; }
 
 	[ForeignKey(nameof(Distrito))]
-	public Guid IdDistrito { get; set; }
-	public Provincia Distrito { get; set; }
+	public Guid? IdDistrito { get; set; }
+	public Distrito Distrito { get; set; }
 
 	public string URLFotografia { get; set; }
 
