@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -11,6 +12,7 @@ namespace fitcare.Models.Identity;
 public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 {
 	private readonly IUserStore<ApplicationUser> _store;
+	private readonly RoleManager<ApplicationRole> _roleManager;
 
 	public ApplicationUserManager(IUserStore<ApplicationUser> store,
 								  IOptions<IdentityOptions> optionsAccessor,
@@ -20,7 +22,8 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 								  ILookupNormalizer keyNormalizer,
 								  IdentityErrorDescriber errors,
 								  IServiceProvider services,
-								  ILogger<UserManager<ApplicationUser>> logger)
+								  ILogger<UserManager<ApplicationUser>> logger,
+								  RoleManager<ApplicationRole> roleManager)
 								  : base(store,
 										 optionsAccessor,
 									 	 passwordHasher,
@@ -32,6 +35,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 									 	 logger)
 	{
 		_store = store;
+		_roleManager = roleManager;
 	}
 
 	public async Task<IdentityResult> UpdateLastSession(ApplicationUser user)
@@ -98,5 +102,16 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 
 		IdentityResult result = await UpdateAsync(userRecord);
 		return result;
+	}
+
+	public async Task<IList<ApplicationUser>> GetUsersNotInRoleAsync(string roleName)
+	{
+		if (await _roleManager.FindByNameAsync(roleName) == null)
+			throw new InvalidOperationException($"Rol '{roleName}' no encontrado.");
+
+		var usersInRole = await GetUsersInRoleAsync(roleName);
+		var allUsers = await Users.ToListAsync();
+		var usersNotInRole = allUsers.Except(usersInRole).ToList();
+		return usersNotInRole;
 	}
 }

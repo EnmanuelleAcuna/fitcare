@@ -391,25 +391,31 @@ public class CuentasController : BaseController
 		return View(modelo);
 	}
 
-	public ActionResult ListarInstructores()
+	public async Task<ActionResult> ListarInstructores()
 	{
-		return View();
+		var usuariosInstructor = await _userManager.GetUsersInRoleAsync("Instructor");
+		var modelo = usuariosInstructor.Select(x => new UsuarioViewModel(x));
+		return View(modelo);
 	}
 
-	public ActionResult AgregarInstructor()
+	public async Task<ActionResult> RegistrarNuevoInstructor()
 	{
-		// Cargar los usuarios que no son instructor.
-		return View();
+		var usuariosNoInstructor = await _userManager.GetUsersNotInRoleAsync("Instructor");
+		var modelo = usuariosNoInstructor.Select(x => new UsuarioViewModel(x));
+		return View(modelo);
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> RegistrarInstructor()
+	public async Task<IActionResult> RegistrarInstructor(string id)
 	{
+		var usuario = await _userManager.FindByIdAsync(id);
+		var modelo = new AgregarInstructorViewModel(usuario);
+
 		ViewBag.Provincias = await CargarListaSeleccionProvincias();
 		ViewBag.Cantones = await CargarListaSeleccionCantones();
 		ViewBag.Distritos = await CargarListaSeleccionDistritos();
 
-		return View();
+		return View(modelo);
 	}
 
 	[HttpPost]
@@ -434,4 +440,28 @@ public class CuentasController : BaseController
 
 		return View(modelo);
 	}
+
+	// 	[Authorize]
+	// 	public class InstructoresController : BaseController
+	// 	{
+	// 		[HttpGet]
+	// 		public async Task<ActionResult> Editar(string id)
+	// 		{
+	// 			ApplicationUser usuario = await _userManager.FindByIdAsync(id);
+	// 			if (usuario is null) throw new KeyNotFoundException();
+	// 			Instructor instructor = await _repoInstructores.ReadByIdAsync(Factory.SetGuid(usuario.Id));
+	// 			ModificarInstructorViewModel modelo = new(usuario, instructor);
+	// 			await CargarViewBags();
+	// 			return View(modelo);
+	// 		}
+
+	// 		[HttpGet]
+	// 		public async Task<ActionResult> Reporte()
+	// 		{
+	// 			IEnumerable<ApplicationUser> listaUsuariosInstructores = await _userManager.GetUsersInRoleAsync("Instructor");
+	// 			IEnumerable<Instructor> listaInstructores = (IEnumerable<Instructor>)listaUsuariosInstructores.Select(async u => await _repoInstructores.ReadByIdAsync(Factory.SetGuid(u.Id))).ToList();
+	// 			IEnumerable<ReporteInstructorViewModel> modelo = listaInstructores.Select(i => new ReporteInstructorViewModel()).ToList();
+	// 			return View(modelo);
+	// 		}
+	// 	}
 }

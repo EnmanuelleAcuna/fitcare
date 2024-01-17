@@ -8,7 +8,7 @@
 <div class="page-breadcrumb">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h4 class="page-title">Lista de Instructores</h4>
+			<h4 class="page-title">Registrar nuevo instructor</h4>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -17,8 +17,11 @@
 						<li class="breadcrumb-item">
 							<a href="@Url.Action("Administracion", "Home")">Administración</a>
 						</li>
+						<li class="breadcrumb-item">
+							<a href="@Url.Action("ListarInstructores")">Instructores</a>
+						</li>
 						<li class="breadcrumb-item active" aria-current="page">
-							Instructores
+							Registrar
 						</li>
 					</ol>
 				</nav>
@@ -32,8 +35,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="RegistrarNuevoInstructor" class="btn btn-sm btn-default">Registrar instructor</a>
-
+					<a asp-action="ListarInstructores" class="btn btn-sm btn-default">Regresar</a>
 					<hr />
 
 					<div class="table-responsive">
@@ -55,10 +57,8 @@
 										<td>@Usuario.Estado</td>
 										<td>
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<a class="btn btn-sm btn-secondary" asp-controller="Cuentas" asp-action="EditarInstructor"
-													asp-route-id="@Usuario.IdUsuario">Modificar</a>
-												<a class="btn btn-sm btn-danger" asp-controller="Cuentas" asp-action="EliminarInstructor"
-													asp-route-id="@Usuario.IdUsuario">Eliminar</a>
+												<a class="btn btn-sm btn-secondary" asp-controller="Cuentas" asp-action="RegistrarInstructor"
+													asp-route-id="@Usuario.IdUsuario">Seleccionar</a>
 											</div>
 										</td>
 									</tr>

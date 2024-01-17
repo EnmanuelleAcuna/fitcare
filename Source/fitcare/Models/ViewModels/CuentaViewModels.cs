@@ -51,6 +51,8 @@ public class RestablecerContrasenaViewModel
 
 public class UsuarioViewModel
 {
+	public UsuarioViewModel() { }
+
 	public UsuarioViewModel(ApplicationUser usuario)
 	{
 		IdUsuario = usuario.Id;
@@ -182,6 +184,8 @@ public class EditarUsuarioViewModel
 
 public class AgregarInstructorViewModel : UsuarioViewModel
 {
+	public AgregarInstructorViewModel() : base() { }
+
 	public AgregarInstructorViewModel(ApplicationUser user) : base(user) { }
 
 	[Display(Name = "Provincia")]
@@ -203,29 +207,74 @@ public class AgregarInstructorViewModel : UsuarioViewModel
 	[Display(Name = "Fecha de ingreso")]
 	[Required(ErrorMessage = "La fecha de ingreso es requerida")]
 	[DataType(DataType.Date, ErrorMessage = "La fecha no tiene formato correcto.")]
-	public DateTime FechaIngreso { get; set; }
+	public DateTime FechaIngreso { get; set; } = DateTime.Now;
 
 	public ApplicationUser Entidad() => new(IdUsuario, new Guid(IdProvincia), new Guid(IdCanton), new Guid(IdDistrito), FechaIngreso);
 }
 
-public class ClienteInstructorViewModel
-{
-	public ClienteInstructorViewModel() { }
+// public class ModificarInstructorViewModel : InicioClientesInstructoresViewModel
+// {
+// 	public ModificarInstructorViewModel() { }
 
-	public ClienteInstructorViewModel(ApplicationUser usuario)
-	{
-		IdUsuario = usuario.Id;
-		Nombre = String.Format(new CultureInfo("es-CR"), "{0} {1} {2}", usuario.Name, usuario.FirstLastName, usuario.SecondLastName);
-		Correo = usuario.Email;
-		Estado = (bool)usuario.Active ? "Activo" : "Inactivo";
-	}
+// 	public ModificarInstructorViewModel(ApplicationUser usuario, Instructor instructor) : base(usuario)
+// 	{
+// 		IdDistrito = instructor.Distrito.Id.ToString();
+// 		FechaIngreso = instructor.FechaIngreso;
+// 		URLImagen = instructor.Foto?.URL; // TODO: hace falta conseguir la foto en el controlador antes de llamar este metodo
+// 	}
 
-	public string IdUsuario { get; set; }
+// 	[Display(Name = "Distrito")]
+// 	[Required(ErrorMessage = "El distrito es requerido")]
+// 	public string IdDistrito { get; set; }
 
-	public string Nombre { get; set; }
+// 	[Display(Name = "Fecha de ingreso")]
+// 	[Required(ErrorMessage = "La fecha de ingreso es requerida")]
+// 	[DataType(DataType.Date)]
+// 	public DateTime FechaIngreso { get; set; }
 
-	[Display(Name = "Correo electrónico")]
-	public string Correo { get; set; }
+// 	[Display(Name = "Fotografía actual")]
+// 	public Uri URLImagen { get; set; } // Foto actual
 
-	public string Estado { get; set; }
-}
+// 	[Display(Name = "Nueva fotografía")]
+// 	[Required(ErrorMessage = "La fotografía del instructor es requerida")]
+// 	public IFormFile Imagen { get; set; } // Nueva foto
+
+// 	public async Task<Instructor> Entidad(IDataCRUDBase<Distrito> repoDistritos)
+// 	{
+// 		Distrito distrito = await repoDistritos.ReadByIdAsync(Factory.SetGuid(IdDistrito));
+// 		Instructor instructor = new(Factory.SetGuid(IdUsuario), Convert.ToDateTime(FechaIngreso), distrito);
+// 		return instructor;
+// 	}
+// }
+
+// public class ReporteInstructorViewModel
+// {
+// 	public ReporteInstructorViewModel()
+// 	{
+// 		//NumeroIdentificacion = instructor.NumeroIdentificacion;
+// 		//Nombre = string.Format(new CultureInfo("es-CR"), "{0} {1} {2}", instructor.Nombre, instructor.PrimerApellido, instructor.SegundoApellido);
+// 		//Correo = instructor.Email;
+// 		//Domicilio = string.Format(new CultureInfo("es-CR"), "{0}, cantón {1}, distrito {2}", instructor.Distrito.Canton.Provincia.Nombre, instructor.Distrito.Canton.Nombre, instructor.Distrito.Nombre);
+// 		//FechaIngreso = instructor.FechaIngreso.ToString("dd/MM/yyyy");
+// 		//Estado = instructor.Activo ? "Activo" : "Inactivo";
+// 	}
+
+// 	[Display(Name = "Número de identificación")]
+// 	public string NumeroIdentificacion { get; set; }
+
+// 	[Display(Name = "Nombre")]
+// 	public string Nombre { get; set; }
+
+// 	[Display(Name = "Correo electrónico")]
+// 	public string Correo { get; set; }
+
+// 	[Display(Name = "Domicilio")]
+// 	public string Domicilio { get; set; }
+
+// 	[Display(Name = "Fecha de ingreso")]
+// 	public string FechaIngreso { get; set; }
+
+// 	[Display(Name = "Estado")]
+// 	public string Estado { get; set; }
+// }
+

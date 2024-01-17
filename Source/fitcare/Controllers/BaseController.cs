@@ -258,7 +258,7 @@ public class BaseController : Controller
 			archivo.CopyTo(stream);
 		}
 
-		return filePath;
+		return $"images/{archivo.FileName}";
 	}
 
 	private void EliminarImagenDisco(Uri uri)

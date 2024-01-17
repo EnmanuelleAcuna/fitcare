@@ -24,10 +24,10 @@
 
 	@if (!String.IsNullOrEmpty(Model.ExceptionMessage))
 	{
-		<div class="col-12 text-center">
+		<div class="col-12">
 			<p>
 				<small class="d-block">@Model.ExceptionMessage</small>
-				<small class="d-block text-justify">@Model.StackTrace</small>
+				<small class="d-block">@Model.StackTrace</small>
 			</p>
 		</div>
 	}
