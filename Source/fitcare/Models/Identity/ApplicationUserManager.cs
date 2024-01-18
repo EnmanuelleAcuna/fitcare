@@ -98,7 +98,36 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		userRecord.IdCanton = user.IdCanton;
 		userRecord.IdDistrito = user.IdDistrito;
 		userRecord.URLFotografia = filePath;
-		userRecord.FechaIngreso = user.FechaIngreso;
+		userRecord.FechaIngresoInscripcion = user.FechaIngresoInscripcion;
+
+		IdentityResult result = await UpdateAsync(userRecord);
+		return result;
+	}
+
+	public async Task<IdentityResult> RegistrarUsuarioComoCliente(ApplicationUser user, string filePath)
+	{
+		var userRecord = await FindByIdAsync(user.Id);
+
+		if (userRecord == null)
+			throw new KeyNotFoundException($"No user was found with the id {user.Id}");
+
+		IList<string> roles = await GetRolesAsync(user);
+
+		bool isCliente = roles.Any(role => role.Equals("Cliente", StringComparison.OrdinalIgnoreCase));
+
+		if (!isCliente)
+		{
+			roles.Add("Cliente");
+			var rolesActualizados = await ActualizarRolesUsuario(user, roles);
+			if (!rolesActualizados.Succeeded) return rolesActualizados;
+		}
+
+		userRecord.IdProvincia = user.IdProvincia;
+		userRecord.IdCanton = user.IdCanton;
+		userRecord.IdDistrito = user.IdDistrito;
+		userRecord.URLFotografia = filePath;
+		userRecord.FechaIngresoInscripcion = user.FechaIngresoInscripcion;
+		userRecord.FechaRenovacion = user.FechaRenovacion;
 
 		IdentityResult result = await UpdateAsync(userRecord);
 		return result;

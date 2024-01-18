@@ -35,7 +35,17 @@ public class ApplicationUser : IdentityUser
 		IdProvincia = idProvincia;
 		IdCanton = idCanton;
 		IdDistrito = idDistrito;
-		FechaIngreso = fechaIngreso;
+		FechaIngresoInscripcion = fechaIngreso;
+	}
+
+	public ApplicationUser(string id, Guid idProvincia, Guid idCanton, Guid idDistrito, DateTime fechaIngreso, DateTime fechaRenovacion)
+	{
+		Id = id;
+		IdProvincia = idProvincia;
+		IdCanton = idCanton;
+		IdDistrito = idDistrito;
+		FechaIngresoInscripcion = fechaIngreso;
+		FechaRenovacion = fechaRenovacion;
 	}
 
 	public string IdentificationNumber { get; private set; }
@@ -62,7 +72,10 @@ public class ApplicationUser : IdentityUser
 
 	public string URLFotografia { get; set; }
 
-	public DateTime? FechaIngreso { get; set; }
+	[Column("FechaIngresoInscripcion")]
+	public DateTime? FechaIngresoInscripcion { get; set; }
+
+	public DateTime? FechaRenovacion { get; set; }
 
 	[NotMapped]
 	public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }

@@ -441,6 +441,56 @@ public class CuentasController : BaseController
 		return View(modelo);
 	}
 
+	public async Task<ActionResult> ListarClientes()
+	{
+		var usuariosCliente = await _userManager.GetUsersInRoleAsync("Cliente");
+		var modelo = usuariosCliente.Select(x => new UsuarioViewModel(x));
+		return View(modelo);
+	}
+
+	public async Task<ActionResult> RegistrarNuevoCliente()
+	{
+		var usuariosNoCliente = await _userManager.GetUsersNotInRoleAsync("Cliente");
+		var modelo = usuariosNoCliente.Select(x => new UsuarioViewModel(x));
+		return View(modelo);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> RegistrarCliente(string id)
+	{
+		var usuario = await _userManager.FindByIdAsync(id);
+		var modelo = new AgregarClienteViewModel(usuario);
+
+		ViewBag.Provincias = await CargarListaSeleccionProvincias();
+		ViewBag.Cantones = await CargarListaSeleccionCantones();
+		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+
+		return View(modelo);
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> RegistrarCliente(AgregarClienteViewModel modelo)
+	{
+		if (ModelState.IsValid)
+		{
+			var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
+
+			var usuarioRegistradoComoCliente = await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), rutaFotografia);
+
+			if (usuarioRegistradoComoCliente.Succeeded) return RedirectToAction(nameof(ListarClientes));
+
+			AddErrors(usuarioRegistradoComoCliente);
+		}
+
+		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(ApplicationUser)));
+
+		ViewBag.Provincias = await CargarListaSeleccionProvincias();
+		ViewBag.Cantones = await CargarListaSeleccionCantones();
+		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+
+		return View(modelo);
+	}
+
 	// 	[Authorize]
 	// 	public class InstructoresController : BaseController
 	// 	{
