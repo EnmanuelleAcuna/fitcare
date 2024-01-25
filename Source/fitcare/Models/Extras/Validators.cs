@@ -21,7 +21,7 @@ public static class Validators
 		}
 	}
 
-	public static void ValidateList<T>(IList<T> lista, string nombreLista)
+	public static void ValidateList<T>(IEnumerable<T> lista, string nombreLista)
 	{
 		if (lista is null)
 		{

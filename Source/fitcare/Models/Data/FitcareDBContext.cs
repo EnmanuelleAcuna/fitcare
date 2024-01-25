@@ -18,10 +18,10 @@ public class FitcareDBContext : DbContext
 	public virtual DbSet<Ejercicio> Ejercicios { get; set; }
 	public virtual DbSet<TipoMedida> TiposMedida { get; set; }
 	public virtual DbSet<GrupoMuscular> GruposMusculares { get; set; }
+	public virtual DbSet<Rutina> Rutinas { get; set; }
 	// public virtual DbSet<DetalleMedidas> DetalleMedidas { get; set; }
 	// public virtual DbSet<DetalleRutina> DetalleRutina { get; set; }
 	// public virtual DbSet<GruposMuscularesEjercicio> GruposMuscularesEjercicio { get; set; }
-	// public virtual DbSet<Rutinas> Rutinas { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{

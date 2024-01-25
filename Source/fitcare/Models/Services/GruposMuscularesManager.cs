@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace fitcare.Models;
 
-public class DAOGrupoMuscular : IManager<GrupoMuscular>
+public class GruposMuscularesManager : IManager<GrupoMuscular>
 {
 	private readonly FitcareDBContext _dbContext;
 
-	public DAOGrupoMuscular(FitcareDBContext dbContext)
+	public GruposMuscularesManager(FitcareDBContext dbContext)
 	{
 		_dbContext = dbContext;
 	}
