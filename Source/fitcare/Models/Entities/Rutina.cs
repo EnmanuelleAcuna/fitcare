@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using fitcare.Models.Extras;
 using fitcare.Models.Identity;
 
 namespace fitcare.Models.Entities;
@@ -85,86 +84,66 @@ public class Rutina : Base
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
 
-public class MedidaRutina
+[Table("DETALLE_MEDIDAS", Schema = "fitcare")]
+public class MedidaRutina : Base
 {
-	public MedidaRutina(string valor, string comentario, TipoMedida tipoMedida)
-	{
-		Valor = valor;
-		Comentario = comentario;
-		TipoMedida = tipoMedida;
-	}
+	public MedidaRutina() : base() { }
 
+	[Key]
+	public Guid Id { get; set; }
+
+	public Guid IdRutina { get; set; }
+
+	[Column("ValorMedida")]
 	public string Valor { get; set; }
+
 	public string Comentario { get; set; }
+
+	public Guid IdTipoMedida { get; set; }
 	public TipoMedida TipoMedida { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
-public partial class DetalleMedidas
+
+[Table("DETALLE_RUTINA", Schema = "fitcare")]
+public class EjercicioRutina : Base
 {
+	public EjercicioRutina() : base() { }
+
+	[Key]
 	public Guid Id { get; set; }
+
 	public Guid IdRutina { get; set; }
-	public Guid IdTipoMedida { get; set; }
-	public string ValorMedida { get; set; }
-	public string Comentario { get; set; }
-	public DateTime DateCreated { get; set; }
-	public string CreatedBy { get; set; }
-	public DateTime? DateUpdated { get; set; }
-	public string UpdatedBy { get; set; }
 
-	// public virtual Rutinas IdRutinaNavigation { get; set; }
-	// public virtual TiposMedida IdTipoMedidaNavigation { get; set; }
-}
-
-public class EjercicioRutina
-{
-	public EjercicioRutina(int series, int repeticiones, int minutosDescanso, Ejercicio ejercicio)
-	{
-		Series = series;
-		Repeticiones = repeticiones;
-		MinutosDescanso = minutosDescanso;
-		Ejercicio = ejercicio;
-	}
-
+	[Column("Num_Series")]
 	public int Series { get; set; }
+
+	[Column("Num_Repeticiones")]
 	public int Repeticiones { get; set; }
+
+	[Column("Minutos_Descanso")]
 	public int MinutosDescanso { get; set; }
+
+	public Guid IdEjercicio { get; set; }
 	public Ejercicio Ejercicio { get; set; }
+
+	public Guid? IdMaquina { get; set; }
+	public Maquina Maquina { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
-public partial class DetalleRutina
+
+[Table("DETALLE_GRUPOS_MUSCULARES", Schema = "fitcare")]
+public class GrupoMuscularRutina : Base
 {
+	public GrupoMuscularRutina() : base() { }
+
+	[Key]
 	public Guid Id { get; set; }
+
 	public Guid IdRutina { get; set; }
-	public Guid IdEjercicio { get; set; }
-	public Guid? IdMaquina { get; set; }
-	public int NumSeries { get; set; }
-	public int NumRepeticiones { get; set; }
-	public int MinutosDescanso { get; set; }
-	public DateTime DateCreated { get; set; }
-	public string CreatedBy { get; set; }
-	public DateTime? DateUpdated { get; set; }
-	public string UpdatedBy { get; set; }
 
-	// public virtual Ejercicios IdEjercicioNavigation { get; set; }
-	// public virtual Maquina IdMaquinaNavigation { get; set; }
-	// public virtual Rutinas IdRutinaNavigation { get; set; }
-}
-
-public class GrupoMuscularRutina
-{
-	public GrupoMuscularRutina(int series, int repeticiones, int minutosDescanso, GrupoMuscular grupoMuscular)
-	{
-		Series = series;
-		Repeticiones = repeticiones;
-		MinutosDescanso = minutosDescanso;
-		GrupoMuscular = grupoMuscular;
-	}
-
-	public int Series { get; set; }
-	public int Repeticiones { get; set; }
-	public int MinutosDescanso { get; set; }
+	public Guid IdGrupoMuscular { get; set; }
 	public GrupoMuscular GrupoMuscular { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
