@@ -1,289 +1,224 @@
-// using System;
-// using System.Collections.Generic;
-// using System.ComponentModel.DataAnnotations;
-// using System.Linq;
-// using System.Threading.Tasks;
-// using fitcare.Models.Contracts;
-// using fitcare.Models.DataAccess;
-// using fitcare.Models.Entities;
-// using fitcare.Models.Extras;
-// using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using fitcare.Models.DataAccess;
+using fitcare.Models.Entities;
+using fitcare.Models.Identity;
+using Microsoft.Extensions.Configuration;
 
-// namespace fitcare.Models.ViewModels;
+namespace fitcare.Models.ViewModels;
 
-// public class RutinaViewModel
-// {
-// 	public string Id { get; set; }
+public class RutinaViewModel
+{
+	public RutinaViewModel(Rutina rutina)
+	{
+		Id = rutina.Id.ToString();
 
-// 	[Display(Name = "Instructor")]
-// 	[Required(ErrorMessage = "El instructor es requerido")]
-// 	public string Instructor { get; set; }
+		Instructor = rutina.Instructor.FullName;
+		Cliente = rutina.Cliente.FullName;
 
-// 	[Display(Name = "Cliente")]
-// 	[Required(ErrorMessage = "El cliente es requerido")]
-// 	public string Cliente { get; set; }
+		FechaRealizacion = rutina.FechaRealizacion;
+		FechaInicio = rutina.FechaInicio;
+		FechaFin = rutina.FechaFin;
+		Objetivos = rutina.Objetivo;
 
-// 	[Display(Name = "Fecha")]
-// 	public DateTime FechaRealizacion { get; set; }
+		CantidadEjercicios = rutina.Ejercicios?.Count;
+	}
 
-// 	public IList<MedidaRutinaViewModel> Medidas { get; set; }
-// 	public IList<EjercicioRutinaViewModel> Ejercicios { get; set; }
+	public string Id { get; set; }
 
-// 	public IDataCRUDBase<TipoMedida> _repoTiposMedida;
-// 	public IDataCRUDBase<Ejercicio> _repoEjercicios;
-// 	public IDataCRUDBase<Instructor> _repoInstructores;
-// 	public IDataCRUDBase<Cliente> _repoClientes;
+	[Display(Name = "Instructor")]
+	public string Instructor { get; set; }
 
-// 	public void SetDependencies(IDataCRUDBase<TipoMedida> repoTiposMedida, IDataCRUDBase<Ejercicio> repoEjercicios, IDataCRUDBase<Instructor> repoInstructores, IDataCRUDBase<Cliente> repoClientes)
-// 	{
-// 		_repoTiposMedida = repoTiposMedida;
-// 		_repoEjercicios = repoEjercicios;
-// 		_repoInstructores = repoInstructores;
-// 		_repoClientes = repoClientes;
-// 	}
-// }
+	[Display(Name = "Cliente")]
+	public string Cliente { get; set; }
 
-// public class InicioRutinasViewModel : RutinaViewModel
-// {
-// 	public InicioRutinasViewModel(Rutina rutina)
-// 	{
-// 		Validators.ValidateRutina(rutina);
-// 		Validators.ValidateInstructor(rutina.Instructor);
-// 		Validators.ValidateCliente(rutina.Cliente);
+	[Display(Name = "Fecha de realización")]
+	public DateTime FechaRealizacion { get; set; }
 
-// 		Id = rutina.Id.ToString();
-// 		//Instructor = string.Format("{0} {1} {2}", rutina.Instructor.Nombre, rutina.Instructor.PrimerApellido, rutina.Instructor.SegundoApellido);
-// 		//Cliente = string.Format("{0} {1} {2}", rutina.Cliente.Nombre, rutina.Cliente.PrimerApellido, rutina.Cliente.SegundoApellido);
-// 		FechaRealizacion = rutina.FechaRealizacion;
-// 	}
-// }
+	[Display(Name = "Fecha de inicio")]
+	public DateTime FechaInicio { get; set; }
 
-// public class NuevaRutinaViewModel : RutinaViewModel
-// {
-// 	[Display(Name = "Inicio")]
-// 	[Required(ErrorMessage = "La fecha de inicio es requerida")]
-// 	[DataType(DataType.Date)]
-// 	public DateTime FechaInicio { get; set; } = DateTime.Now;
+	[Display(Name = "Fecha de finalización")]
+	public DateTime FechaFin { get; set; }
 
-// 	[Display(Name = "Finalización")]
-// 	[Required(ErrorMessage = "La fecha de finalización es requerida")]
-// 	[DataType(DataType.Date)]
-// 	public DateTime FechaFin { get; set; } = DateTime.Now;
+	public string Objetivos { get; set; }
 
-// 	[Display(Name = "Objetivo")]
-// 	public string Objetivo { get; set; }
+	public int? CantidadEjercicios { get; set; } = 0;
+}
 
-// 	public async Task<Rutina> Entidad()
-// 	{
-// 		Instructor instructor = await _repoInstructores.ReadByIdAsync(Factory.SetGuid(Instructor));
-// 		Cliente cliente = await _repoClientes.ReadByIdAsync(Factory.SetGuid(Cliente));
-// 		IList<MedidaRutina> medidas = (IList<MedidaRutina>)Medidas.Select(async x => await x.Entidad()).ToList();
-// 		IList<EjercicioRutina> ejercicios = (IList<EjercicioRutina>)Ejercicios.Select(async x => await x.Entidad()).ToList();
-// 		Rutina rutina = new(Guid.NewGuid(), DateTime.Now, FechaInicio, FechaFin, Objetivo, instructor, cliente, medidas, ejercicios);
-// 		return rutina;
-// 	}
-// }
+public class AgregarRutinaViewModel
+{
+	[Required(ErrorMessage = "El instructor es requerido.")]
+	public string IdInstructor { get; set; }
 
-// public class EditarRutinaViewModel : RutinaViewModel
-// {
-// 	public EditarRutinaViewModel(Rutina rutina)
-// 	{
-// 		Validators.ValidateRutina(rutina);
-// 		Validators.ValidateInstructor(rutina.Instructor);
-// 		Validators.ValidateCliente(rutina.Cliente);
-// 		Validators.ValidateList(rutina.Medidas, nameof(MedidaRutina));
-// 		Validators.ValidateList(rutina.Ejercicios, nameof(EjercicioRutina));
+	[Required(ErrorMessage = "El cliente es requerido.")]
+	public string IdCliente { get; set; }
 
-// 		Id = rutina.Id.ToString();
-// 		Instructor = rutina.Instructor.Id.ToString();
-// 		Cliente = rutina.Cliente.Id;
-// 		FechaRealizacion = rutina.FechaRealizacion;
-// 		FechaInicio = rutina.FechaInicio;
-// 		FechaFin = rutina.FechaFin;
-// 		Objetivo = rutina.Objetivo;
+	[Display(Name = "Realización")]
+	[Required(ErrorMessage = "La fecha de realización es requerida.")]
+	[DataType(DataType.Date)]
+	public DateTime FechaRealizacion { get; set; } = DateTime.Now;
 
-// 		Medidas = rutina.Medidas.Select(m => new MedidaRutinaViewModel(m)).ToList();
-// 		Ejercicios = rutina.Ejercicios.Select(e => new EjercicioRutinaViewModel(e)).ToList();
-// 	}
+	[Display(Name = "Inicio")]
+	[Required(ErrorMessage = "La fecha de inicio es requerida")]
+	[DataType(DataType.Date)]
+	public DateTime FechaInicio { get; set; } = DateTime.Now;
 
-// 	[Display(Name = "Inicio")]
-// 	[Required(ErrorMessage = "La fecha de inicio es requerida")]
-// 	[DataType(DataType.Date)]
-// 	public DateTime FechaInicio { get; set; } = DateTime.Now;
+	[Display(Name = "Finalización")]
+	[Required(ErrorMessage = "La fecha de finalización es requerida")]
+	[DataType(DataType.Date)]
+	public DateTime FechaFin { get; set; } = DateTime.Now.AddMonths(1);
 
-// 	[Display(Name = "Finalización")]
-// 	[Required(ErrorMessage = "La fecha de finalización es requerida")]
-// 	[DataType(DataType.Date)]
-// 	public DateTime FechaFin { get; set; } = DateTime.Now;
+	[Display(Name = "Objetivo")]
+	public string Objetivo { get; set; }
 
-// 	[Display(Name = "Objetivo")]
-// 	public string Objetivo { get; set; }
+	public Rutina Entidad(ApplicationUser instructor, ApplicationUser cliente)
+	{
+		// IList<EjercicioRutina> ejercicios = (IList<EjercicioRutina>)Ejercicios.Select(async x => await x.Entidad()).ToList();
 
-// 	public async Task<Rutina> Entidad()
-// 	{
-// 		Instructor instructor = await _repoInstructores.ReadByIdAsync(Factory.SetGuid(Instructor));
-// 		Cliente cliente = await _repoClientes.ReadByIdAsync(Factory.SetGuid(Cliente));
-// 		IList<MedidaRutina> medidas = (IList<MedidaRutina>)Medidas.Select(async x => await x.Entidad()).ToList();
-// 		IList<EjercicioRutina> ejercicios = (IList<EjercicioRutina>)Ejercicios.Select(async x => await x.Entidad()).ToList();
-// 		Rutina rutina = new(Factory.SetGuid(Id), FechaRealizacion, FechaInicio, FechaFin, Objetivo, instructor, cliente, medidas, ejercicios);
-// 		return rutina;
-// 	}
-// }
+		// IList<MedidaRutina> medidas = (IList<MedidaRutina>)Medidas.Select(async x => await x.Entidad()).ToList();
 
-// public class EjercicioRutinaViewModel
-// {
-// 	public EjercicioRutinaViewModel(EjercicioRutina ejercicioRutina)
-// 	{
-// 		Validators.ValidateEjercicioRutina(ejercicioRutina);
-// 		Validators.ValidateEjercicio(ejercicioRutina.Ejercicio);
-// 		Validators.ValidateTipoEjercicio(ejercicioRutina.Ejercicio.TipoEjercicio);
+		Rutina rutina = new(Guid.NewGuid(), FechaRealizacion, FechaInicio, FechaFin, Objetivo, instructor, cliente, null, null, null);
+		return rutina;
+	}
+}
 
-// 		IdEjercicio = ejercicioRutina.Ejercicio.Id.ToString();
-// 		Nombre = ejercicioRutina.Ejercicio.Nombre;
-// 		Series = ejercicioRutina.Series;
-// 		Repeticiones = ejercicioRutina.Repeticiones;
-// 		MinutosDescanso = ejercicioRutina.MinutosDescanso;
-// 	}
+public class EjercicioRutinaViewModel
+{
+	public EjercicioRutinaViewModel(EjercicioRutina ejercicioRutina)
+	{
+		IdEjercicio = ejercicioRutina.Ejercicio.Id.ToString();
+		Nombre = ejercicioRutina.Ejercicio.Nombre;
+		Series = ejercicioRutina.Series;
+		Repeticiones = ejercicioRutina.Repeticiones;
+		MinutosDescanso = ejercicioRutina.MinutosDescanso;
+	}
 
-// 	public string IdEjercicio { get; set; }
-// 	public string Nombre { get; set; }
-// 	public int Series { get; set; }
-// 	public int Repeticiones { get; set; }
-// 	public int MinutosDescanso { get; set; }
+	public string IdEjercicio { get; set; }
+	public string Nombre { get; set; }
+	public int Series { get; set; }
+	public int Repeticiones { get; set; }
+	public int MinutosDescanso { get; set; }
 
-// 	public IDataCRUDBase<Ejercicio> _repoEjercicios;
+	// public async Task<EjercicioRutina> Entidad()
+	// {
+	// 	Ejercicio ejercicio = await _repoEjercicios.ReadByIdAsync(Factory.SetGuid(IdEjercicio));
+	// 	EjercicioRutina ejercicioRutina = new(Series, Repeticiones, MinutosDescanso, ejercicio);
+	// 	return ejercicioRutina;
+	// }
+}
 
-// 	public void SetDependencies(IDataCRUDBase<Ejercicio> repoEjercicios)
-// 	{
-// 		_repoEjercicios = repoEjercicios;
-// 	}
+public class MedidaRutinaViewModel
+{
+	public MedidaRutinaViewModel(MedidaRutina medidaRutina)
+	{
+		IdTipoMedida = medidaRutina.TipoMedida.Id.ToString();
+		Nombre = medidaRutina.TipoMedida.Nombre;
+		Valor = medidaRutina.Valor;
+		Comentario = medidaRutina.Comentario;
+	}
 
-// 	public async Task<EjercicioRutina> Entidad()
-// 	{
-// 		Ejercicio ejercicio = await _repoEjercicios.ReadByIdAsync(Factory.SetGuid(IdEjercicio));
-// 		EjercicioRutina ejercicioRutina = new(Series, Repeticiones, MinutosDescanso, ejercicio);
-// 		return ejercicioRutina;
-// 	}
-// }
+	public string IdTipoMedida { get; set; }
+	public string Nombre { get; set; }
+	public string Valor { get; set; }
+	public string Comentario { get; set; }
 
-// public class MedidaRutinaViewModel
-// {
-// 	public MedidaRutinaViewModel(MedidaRutina medidaRutina)
-// 	{
-// 		Validators.ValidateMedidaRutina(medidaRutina);
-// 		Validators.ValidateTipoMedida(medidaRutina.TipoMedida);
+	// public async Task<MedidaRutina> Entidad()
+	// {
+	// 	TipoMedida tipoMedida = await _repoTiposMedida.ReadByIdAsync(Factory.SetGuid(IdTipoMedida));
+	// 	MedidaRutina medidaRutina = new(Valor, Comentario, tipoMedida);
+	// 	return medidaRutina;
+	// }
+}
 
-// 		IdTipoMedida = medidaRutina.TipoMedida.Id.ToString();
-// 		Nombre = medidaRutina.TipoMedida.Nombre;
-// 		Valor = medidaRutina.Valor;
-// 		Comentario = medidaRutina.Comentario;
-// 	}
+public class ReporteRutinaDetalladoViewModel
+{
+	public ReporteRutinaDetalladoViewModel(ReporteRutinaDetallado rutina, IConfiguration configuration)
+	{
+		if (rutina is null)
+			throw new ArgumentNullException(paramName: nameof(rutina), message: configuration["AppSettings:ModeloNulo"]);
 
-// 	public string IdTipoMedida { get; set; }
-// 	public string Nombre { get; set; }
-// 	public string Valor { get; set; }
-// 	public string Comentario { get; set; }
+		NombreInstructor = rutina.NombreInstructor;
+		NombreCliente = rutina.NombreCliente;
+		FechaRegistro = rutina.FechaRegistro.ToString("dd/MM/yyyy");
+		FechaInicio = rutina.FechaInicio.ToString("dd/MM/yyyy");
+		FechaFin = rutina.FechaFin.ToString("dd/MM/yyyy");
+		Objetivo = rutina.Objetivo;
+		DiasRutina = rutina.DiasRutina;
+		CantidadEjerciciosRegistrados = rutina.CantidadEjerciciosRegistrados;
 
-// 	public IDataCRUDBase<TipoMedida> _repoTiposMedida;
+		// Ejercicios = rutina.Ejercicios.Select(de => new DetalleEjercicioRutinaViewModel(de)).ToList();
+		// Medidas = rutina.Medidas.Select(mr => new DetalleMedidaViewModel(mr)).ToList();
+	}
 
-// 	public void SetDependencies(IDataCRUDBase<TipoMedida> repoTiposMedida)
-// 	{
-// 		_repoTiposMedida = repoTiposMedida;
-// 	}
+	[Display(Name = "Instructor")]
+	public string NombreInstructor { get; set; }
 
-// 	public async Task<MedidaRutina> Entidad()
-// 	{
-// 		TipoMedida tipoMedida = await _repoTiposMedida.ReadByIdAsync(Factory.SetGuid(IdTipoMedida));
-// 		MedidaRutina medidaRutina = new(Valor, Comentario, tipoMedida);
-// 		return medidaRutina;
-// 	}
-// }
+	[Display(Name = "Cliente")]
+	public string NombreCliente { get; set; }
 
-// public class ReporteRutinaDetalladoViewModel
-// {
-// 	public ReporteRutinaDetalladoViewModel(ReporteRutinaDetallado rutina, IConfiguration configuration)
-// 	{
-// 		if (rutina is null)
-// 			throw new ArgumentNullException(paramName: nameof(rutina), message: configuration["AppSettings:ModeloNulo"]);
+	[Display(Name = "Registro")]
+	public string FechaRegistro { get; set; }
 
-// 		NombreInstructor = rutina.NombreInstructor;
-// 		NombreCliente = rutina.NombreCliente;
-// 		FechaRegistro = rutina.FechaRegistro.ToString("dd/MM/yyyy");
-// 		FechaInicio = rutina.FechaInicio.ToString("dd/MM/yyyy");
-// 		FechaFin = rutina.FechaFin.ToString("dd/MM/yyyy");
-// 		Objetivo = rutina.Objetivo;
-// 		DiasRutina = rutina.DiasRutina;
-// 		CantidadEjerciciosRegistrados = rutina.CantidadEjerciciosRegistrados;
+	[Display(Name = "Inicio")]
+	public string FechaInicio { get; set; }
 
-// 		// Ejercicios = rutina.Ejercicios.Select(de => new DetalleEjercicioRutinaViewModel(de)).ToList();
-// 		// Medidas = rutina.Medidas.Select(mr => new DetalleMedidaViewModel(mr)).ToList();
-// 	}
+	[Display(Name = "Finalización")]
+	public string FechaFin { get; set; }
 
-// 	[Display(Name = "Instructor")]
-// 	public string NombreInstructor { get; set; }
+	public string Objetivo { get; set; }
 
-// 	[Display(Name = "Cliente")]
-// 	public string NombreCliente { get; set; }
+	[Display(Name = "Días")]
+	public int DiasRutina { get; set; }
 
-// 	[Display(Name = "Registro")]
-// 	public string FechaRegistro { get; set; }
+	[Display(Name = "Ejercicios")]
+	public int CantidadEjerciciosRegistrados { get; set; }
 
-// 	[Display(Name = "Inicio")]
-// 	public string FechaInicio { get; set; }
+	// public IEnumerable<DetalleEjercicioRutinaViewModel> Ejercicios { get; set; }
 
-// 	[Display(Name = "Finalización")]
-// 	public string FechaFin { get; set; }
+	// public IEnumerable<DetalleMedidaViewModel> Medidas { get; set; }
+}
 
-// 	public string Objetivo { get; set; }
+public class ReporteRutinaResumidoViewModel
+{
+	public ReporteRutinaResumidoViewModel(ReporteRutinaResumido rutina, IConfiguration configuration)
+	{
+		if (rutina is null)
+			throw new ArgumentNullException(paramName: nameof(rutina), message: configuration["AppSettings:ModeloNulo"]);
 
-// 	[Display(Name = "Días")]
-// 	public int DiasRutina { get; set; }
+		NombreInstructor = rutina.NombreInstructor;
+		NombreCliente = rutina.NombreCliente;
+		FechaRegistro = rutina.FechaRegistro.ToString("dd/MM/yyyy");
+		FechaInicio = rutina.FechaInicio.ToString("dd/MM/yyyy");
+		FechaFin = rutina.FechaFin.ToString("dd/MM/yyyy");
+		Objetivo = rutina.Objetivo;
+		DiasRutina = rutina.DiasRutina;
+		CantidadEjerciciosRegistrados = rutina.CantidadEjerciciosRegistrados;
+	}
 
-// 	[Display(Name = "Ejercicios")]
-// 	public int CantidadEjerciciosRegistrados { get; set; }
+	[Display(Name = "Instructor")]
+	public string NombreInstructor { get; set; }
 
-// 	// public IEnumerable<DetalleEjercicioRutinaViewModel> Ejercicios { get; set; }
+	[Display(Name = "Cliente")]
+	public string NombreCliente { get; set; }
 
-// 	// public IEnumerable<DetalleMedidaViewModel> Medidas { get; set; }
-// }
+	[Display(Name = "Registro de rutina")]
+	public string FechaRegistro { get; set; }
 
-// public class ReporteRutinaResumidoViewModel
-// {
-// 	public ReporteRutinaResumidoViewModel(ReporteRutinaResumido rutina, IConfiguration configuration)
-// 	{
-// 		if (rutina is null)
-// 			throw new ArgumentNullException(paramName: nameof(rutina), message: configuration["AppSettings:ModeloNulo"]);
+	[Display(Name = "Inicio")]
+	public string FechaInicio { get; set; }
 
-// 		NombreInstructor = rutina.NombreInstructor;
-// 		NombreCliente = rutina.NombreCliente;
-// 		FechaRegistro = rutina.FechaRegistro.ToString("dd/MM/yyyy");
-// 		FechaInicio = rutina.FechaInicio.ToString("dd/MM/yyyy");
-// 		FechaFin = rutina.FechaFin.ToString("dd/MM/yyyy");
-// 		Objetivo = rutina.Objetivo;
-// 		DiasRutina = rutina.DiasRutina;
-// 		CantidadEjerciciosRegistrados = rutina.CantidadEjerciciosRegistrados;
-// 	}
+	[Display(Name = "Finalización")]
+	public string FechaFin { get; set; }
 
-// 	[Display(Name = "Instructor")]
-// 	public string NombreInstructor { get; set; }
+	public string Objetivo { get; set; }
 
-// 	[Display(Name = "Cliente")]
-// 	public string NombreCliente { get; set; }
+	[Display(Name = "Cantidad de días")]
+	public int DiasRutina { get; set; }
 
-// 	[Display(Name = "Registro de rutina")]
-// 	public string FechaRegistro { get; set; }
-
-// 	[Display(Name = "Inicio")]
-// 	public string FechaInicio { get; set; }
-
-// 	[Display(Name = "Finalización")]
-// 	public string FechaFin { get; set; }
-
-// 	public string Objetivo { get; set; }
-
-// 	[Display(Name = "Cantidad de días")]
-// 	public int DiasRutina { get; set; }
-
-// 	[Display(Name = "Ejercicios registrados")]
-// 	public int CantidadEjerciciosRegistrados { get; set; }
-// }
+	[Display(Name = "Ejercicios registrados")]
+	public int CantidadEjerciciosRegistrados { get; set; }
+}

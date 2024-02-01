@@ -85,7 +85,7 @@
 
 						@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
 						{
-							<a href='@Url.Action("Inicio", "Rutinas")' class="btn btn-sm btn-block btn-dark">Todas las rutinas</a>
+							<a href='@Url.Action("Inicio", "Rutinas")' class="btn btn-sm btn-block btn-dark">Rutinas</a>
 							<a href='@Url.Action("Nuevo", "Rutinas")' class="btn btn-sm btn-block btn-dark">Registrar rutina</a>
 							<a href='@Url.Action("ReporteResumido", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas resumido</a>
 							<a href='@Url.Action("ReporteDetallado", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas detallado</a>

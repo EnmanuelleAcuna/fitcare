@@ -50,17 +50,11 @@ public class RutinasManager : IManager<Rutina>
 
 	public async Task CreateAsync(Rutina rutina, string user)
 	{
-		using IDbContextTransaction transaction = _db.Database.BeginTransaction();
-
 		rutina.DateCreated = DateTime.UtcNow;
 		rutina.CreatedBy = user;
 
-		await _db.Rutinas.AddAsync(rutina);
-		// AsignarEjercicios(rutina, rutinaBD);
-		// AsignarMedidas(rutina, rutinaBD);
+		await _db.AddAsync(rutina);
 		await _db.SaveChangesAsync();
-
-		transaction.Commit();
 	}
 
 	public async Task UpdateAsync(Rutina rutina, string user)
@@ -102,13 +96,13 @@ public class RutinasManager : IManager<Rutina>
 		transaction.Commit();
 	}
 
-	// internal void AsignarEjercicios(Rutina rutina, Rutinas rutinaBD)
+	// internal void AsignarEjercicios(Rutina rutina, Rutina rutinaBD)
 	// {
-	// 	if (_db.Entry(rutinaBD).State.Equals(EntityState.Modified)) rutinaBD.EjerciciosRutina.Clear();
+	// 	if (_db.Entry(rutinaBD).State.Equals(EntityState.Modified)) rutinaBD.Ejercicios.Clear();
 
 	// 	foreach (EjercicioRutina ejercicioRutina in rutina.Ejercicios)
 	// 	{
-	// 		rutinaBD.EjerciciosRutina.Add(new EjerciciosRutina(rutina.Id, ejercicioRutina));
+	// 		rutinaBD.Ejercicios.Add(new EjercicioRutina(rutina.Id, ejercicioRutina));
 	// 	}
 	// }
 

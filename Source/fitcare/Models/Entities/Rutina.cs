@@ -17,9 +17,10 @@ public class Rutina : Base
 		GruposMusculares = new HashSet<GrupoMuscularRutina>();
 	}
 
-	public Rutina(Guid id, DateTime fechaRealizacion, DateTime fechaInicio, DateTime fechaFin, string objetivo, ApplicationUser instructor, ApplicationUser cliente, IList<MedidaRutina> medidas, IList<EjercicioRutina> ejercicios, IList<GrupoMuscularRutina> gruposMusculares)
+	public Rutina(Guid id, DateTime fechaRealizacion, DateTime fechaInicio, DateTime fechaFin, string objetivo, ApplicationUser instructor, ApplicationUser cliente, IList<EjercicioRutina> ejercicios, IList<MedidaRutina> medidas, IList<GrupoMuscularRutina> gruposMusculares)
 	{
 		Id = id;
+
 		FechaRealizacion = fechaRealizacion;
 		FechaInicio = fechaInicio;
 		FechaFin = fechaFin;
@@ -77,30 +78,9 @@ public class Rutina : Base
 	public string IdCliente { get; set; }
 	public ApplicationUser Cliente { get; set; }
 
-	public ICollection<MedidaRutina> Medidas { get; set; }
 	public ICollection<EjercicioRutina> Ejercicios { get; set; }
+	public ICollection<MedidaRutina> Medidas { get; set; }
 	public ICollection<GrupoMuscularRutina> GruposMusculares { get; set; }
-
-	public override string ToString() => JsonSerializer.Serialize(this);
-}
-
-[Table("DETALLE_MEDIDAS", Schema = "fitcare")]
-public class MedidaRutina : Base
-{
-	public MedidaRutina() : base() { }
-
-	[Key]
-	public Guid Id { get; set; }
-
-	public Guid IdRutina { get; set; }
-
-	[Column("ValorMedida")]
-	public string Valor { get; set; }
-
-	public string Comentario { get; set; }
-
-	public Guid IdTipoMedida { get; set; }
-	public TipoMedida TipoMedida { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
@@ -129,6 +109,27 @@ public class EjercicioRutina : Base
 
 	public Guid? IdMaquina { get; set; }
 	public Maquina Maquina { get; set; }
+
+	public override string ToString() => JsonSerializer.Serialize(this);
+}
+
+[Table("DETALLE_MEDIDAS", Schema = "fitcare")]
+public class MedidaRutina : Base
+{
+	public MedidaRutina() : base() { }
+
+	[Key]
+	public Guid Id { get; set; }
+
+	public Guid IdRutina { get; set; }
+
+	[Column("ValorMedida")]
+	public string Valor { get; set; }
+
+	public string Comentario { get; set; }
+
+	public Guid IdTipoMedida { get; set; }
+	public TipoMedida TipoMedida { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }

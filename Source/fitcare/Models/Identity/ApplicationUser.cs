@@ -112,6 +112,9 @@ public class ApplicationUser : IdentityUser
 	public override string NormalizedUserName { get; set; }
 	#endregion
 
+	[NotMapped]
+	public string FullName { get { return $"{Name} {FirstLastName} {SecondLastName}"; } }
+
 	public void SetNewPersonalInformation(string name, string firstLastName, string secondLastName, string identification)
 	{
 		Name = name;
