@@ -65,17 +65,25 @@ public class Rutina : Base
 	[Key]
 	public Guid Id { get; set; }
 
+	[Column("Fecha_Realizacion")]
 	public DateTime FechaRealizacion { get; set; }
+
+	[Column("Fecha_Inicio")]
 	public DateTime FechaInicio { get; set; }
+
+	[Column("Fecha_Fin")]
 	public DateTime FechaFin { get; set; }
+
 	public string Objetivo { get; set; }
 
 	[ForeignKey(nameof(ApplicationUser))]
 	public string IdInstructor { get; set; }
+	[InverseProperty("IdInstructor")]
 	public ApplicationUser Instructor { get; set; }
 
 	[ForeignKey(nameof(ApplicationUser))]
 	public string IdCliente { get; set; }
+	[InverseProperty("IdCliente")]
 	public ApplicationUser Cliente { get; set; }
 
 	public ICollection<EjercicioRutina> Ejercicios { get; set; }
@@ -89,6 +97,19 @@ public class Rutina : Base
 public class EjercicioRutina : Base
 {
 	public EjercicioRutina() : base() { }
+
+	public EjercicioRutina(Guid id, Guid idRutina, int series, int repeticiones, int minutosDescanso, Ejercicio ejercicio, Maquina maquina)
+	{
+		Id = id;
+		IdRutina = idRutina;
+		Series = series;
+		Repeticiones = repeticiones;
+		MinutosDescanso = minutosDescanso;
+		IdEjercicio = ejercicio.Id;
+		Ejercicio = ejercicio;
+		IdMaquina = maquina.Id;
+		Maquina = maquina;
+	}
 
 	[Key]
 	public Guid Id { get; set; }
@@ -118,6 +139,15 @@ public class MedidaRutina : Base
 {
 	public MedidaRutina() : base() { }
 
+	public MedidaRutina(Guid id, Guid idRutina, string valor, string comentario, TipoMedida tipoMedida){
+		Id = id;
+		IdRutina = idRutina;
+		Valor = valor;
+		Comentario = comentario;
+		IdTipoMedida = tipoMedida.Id;
+		TipoMedida = tipoMedida;
+	}
+
 	[Key]
 	public Guid Id { get; set; }
 
@@ -138,6 +168,13 @@ public class MedidaRutina : Base
 public class GrupoMuscularRutina : Base
 {
 	public GrupoMuscularRutina() : base() { }
+
+	public GrupoMuscularRutina(Guid id, Guid idRutina, GrupoMuscular grupoMuscular) {
+		Id = id;
+		IdRutina = idRutina;
+		IdGrupoMuscular = grupoMuscular.Id;
+		GrupoMuscular = grupoMuscular;
+	}
 
 	[Key]
 	public Guid Id { get; set; }

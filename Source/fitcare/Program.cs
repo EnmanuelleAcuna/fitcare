@@ -74,7 +74,7 @@ class Program
 		builder.Services.AddTransient<IManager<Ejercicio>, EjerciciosManager>();
 		builder.Services.AddTransient<IManager<TipoMedida>, TiposMedidaManager>();
 		builder.Services.AddTransient<IManager<GrupoMuscular>, GruposMuscularesManager>();
-		builder.Services.AddTransient<IManager<Rutina>, RutinasManager>();
+		builder.Services.AddTransient<IRutinasManager<Rutina>, RutinasManager>();
 		// builder.Services.AddTransient<IRepository<Cliente>, DAOCliente>();
 		// builder.Services.AddTransient<IRepository<Instructor>, DAOInstructor>();
 		// builder.Services.AddTransient<IRepository<Accesorio>, DAOAccesorio>();

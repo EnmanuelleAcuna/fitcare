@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace fitcare.Controllers
 	[Authorize]
 	public class RutinasController : BaseController
 	{
-		private readonly IManager<Rutina> _rutinasManager;
+		private readonly IRutinasManager<Rutina> _rutinasManager;
 		private readonly IManager<TipoMedida> _tiposMedidaManager;
 		private readonly IManager<Ejercicio> _ejerciciosManager;
 		private readonly IManager<GrupoMuscular> _gruposMuscularesManager;
@@ -30,7 +31,7 @@ namespace fitcare.Controllers
 		private readonly IEmailSender _emailSender;
 		private readonly ILogger<RutinasController> _logger;
 
-		public RutinasController(IManager<Rutina> rutinasManager,
+		public RutinasController(IRutinasManager<Rutina> rutinasManager,
 								 IManager<TipoMedida> tiposMedidaManager,
 								 IManager<Ejercicio> repoEjercicios,
 								 IManager<GrupoMuscular> gruposMuscularesManager,
@@ -104,7 +105,7 @@ namespace fitcare.Controllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Registrar(AgregarRutinaViewModel modelo, IFormCollection keyValuePairs)
+		public async Task<IActionResult> Registrar(AgregarRutinaViewModel modelo)
 		{
 			if (ModelState.IsValid)
 			{
@@ -115,8 +116,6 @@ namespace fitcare.Controllers
 				if (usuarioCliente == null) return NotFound();
 
 				Rutina rutina = modelo.Entidad(usuarioInstructor, usuarioCliente);
-
-				// TODO: extraer ejercicios seleccionados, maquinas, medidas y grupos musculares.
 
 				await _rutinasManager.CreateAsync(rutina, CurrentUser);
 
@@ -129,7 +128,6 @@ namespace fitcare.Controllers
 				return RedirectToAction("Inicio");
 			}
 
-			// Si se llega a este punto, hubo un error
 			await CargarViewBags();
 			ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Rutina)));
 			return View(modelo);

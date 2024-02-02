@@ -111,7 +111,7 @@
 					<div class="dropdown-menu" aria-labelledby="DropdownRutinas">
 						@if (User.IsInRole("Administrador") || User.IsInRole("Instructor"))
 						{
-							<a class="dropdown-item" href='@Url.Action("Inicio", "Rutinas")'>
+							<a class="dropdown-item" href='@Url.Action("Listar", "Rutinas")'>
 								<i class="mdi mdi-checkbox-blank"></i>
 								Rutinas
 							</a>

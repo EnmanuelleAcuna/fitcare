@@ -28,3 +28,10 @@ public interface IDivisionTerritorialManager
 	IManager<Canton> Cantones { get; }
 	IManager<Distrito> Distritos { get; }
 }
+
+public interface IRutinasManager<T>
+{
+	Task<IList<T>> ReadAllAsync();
+	Task<T> ReadByIdAsync(Guid id);
+	Task CreateAsync(T model, string user);
+}

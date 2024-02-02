@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace fitcare.Models;
 
-public class RutinasManager : IManager<Rutina>
+public class RutinasManager : IRutinasManager<Rutina>
 {
 	private readonly FitcareDBContext _db;
 
@@ -53,86 +52,12 @@ public class RutinasManager : IManager<Rutina>
 		rutina.DateCreated = DateTime.UtcNow;
 		rutina.CreatedBy = user;
 
+		// Recorrer cada ejercicioRutina, medidaRutina y grupoMuscularRutina
+		// para establecer los valores de fecha y usuario de insercion
+
 		await _db.AddAsync(rutina);
 		await _db.SaveChangesAsync();
 	}
-
-	public async Task UpdateAsync(Rutina rutina, string user)
-	{
-		using IDbContextTransaction transaction = _db.Database.BeginTransaction();
-
-		var record = await ReadByIdAsync(rutina.Id);
-
-		record.IdInstructor = rutina.IdInstructor;
-		record.IdCliente = rutina.IdCliente;
-		record.FechaRealizacion = rutina.FechaRealizacion;
-		record.FechaInicio = rutina.FechaInicio;
-		record.FechaFin = rutina.FechaFin;
-		record.Objetivo = rutina.Objetivo;
-
-		record.DateUpdated = DateTime.Now;
-		record.UpdatedBy = user;
-
-		_db.Update(record);
-		// AsignarEjercicios(rutina, rutinaBD);
-		// AsignarMedidas(rutina, rutinaBD);
-		await _db.SaveChangesAsync();
-
-		transaction.Commit();
-	}
-
-	public async Task DeleteAsync(Guid id)
-	{
-		using IDbContextTransaction transaction = _db.Database.BeginTransaction();
-
-		var record = await ReadByIdAsync(id);
-
-		// rutinaBD.MedidasRutina.Clear();
-		// rutinaBD.EjerciciosRutina.Clear();
-
-		_db.Remove(record);
-		await _db.SaveChangesAsync();
-
-		transaction.Commit();
-	}
-
-	// internal void AsignarEjercicios(Rutina rutina, Rutina rutinaBD)
-	// {
-	// 	if (_db.Entry(rutinaBD).State.Equals(EntityState.Modified)) rutinaBD.Ejercicios.Clear();
-
-	// 	foreach (EjercicioRutina ejercicioRutina in rutina.Ejercicios)
-	// 	{
-	// 		rutinaBD.Ejercicios.Add(new EjercicioRutina(rutina.Id, ejercicioRutina));
-	// 	}
-	// }
-
-	// internal void AsignarMedidas(Rutina rutina, Rutinas rutinaBD)
-	// {
-	// 	if (_db.Entry(rutinaBD).State.Equals(EntityState.Modified)) rutinaBD.MedidasRutina.Clear();
-
-	// 	foreach (MedidaRutina medidaRutina in rutina.Medidas)
-	// 	{
-	// 		rutinaBD.MedidasRutina.Add(new MedidasRutina(rutina.Id, medidaRutina));
-	// 	}
-	// }
-
-	// public IEnumerable<EjercicioRutina> ReadEjerciciosByRutina(Guid idRutina)
-	// {
-	// 	var ejerciciosRutinaBD = _db.EjerciciosRutina.Where(dr => dr.IdRutina.Equals(idRutina.ToString()));
-	// 	ejerciciosRutinaBD.Include(e => e.IdEjercicioNavigation).ThenInclude(e => e.IdTipoEjercicioNavigation);
-	// 	IEnumerable<EjerciciosRutina> listaEjerciciosRutinaBD = ejerciciosRutinaBD.ToList();
-	// 	IEnumerable<EjercicioRutina> ejerciciosRutina = listaEjerciciosRutinaBD.Select(d => d.ConvertDBModelToDomain()).ToList();
-	// 	return ejerciciosRutina;
-	// }
-
-	// public IEnumerable<MedidaRutina> ReadMedidasByRutina(Guid idRutina)
-	// {
-	// 	var medidasRutinaBD = _db.MedidasRutina.Where(mr => mr.IdRutina.Equals(idRutina.ToString()));
-	// 	medidasRutinaBD.Include(m => m.IdTipoMedidaNavigation);
-	// 	IEnumerable<MedidasRutina> listaMedidasRutinaBD = medidasRutinaBD.ToList();
-	// 	IEnumerable<MedidaRutina> medidasRutina = listaMedidasRutinaBD.Select(d => d.ConvertDBModelToDomain()).ToList();
-	// 	return medidasRutina;
-	// }
 
 	// public IEnumerable<Rutina> ReadAllAsyncByCliente(string idCliente)
 	// {

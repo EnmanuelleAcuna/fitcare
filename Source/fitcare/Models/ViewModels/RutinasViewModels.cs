@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using fitcare.Models.DataAccess;
 using fitcare.Models.Entities;
 using fitcare.Models.Identity;
@@ -75,13 +74,17 @@ public class AgregarRutinaViewModel
 	[Display(Name = "Objetivo")]
 	public string Objetivo { get; set; }
 
+	public IEnumerable<EjercicioRutinaViewModel> Ejercicios { get; set; }
+	public IEnumerable<MedidaRutinaViewModel> Medidas { get; set; }
+	public IEnumerable<GrupoMuscularRutinaViewModel> GruposMusculares { get; set; }
+
 	public Rutina Entidad(ApplicationUser instructor, ApplicationUser cliente)
 	{
-		// IList<EjercicioRutina> ejercicios = (IList<EjercicioRutina>)Ejercicios.Select(async x => await x.Entidad()).ToList();
+		IList<EjercicioRutina> ejercicios = Ejercicios.Select(x => x.Entidad()).ToList();
+		IList<MedidaRutina> medidas = Medidas.Select(x => x.Entidad()).ToList();
+		IList<GrupoMuscularRutina> gruposMusculares = GruposMusculares.Select(x => x.Entidad()).ToList();
 
-		// IList<MedidaRutina> medidas = (IList<MedidaRutina>)Medidas.Select(async x => await x.Entidad()).ToList();
-
-		Rutina rutina = new(Guid.NewGuid(), FechaRealizacion, FechaInicio, FechaFin, Objetivo, instructor, cliente, null, null, null);
+		Rutina rutina = new(Guid.NewGuid(), FechaRealizacion, FechaInicio, FechaFin, Objetivo, instructor, cliente, ejercicios, medidas, gruposMusculares);
 		return rutina;
 	}
 }
@@ -90,48 +93,85 @@ public class EjercicioRutinaViewModel
 {
 	public EjercicioRutinaViewModel(EjercicioRutina ejercicioRutina)
 	{
+		Id = ejercicioRutina.Id.ToString();
+		IdRutina = ejercicioRutina.IdRutina.ToString();
 		IdEjercicio = ejercicioRutina.Ejercicio.Id.ToString();
-		Nombre = ejercicioRutina.Ejercicio.Nombre;
+		NombreEjercicio = ejercicioRutina.Ejercicio?.Nombre;
+		IdMaquina = ejercicioRutina.IdMaquina.ToString();
+		NombreMaquina = ejercicioRutina.Maquina?.Nombre;
 		Series = ejercicioRutina.Series;
 		Repeticiones = ejercicioRutina.Repeticiones;
 		MinutosDescanso = ejercicioRutina.MinutosDescanso;
 	}
 
+	public string Id { get; set; }
+	public string IdRutina { get; set; }
 	public string IdEjercicio { get; set; }
-	public string Nombre { get; set; }
+	public string NombreEjercicio { get; set; }
+	public string IdMaquina { get; set; }
+	public string NombreMaquina { get; set; }
 	public int Series { get; set; }
 	public int Repeticiones { get; set; }
 	public int MinutosDescanso { get; set; }
+	public string IdTipoMaquina { get; set; }
 
-	// public async Task<EjercicioRutina> Entidad()
-	// {
-	// 	Ejercicio ejercicio = await _repoEjercicios.ReadByIdAsync(Factory.SetGuid(IdEjercicio));
-	// 	EjercicioRutina ejercicioRutina = new(Series, Repeticiones, MinutosDescanso, ejercicio);
-	// 	return ejercicioRutina;
-	// }
+	public EjercicioRutina Entidad()
+	{
+		Ejercicio ejercicio = new Ejercicio(new Guid(IdEjercicio));
+		Maquina maquina = new Maquina(new Guid(IdMaquina));
+		EjercicioRutina ejercicioRutina = new(Guid.NewGuid(), new Guid(IdRutina), Series, Repeticiones, MinutosDescanso, ejercicio, maquina);
+		return ejercicioRutina;
+	}
 }
 
 public class MedidaRutinaViewModel
 {
 	public MedidaRutinaViewModel(MedidaRutina medidaRutina)
 	{
+		Id = medidaRutina.Id.ToString();
+		IdRutina = medidaRutina.IdRutina.ToString();
 		IdTipoMedida = medidaRutina.TipoMedida.Id.ToString();
-		Nombre = medidaRutina.TipoMedida.Nombre;
+		NombreTipoMedida = medidaRutina.TipoMedida.Nombre;
 		Valor = medidaRutina.Valor;
 		Comentario = medidaRutina.Comentario;
 	}
 
+	public string Id { get; set; }
+	public string IdRutina { get; set; }
 	public string IdTipoMedida { get; set; }
-	public string Nombre { get; set; }
+	public string NombreTipoMedida { get; set; }
 	public string Valor { get; set; }
 	public string Comentario { get; set; }
 
-	// public async Task<MedidaRutina> Entidad()
-	// {
-	// 	TipoMedida tipoMedida = await _repoTiposMedida.ReadByIdAsync(Factory.SetGuid(IdTipoMedida));
-	// 	MedidaRutina medidaRutina = new(Valor, Comentario, tipoMedida);
-	// 	return medidaRutina;
-	// }
+	public MedidaRutina Entidad()
+	{
+		TipoMedida tipoMedida = new TipoMedida(new Guid(IdTipoMedida));
+		MedidaRutina medidaRutina = new(new Guid(Id), new Guid(IdRutina), Valor, Comentario, tipoMedida);
+		return medidaRutina;
+	}
+}
+
+public class GrupoMuscularRutinaViewModel
+{
+	public GrupoMuscularRutinaViewModel(GrupoMuscularRutina grupoMuscularRutina)
+	{
+		Id = grupoMuscularRutina.Id.ToString();
+		IdRutina = grupoMuscularRutina.IdRutina.ToString();
+		IdGrupoMuscular = grupoMuscularRutina.GrupoMuscular.Id.ToString();
+		NombreGrupoMuscular = grupoMuscularRutina.GrupoMuscular.Nombre;
+	}
+
+	public string Id { get; set; }
+	public string IdRutina { get; set; }
+	public string IdGrupoMuscular { get; set; }
+	public string NombreGrupoMuscular { get; set; }
+
+	public GrupoMuscularRutina Entidad()
+	{
+		GrupoMuscular grupoMuscular = new GrupoMuscular(new Guid(IdGrupoMuscular));
+		GrupoMuscularRutina grupoMuscularRutina = new(new Guid(Id), new Guid(IdRutina), grupoMuscular);
+		return grupoMuscularRutina;
+	}
 }
 
 public class ReporteRutinaDetalladoViewModel
