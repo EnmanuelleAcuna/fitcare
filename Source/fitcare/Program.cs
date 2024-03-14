@@ -23,6 +23,7 @@ class Program
 		IConfiguration builderConfiguration = builder.Configuration;
 
 		builder.Services.AddLogging(b => b.AddConsole());
+		builder.Services.AddApplicationInsightsTelemetry();
 
 		builder.Services.Configure<ConnectionStringOptions>(builderConfiguration.GetSection("ConnectionStrings"));
 		builder.Services.AddOptions<ConnectionStringOptions>();

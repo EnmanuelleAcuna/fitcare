@@ -40,6 +40,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public ActionResult Contacto()
 		{
+			_logger.LogInformation($"Entering contacto.");
 			return View();
 		}
 
@@ -52,6 +53,8 @@ namespace fitcare.Controllers
 		[Authorize]
 		public async Task<ActionResult> Administracion()
 		{
+			_logger.LogInformation($"Entering administracion.");
+
 			string nombreUsuarioConectado = User.Identity.Name;
 			ApplicationUser usuarioConectado = await _userManager.FindByNameAsync(nombreUsuarioConectado);
 			ViewBag.NombreUsuario = string.Format("{0} {1} {2}", usuarioConectado.Name, usuarioConectado.FirstLastName, usuarioConectado.SecondLastName);
