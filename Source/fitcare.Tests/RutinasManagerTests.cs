@@ -10,15 +10,6 @@ namespace fitcare.Tests;
 
 public class RutinasManagerTests
 {
-	// [Fact]
-	// public void ShouldCreateRutina()
-	// {
-	// 	Rutina rutina = new Rutina();
-
-	// 	FitcareDBContext db = new FitcareDBContext();
-	// 	IManager<Rutina> rutinasManager = new RutinasManager(db);
-	// }
-
 	[Fact]
 	public async Task CreateAsync_Should_AddRutinaToDbContext()
 	{

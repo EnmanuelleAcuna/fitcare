@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using fitcare.Models.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace fitcare.Models.Entities;
 
@@ -19,6 +20,7 @@ public class FitcareDBContext : DbContext
 	public virtual DbSet<TipoMedida> TiposMedida { get; set; }
 	public virtual DbSet<GrupoMuscular> GruposMusculares { get; set; }
 	public virtual DbSet<Rutina> Rutinas { get; set; }
+	public virtual DbSet<ApplicationUser> Usuarios { get; set; }
 	// public virtual DbSet<DetalleMedidas> DetalleMedidas { get; set; }
 	// public virtual DbSet<DetalleRutina> DetalleRutina { get; set; }
 	// public virtual DbSet<GruposMuscularesEjercicio> GruposMuscularesEjercicio { get; set; }
@@ -27,5 +29,16 @@ public class FitcareDBContext : DbContext
 	{
 		if (!optionsBuilder.IsConfigured)
 			optionsBuilder.UseSqlServer("DefaultConnection");
+	}
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		base.OnModelCreating(modelBuilder);
+
+		// Usuarios
+		modelBuilder.Entity<ApplicationUser>(b =>
+		{
+			b.ToTable("AspNetUsers", "dbo"); // Remap to table with different name
+		});
 	}
 }

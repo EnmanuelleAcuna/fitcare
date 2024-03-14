@@ -76,15 +76,17 @@ public class Rutina : Base
 
 	public string Objetivo { get; set; }
 
-	[ForeignKey(nameof(ApplicationUser))]
 	public string IdInstructor { get; set; }
-	[InverseProperty("IdInstructor")]
-	public ApplicationUser Instructor { get; set; }
 
-	[ForeignKey(nameof(ApplicationUser))]
+	[ForeignKey("IdInstructor")]
+	[InverseProperty("RutinasInstructor")]
+	public virtual ApplicationUser Instructor { get; set; }
+
 	public string IdCliente { get; set; }
-	[InverseProperty("IdCliente")]
-	public ApplicationUser Cliente { get; set; }
+
+	[ForeignKey("IdCliente")]
+	[InverseProperty("RutinasCliente")]
+	public virtual ApplicationUser Cliente { get; set; }
 
 	public ICollection<EjercicioRutina> Ejercicios { get; set; }
 	public ICollection<MedidaRutina> Medidas { get; set; }

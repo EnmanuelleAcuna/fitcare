@@ -12,9 +12,15 @@ namespace fitcare.Models.Identity;
 /// </summary>
 public class ApplicationUser : IdentityUser
 {
-	public ApplicationUser() : base() { }
+	public ApplicationUser() : base() {
+		RutinasCliente = new HashSet<Rutina>();
+		RutinasInstructor = new HashSet<Rutina>();
+	}
 
-	public ApplicationUser(string userName) : base(userName) { }
+	public ApplicationUser(string userName) : base(userName) {
+		RutinasCliente = new HashSet<Rutina>();
+		RutinasInstructor = new HashSet<Rutina>();
+	}
 
 	public ApplicationUser(string id, string correo, string nombreUsuario, string nombre, string primerApellido, string segundoApellido, string identificacion, DateTime ultimaSesion, bool activo)
 	{
@@ -27,6 +33,9 @@ public class ApplicationUser : IdentityUser
 		IdentificationNumber = identificacion;
 		LastSession = ultimaSesion;
 		Active = activo;
+
+		RutinasCliente = new HashSet<Rutina>();
+		RutinasInstructor = new HashSet<Rutina>();
 	}
 
 	public ApplicationUser(string id, Guid idProvincia, Guid idCanton, Guid idDistrito, DateTime fechaIngreso)
@@ -36,6 +45,9 @@ public class ApplicationUser : IdentityUser
 		IdCanton = idCanton;
 		IdDistrito = idDistrito;
 		FechaIngresoInscripcion = fechaIngreso;
+
+		RutinasCliente = new HashSet<Rutina>();
+		RutinasInstructor = new HashSet<Rutina>();
 	}
 
 	public ApplicationUser(string id, Guid idProvincia, Guid idCanton, Guid idDistrito, DateTime fechaIngreso, DateTime fechaRenovacion)
@@ -46,6 +58,9 @@ public class ApplicationUser : IdentityUser
 		IdDistrito = idDistrito;
 		FechaIngresoInscripcion = fechaIngreso;
 		FechaRenovacion = fechaRenovacion;
+
+		RutinasCliente = new HashSet<Rutina>();
+		RutinasInstructor = new HashSet<Rutina>();
 	}
 
 	public string IdentificationNumber { get; private set; }
@@ -114,6 +129,12 @@ public class ApplicationUser : IdentityUser
 
 	[NotMapped]
 	public string FullName { get { return $"{Name} {FirstLastName} {SecondLastName}"; } }
+
+	[InverseProperty("Instructor")]
+	public virtual ICollection<Rutina> RutinasInstructor { get; set; } = new List<Rutina>();
+
+	[InverseProperty("Cliente")]
+	public virtual ICollection<Rutina> RutinasCliente { get; set; } = new List<Rutina>();
 
 	public void SetNewPersonalInformation(string name, string firstLastName, string secondLastName, string identification)
 	{

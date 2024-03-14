@@ -148,6 +148,7 @@ public class BaseController : Controller
 		return rolesSeleccionados;
 	}
 
+	// TODO: Mover esto a ApplicationUserManager
 	public async Task<IList<ApplicationRole>> ObtenerRolesUsuario(ApplicationUser usuario)
 	{
 		IList<string> nombresRolesUsuario = await _userManager.GetRolesAsync(usuario);

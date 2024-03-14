@@ -34,7 +34,7 @@ MYSQL:
 dotnet ef dbcontext scaffold "Server=217.71.206.171;Uid=fitcare;Pwd=gym2020;Database=fitcare;SslMode=Preferred;TreatTinyAsBoolean=False;" Pomelo.EntityFrameworkCore.MySQL -o EntityFramework -f -c fitcare_DB_Context --no-build
 
 SQL Server:
-dotnet ef dbcontext scaffold "Server=srv-mssql-az-gimnasios.database.windows.net;Uid=azureuser;Pwd=f7neWXSVKv3lf9KL;Database=db-mssql-az-gimnasios;" Microsoft.EntityFrameworkCore.SqlServer -o EntityFramework -f -c PCG_DB_Context --no-build
+dotnet ef dbcontext scaffold "Server=sql-svr-arenal.database.windows.net;Uid=arenal;Pwd=6ABD70BEF057D69F529BE5DBA85DE2A3.;Database=db-arenal;" Microsoft.EntityFrameworkCore.SqlServer -o EntityFramework -f -c PCG_DB_Context --no-build --data-annotations
 
 ## Paquetes nuget necesarios para trabajar con EntityFrameworkCore
 - dotnet add package Microsoft.EntityFrameworkCore.Tools

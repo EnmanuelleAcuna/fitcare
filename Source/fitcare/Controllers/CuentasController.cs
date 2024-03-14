@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using fitcare.Models.Contracts;
@@ -490,28 +489,4 @@ public class CuentasController : BaseController
 
 		return View(modelo);
 	}
-
-	// 	[Authorize]
-	// 	public class InstructoresController : BaseController
-	// 	{
-	// 		[HttpGet]
-	// 		public async Task<ActionResult> Editar(string id)
-	// 		{
-	// 			ApplicationUser usuario = await _userManager.FindByIdAsync(id);
-	// 			if (usuario is null) throw new KeyNotFoundException();
-	// 			Instructor instructor = await _repoInstructores.ReadByIdAsync(Factory.SetGuid(usuario.Id));
-	// 			ModificarInstructorViewModel modelo = new(usuario, instructor);
-	// 			await CargarViewBags();
-	// 			return View(modelo);
-	// 		}
-
-	// 		[HttpGet]
-	// 		public async Task<ActionResult> Reporte()
-	// 		{
-	// 			IEnumerable<ApplicationUser> listaUsuariosInstructores = await _userManager.GetUsersInRoleAsync("Instructor");
-	// 			IEnumerable<Instructor> listaInstructores = (IEnumerable<Instructor>)listaUsuariosInstructores.Select(async u => await _repoInstructores.ReadByIdAsync(Factory.SetGuid(u.Id))).ToList();
-	// 			IEnumerable<ReporteInstructorViewModel> modelo = listaInstructores.Select(i => new ReporteInstructorViewModel()).ToList();
-	// 			return View(modelo);
-	// 		}
-	// 	}
 }
