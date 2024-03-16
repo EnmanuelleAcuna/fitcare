@@ -18,7 +18,7 @@ public class RutinasManager : IRutinasManager<Rutina>
 	public async Task<IList<Rutina>> ReadAllAsync()
 	{
 		// var rutinasDBSet = _db.Rutinas.Include(i => i.Instructor).Include(c => c.Cliente).Include(r => r.Medidas).ThenInclude(m => m.TipoMedida).Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.TipoEjercicio).Include(r => r.GruposMusculares).ThenInclude(e => e.GrupoMuscular);
-		var rutinasDBSet = _db.Rutinas.Include(i => i.Instructor).Include(c => c.Cliente);
+		var rutinasDBSet = _db.Rutinas.Include(i => i.Instructor).Include(c => c.Cliente).Include(e => e.Ejercicios);
 
 		var rutinas = await rutinasDBSet.ToListAsync();
 		return rutinas ?? new List<Rutina>();

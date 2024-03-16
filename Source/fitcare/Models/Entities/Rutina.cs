@@ -116,8 +116,6 @@ public class EjercicioRutina : Base
 	[Key]
 	public Guid Id { get; set; }
 
-	public Guid IdRutina { get; set; }
-
 	[Column("Num_Series")]
 	public int Series { get; set; }
 
@@ -127,9 +125,18 @@ public class EjercicioRutina : Base
 	[Column("Minutos_Descanso")]
 	public int MinutosDescanso { get; set; }
 
+	[ForeignKey(nameof(Rutina))]
+	[Column("IdRutina")]
+	public Guid IdRutina { get; set; }
+	public Rutina Rutina { get; set; }
+
+	[ForeignKey(nameof(Ejercicio))]
+	[Column("IdEjercicio")]
 	public Guid IdEjercicio { get; set; }
 	public Ejercicio Ejercicio { get; set; }
 
+	[ForeignKey(nameof(Maquina))]
+	[Column("IdMaquina")]
 	public Guid? IdMaquina { get; set; }
 	public Maquina Maquina { get; set; }
 

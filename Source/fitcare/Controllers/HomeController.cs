@@ -34,6 +34,7 @@ namespace fitcare.Controllers
 		public IActionResult Index()
 		{
 			_logger.LogInformation($"Entering fitcare.");
+			_logger.LogTrace("Hello!");
 			return View();
 		}
 
