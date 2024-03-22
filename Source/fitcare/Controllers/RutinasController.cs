@@ -64,47 +64,34 @@ namespace fitcare.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult> RegistrarInstructorRutina()
+		public async Task<ActionResult> Agregar()
 		{
-			var usuariosInstructor = await _userManager.GetUsersInRoleAsync("Instructor");
-			var modelo = usuariosInstructor.Select(x => new UsuarioViewModel(x));
-			return View(modelo);
-		}
+			var listaInstructores = await _userManager.GetUsersInRoleAsync("Instructor");
+			var listaClientes = await _userManager.GetUsersInRoleAsync("Cliente");
 
-		[HttpGet]
-		public async Task<ActionResult> RegistrarClienteRutina(string idInstructor)
-		{
-			ApplicationUser usuario = await _userManager.FindByIdAsync(idInstructor);
-			if (usuario == null) return NotFound();
+			ViewBag.ListaInstructores = CargarListaSeleccionUsuarios(listaInstructores);
+			ViewBag.ListaClientes = CargarListaSeleccionUsuarios(listaClientes);
 
-			var usuariosCliente = await _userManager.GetUsersInRoleAsync("Cliente");
-			var modelo = usuariosCliente.Select(x => new UsuarioViewModel(x));
+			// ApplicationUser usuario = await _userManager.FindByIdAsync(idInstructor);
+			// if (usuario == null) return NotFound();
 
-			ViewBag.IdInstructor = idInstructor;
+			// ApplicationUser usuarioInstructor = await _userManager.FindByIdAsync(idInstructor);
+			// if (usuarioInstructor == null) return NotFound();
 
-			return View(modelo);
-		}
-
-		[HttpGet]
-		public async Task<ActionResult> Registrar(string idInstructor, string idCliente)
-		{
-			ApplicationUser usuarioInstructor = await _userManager.FindByIdAsync(idInstructor);
-			if (usuarioInstructor == null) return NotFound();
-
-			ApplicationUser usuarioCliente = await _userManager.FindByIdAsync(idCliente);
-			if (usuarioCliente == null) return NotFound();
+			// ApplicationUser usuarioCliente = await _userManager.FindByIdAsync(idCliente);
+			// if (usuarioCliente == null) return NotFound();
 
 			await CargarViewBags();
 
-			ViewBag.IdInstructor = idInstructor;
-			ViewBag.IdCliente = idCliente;
+			// ViewBag.IdInstructor = idInstructor;
+			// ViewBag.IdCliente = idCliente;
 
 			return View();
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Registrar(AgregarRutinaViewModel modelo)
+		public async Task<IActionResult> Agregar(AgregarRutinaViewModel modelo)
 		{
 			if (ModelState.IsValid)
 			{

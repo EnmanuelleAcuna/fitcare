@@ -199,17 +199,11 @@ public class BaseController : Controller
 		return listaSeleccionTiposMedida;
 	}
 
-	//public IEnumerable<SelectListItem> CargarListaSeleccionInstructores(IEnumerable<Instructor> listaInstructores)
-	//{
-	//	IEnumerable<SelectListItem> listaSeleccionInstructores = listaInstructores.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = string.Format("{0} {1} {2}", p.Name, p.PrimerApellido, p.SegundoApellido) }).ToList();
-	//	return listaSeleccionInstructores;
-	//}
-
-	//public IEnumerable<SelectListItem> CargarListaSeleccionClientes(IEnumerable<Cliente> listaClientes)
-	//{
-	//	IEnumerable<SelectListItem> listaSeleccionClientes = listaClientes.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = string.Format("{0} {1} {2}", p.Nombre, p.PrimerApellido, p.SegundoApellido) }).ToList();
-	//	return listaSeleccionClientes;
-	//}
+	public IEnumerable<SelectListItem> CargarListaSeleccionUsuarios(IEnumerable<ApplicationUser> listaUsuarios)
+	{
+		IEnumerable<SelectListItem> listaSeleccionUsuarios = listaUsuarios.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = string.Format("{0} {1} {2}", p.Name, p.FirstLastName, p.SecondLastName) }).ToList();
+		return listaSeleccionUsuarios;
+	}
 
 	// protected async Task CargarImagenUsuario(IEnumerable<Maquina> maquinas)
 	// {
