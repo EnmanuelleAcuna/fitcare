@@ -3,7 +3,6 @@ using fitcare.Models;
 using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using fitcare.Models.Identity;
-using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace fitcare;
 
@@ -23,8 +21,7 @@ class Program
 		WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 		IConfiguration builderConfiguration = builder.Configuration;
 
-		builder.Services.AddApplicationInsightsTelemetry(options => new ApplicationInsightsServiceOptions { EnableAdaptiveSampling = false});
-		builder.Services.AddLogging(b => b.AddConsole().AddApplicationInsights());
+		builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = builderConfiguration["ApplicationInsights:ConnectionString"]);
 
 		builder.Services.Configure<ConnectionStringOptions>(builderConfiguration.GetSection("ConnectionStrings"));
 		builder.Services.AddOptions<ConnectionStringOptions>();

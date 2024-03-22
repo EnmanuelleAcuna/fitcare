@@ -33,8 +33,7 @@ namespace fitcare.Controllers
 		[HttpGet]
 		public IActionResult Index()
 		{
-			_logger.LogInformation($"Entering fitcare.");
-			_logger.LogTrace("Hello!");
+			_logger.LogInformation($"Entering fitcare information {DateTime.Now}.");
 			return View();
 		}
 
