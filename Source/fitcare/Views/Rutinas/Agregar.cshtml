@@ -185,10 +185,14 @@
 		let indiceEjerciciosRegistrados = 0;
 
 		$("#btn_registrar_medida").click(function (e) {
-			let idMedidaSeleccionada = $("#medidas").val();
-			let nombreMedidaSeleccionada = $("#medidas option:selected").text();
+			console.log("Registrando medida");
 
-			if (idMedidaSeleccionada > 0) {
+			let idMedidaSeleccionada = $("#medidas").val();
+			console.log(idMedidaSeleccionada);
+			let nombreMedidaSeleccionada = $("#medidas option:selected").text();
+			console.log(nombreMedidaSeleccionada);
+
+			if (idMedidaSeleccionada != 0) {
 				let div = document.createElement('div');
 				div.setAttribute("class", "col-sm-12");
 
@@ -253,9 +257,11 @@
 
 		$("#btn_registrar_ejercicio").click(function (e) {
 			let idEjercicioSeleccionado = $("#ejercicios").val();
+			console.log(idEjercicioSeleccionado);
 			let nombreEjercicioSeleccionado = $("#ejercicios option:selected").text();
+			console.log(nombreEjercicioSeleccionado);
 
-			if (idEjercicioSeleccionado > 0) {
+			if (idEjercicioSeleccionado != 0) {
 				let div = document.createElement('div');
 				div.setAttribute("class", "col-sm-12");
 

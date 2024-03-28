@@ -20,28 +20,16 @@
 <body>
     <partial name="_PreloaderAdminPartial" />
 
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
     <div id="main-wrapper" data-navbarbg="skin6" data-theme="light" data-layout="vertical" data-sidebartype="full" data-boxed-layout="full">
         <partial name="_HeaderAdminPartial" />
         <partial name="_SidebarAdminPartial" />
 
-        <!-- ============================================================== -->
-        <!-- Page wrapper  -->
-        <!-- ============================================================== -->
         <div class="page-wrapper">
             @RenderBody()
         </div>
-        <!-- ============================================================== -->
-        <!-- End Page wrapper  -->
-        <!-- ============================================================== -->
 
         <partial name="_FooterAdminPartial" />
     </div>
-    <!-- ============================================================== -->
-    <!-- End Wrapper -->
-    <!-- ============================================================== -->
 
     <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
     <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -56,7 +44,7 @@
     <script type="text/javascript" src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
 
     <script type="text/javascript" src="~/lib/datatables/js/1_dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="~/lib/datatables/js/2_pdfmake.min.js"></script>
+    @* <script type="text/javascript" src="~/lib/datatables/js/2_pdfmake.min.js"></script> *@
     <script type="text/javascript" src="~/lib/datatables/js/3_vfs_fonts.js"></script>
     <script type="text/javascript" src="~/lib/datatables/js/4_buttons.html5.min.js"></script>
     <script type="text/javascript" src="~/lib/datatables/js/6_jszip.min.js"></script>

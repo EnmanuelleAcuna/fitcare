@@ -72,19 +72,7 @@ namespace fitcare.Controllers
 			ViewBag.ListaInstructores = CargarListaSeleccionUsuarios(listaInstructores);
 			ViewBag.ListaClientes = CargarListaSeleccionUsuarios(listaClientes);
 
-			// ApplicationUser usuario = await _userManager.FindByIdAsync(idInstructor);
-			// if (usuario == null) return NotFound();
-
-			// ApplicationUser usuarioInstructor = await _userManager.FindByIdAsync(idInstructor);
-			// if (usuarioInstructor == null) return NotFound();
-
-			// ApplicationUser usuarioCliente = await _userManager.FindByIdAsync(idCliente);
-			// if (usuarioCliente == null) return NotFound();
-
 			await CargarViewBags();
-
-			// ViewBag.IdInstructor = idInstructor;
-			// ViewBag.IdCliente = idCliente;
 
 			return View();
 		}
@@ -95,6 +83,11 @@ namespace fitcare.Controllers
 		{
 			if (ModelState.IsValid)
 			{
+				if (modelo.IdInstructor.Equals(modelo.IdCliente)){
+					ModelState.AddModelError("", "No se puede registrar una rutina donde el cliente es el mismo usuario instructor seleccionado.");
+					return View(modelo);
+				}
+
 				ApplicationUser usuarioInstructor = await _userManager.FindByIdAsync(modelo.IdInstructor);
 				if (usuarioInstructor == null) return NotFound();
 

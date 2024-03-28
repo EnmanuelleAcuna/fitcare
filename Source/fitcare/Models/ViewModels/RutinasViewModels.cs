@@ -74,14 +74,14 @@ public class AgregarRutinaViewModel
 	[Display(Name = "Objetivo")]
 	public string Objetivo { get; set; }
 
-	public IEnumerable<EjercicioRutinaViewModel> Ejercicios { get; set; }
-	public IEnumerable<MedidaRutinaViewModel> Medidas { get; set; }
+	public List<EjercicioRutinaViewModel> DetalleEjercicios { get; set; }
+	public List<MedidaRutinaViewModel> DetalleMedidas { get; set; }
 	public IEnumerable<GrupoMuscularRutinaViewModel> GruposMusculares { get; set; }
 
 	public Rutina Entidad(ApplicationUser instructor, ApplicationUser cliente)
 	{
-		IList<EjercicioRutina> ejercicios = Ejercicios.Select(x => x.Entidad()).ToList();
-		IList<MedidaRutina> medidas = Medidas.Select(x => x.Entidad()).ToList();
+		IList<EjercicioRutina> ejercicios = DetalleEjercicios.Select(x => x.Entidad()).ToList();
+		IList<MedidaRutina> medidas = DetalleMedidas.Select(x => x.Entidad()).ToList();
 		IList<GrupoMuscularRutina> gruposMusculares = GruposMusculares.Select(x => x.Entidad()).ToList();
 
 		Rutina rutina = new(Guid.NewGuid(), FechaRealizacion, FechaInicio, FechaFin, Objetivo, instructor, cliente, ejercicios, medidas, gruposMusculares);
@@ -91,6 +91,8 @@ public class AgregarRutinaViewModel
 
 public class EjercicioRutinaViewModel
 {
+	public EjercicioRutinaViewModel() { }
+
 	public EjercicioRutinaViewModel(EjercicioRutina ejercicioRutina)
 	{
 		Id = ejercicioRutina.Id.ToString();
@@ -126,6 +128,8 @@ public class EjercicioRutinaViewModel
 
 public class MedidaRutinaViewModel
 {
+	public MedidaRutinaViewModel() { }
+
 	public MedidaRutinaViewModel(MedidaRutina medidaRutina)
 	{
 		Id = medidaRutina.Id.ToString();
