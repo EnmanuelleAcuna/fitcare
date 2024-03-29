@@ -32,7 +32,6 @@ public class RutinasManager : IRutinasManager<Rutina>
 		rutinasDBSet.Include(c => c.Cliente);
 		rutinasDBSet.Include(r => r.Medidas).ThenInclude(m => m.TipoMedida);
 		rutinasDBSet.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.TipoEjercicio);
-		rutinasDBSet.Include(r => r.GruposMusculares).ThenInclude(e => e.GrupoMuscular);
 
 		var rutina = await rutinasDBSet.FirstOrDefaultAsync();
 
@@ -47,10 +46,24 @@ public class RutinasManager : IRutinasManager<Rutina>
 		rutina.DateCreated = DateTime.UtcNow;
 		rutina.CreatedBy = user;
 
+		var existingUsuarioInstructor = await _db.Usuarios.FirstOrDefaultAsync(x => x.Id == rutina.IdInstructor);
+
+		if (existingUsuarioInstructor == null)
+			throw new Exception($"El usuario instructor {rutina.IdInstructor} para la rutina no se ha encontrado en la BD.");
+		else
+			rutina.Instructor = existingUsuarioInstructor;
+
+		var existingUsuarioCliente = await _db.Usuarios.FirstOrDefaultAsync(x => x.Id == rutina.IdCliente);
+
+		if (existingUsuarioCliente == null)
+			throw new Exception($"El usuario cliente {rutina.IdCliente} para la rutina no se ha encontrado en la BD.");
+		else
+			rutina.Cliente = existingUsuarioCliente;
+
 		// Recorrer cada ejercicioRutina, medidaRutina y grupoMuscularRutina
 		// para establecer los valores de fecha y usuario de insercion
 
-		await _db.AddAsync(rutina);
+		await _db.Rutinas.AddAsync(rutina);
 		await _db.SaveChangesAsync();
 	}
 

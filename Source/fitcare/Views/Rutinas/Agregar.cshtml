@@ -142,7 +142,7 @@
 											<h5 class="card-title text-secondary">Ejercicios</h5>
 
 											<div class="row">
-												<div class="col-sm-12">
+												<div class="col-sm-12 col-md-6">
 													<div class="form-group">
 														<label for="ejercicios">Seleccione un ejercicio a agregar</label>
 														<select name="ejercicios" id="ejercicios" class="form-control form-control-sm w-50">
@@ -154,6 +154,17 @@
 													</div>
 													<div class="form-group">
 														<button type="button" id="btn_registrar_ejercicio" name="btn_registrar_ejercicio" class="btn btn-sm">Agregar ejercicio seleccionado</button>
+													</div>
+												</div>
+												<div class="col-sm-12 col-md-6">
+													<div class="form-group">
+														<label for="ejercicios">Seleccione una máqiuna para el ejercicio</label>
+														<select name="maquinas" id="maquinas" class="form-control form-control-sm w-50">
+														<option value="0">Por favor seleccione una maquina</option>
+														@foreach (var maquina in ViewBag.ListaMaquinas) {
+														<option value="@maquina.Value">@maquina.Text</option>
+														}
+														</select>
 													</div>
 												</div>
 											</div>
@@ -261,6 +272,11 @@
 			let nombreEjercicioSeleccionado = $("#ejercicios option:selected").text();
 			console.log(nombreEjercicioSeleccionado);
 
+			let idMaquinaSeleccionada = $("#maquinas").val();
+			console.log(idMaquinaSeleccionada);
+			let nombreMaquinaSeleccionada = $("#maquinas option:selected").text();
+			console.log(nombreMaquinaSeleccionada);
+
 			if (idEjercicioSeleccionado != 0) {
 				let div = document.createElement('div');
 				div.setAttribute("class", "col-sm-12");
@@ -269,6 +285,11 @@
 				inputHiddenId.setAttribute("name", `DetalleEjercicios[${indiceEjerciciosRegistrados}].IdEjercicio`);
 				inputHiddenId.setAttribute("value", idEjercicioSeleccionado);
 				inputHiddenId.setAttribute("type", "hidden");
+
+				let inputHiddenMaquinaId = document.createElement('input');
+				inputHiddenMaquinaId.setAttribute("name", `DetalleEjercicios[${indiceEjerciciosRegistrados}].IdMaquina`);
+				inputHiddenMaquinaId.setAttribute("value", idMaquinaSeleccionada);
+				inputHiddenMaquinaId.setAttribute("type", "hidden");
 
 				let p = document.createElement('p');
 				p.setAttribute("class", "font-bold mb-0");
@@ -312,6 +333,7 @@
 
 				$(p).appendTo(div);
 				$(inputHiddenId).appendTo(div);
+				$(inputHiddenMaquinaId).appendTo(div);
 
 				$(divSeries).appendTo(rowDiv);
 				$(formDivSeries).appendTo(divSeries);

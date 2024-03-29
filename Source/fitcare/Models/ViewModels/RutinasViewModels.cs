@@ -76,15 +76,13 @@ public class AgregarRutinaViewModel
 
 	public List<EjercicioRutinaViewModel> DetalleEjercicios { get; set; }
 	public List<MedidaRutinaViewModel> DetalleMedidas { get; set; }
-	public IEnumerable<GrupoMuscularRutinaViewModel> GruposMusculares { get; set; }
 
 	public Rutina Entidad(ApplicationUser instructor, ApplicationUser cliente)
 	{
 		IList<EjercicioRutina> ejercicios = DetalleEjercicios.Select(x => x.Entidad()).ToList();
 		IList<MedidaRutina> medidas = DetalleMedidas.Select(x => x.Entidad()).ToList();
-		IList<GrupoMuscularRutina> gruposMusculares = GruposMusculares.Select(x => x.Entidad()).ToList();
 
-		Rutina rutina = new(Guid.NewGuid(), FechaRealizacion, FechaInicio, FechaFin, Objetivo, instructor, cliente, ejercicios, medidas, gruposMusculares);
+		Rutina rutina = new(Guid.NewGuid(), FechaRealizacion, FechaInicio, FechaFin, Objetivo, instructor, cliente, ejercicios, medidas);
 		return rutina;
 	}
 }
@@ -121,7 +119,7 @@ public class EjercicioRutinaViewModel
 	{
 		Ejercicio ejercicio = new Ejercicio(new Guid(IdEjercicio));
 		Maquina maquina = new Maquina(new Guid(IdMaquina));
-		EjercicioRutina ejercicioRutina = new(Guid.NewGuid(), new Guid(IdRutina), Series, Repeticiones, MinutosDescanso, ejercicio, maquina);
+		EjercicioRutina ejercicioRutina = new(Guid.NewGuid(), Series, Repeticiones, MinutosDescanso, ejercicio, maquina);
 		return ejercicioRutina;
 	}
 }
@@ -150,31 +148,8 @@ public class MedidaRutinaViewModel
 	public MedidaRutina Entidad()
 	{
 		TipoMedida tipoMedida = new TipoMedida(new Guid(IdTipoMedida));
-		MedidaRutina medidaRutina = new(new Guid(Id), new Guid(IdRutina), Valor, Comentario, tipoMedida);
+		MedidaRutina medidaRutina = new(Guid.NewGuid(), Valor, Comentario, tipoMedida);
 		return medidaRutina;
-	}
-}
-
-public class GrupoMuscularRutinaViewModel
-{
-	public GrupoMuscularRutinaViewModel(GrupoMuscularRutina grupoMuscularRutina)
-	{
-		Id = grupoMuscularRutina.Id.ToString();
-		IdRutina = grupoMuscularRutina.IdRutina.ToString();
-		IdGrupoMuscular = grupoMuscularRutina.GrupoMuscular.Id.ToString();
-		NombreGrupoMuscular = grupoMuscularRutina.GrupoMuscular.Nombre;
-	}
-
-	public string Id { get; set; }
-	public string IdRutina { get; set; }
-	public string IdGrupoMuscular { get; set; }
-	public string NombreGrupoMuscular { get; set; }
-
-	public GrupoMuscularRutina Entidad()
-	{
-		GrupoMuscular grupoMuscular = new GrupoMuscular(new Guid(IdGrupoMuscular));
-		GrupoMuscularRutina grupoMuscularRutina = new(new Guid(Id), new Guid(IdRutina), grupoMuscular);
-		return grupoMuscularRutina;
 	}
 }
 

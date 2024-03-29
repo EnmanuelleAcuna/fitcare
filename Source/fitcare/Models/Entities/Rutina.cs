@@ -14,10 +14,9 @@ public class Rutina : Base
 	{
 		Medidas = new HashSet<MedidaRutina>();
 		Ejercicios = new HashSet<EjercicioRutina>();
-		GruposMusculares = new HashSet<GrupoMuscularRutina>();
 	}
 
-	public Rutina(Guid id, DateTime fechaRealizacion, DateTime fechaInicio, DateTime fechaFin, string objetivo, ApplicationUser instructor, ApplicationUser cliente, IList<EjercicioRutina> ejercicios, IList<MedidaRutina> medidas, IList<GrupoMuscularRutina> gruposMusculares)
+	public Rutina(Guid id, DateTime fechaRealizacion, DateTime fechaInicio, DateTime fechaFin, string objetivo, ApplicationUser instructor, ApplicationUser cliente, IList<EjercicioRutina> ejercicios, IList<MedidaRutina> medidas)
 	{
 		Id = id;
 
@@ -34,7 +33,6 @@ public class Rutina : Base
 
 		Medidas = medidas;
 		Ejercicios = ejercicios;
-		GruposMusculares = gruposMusculares;
 	}
 
 	public Rutina(Guid id, DateTime fechaRealizacion, DateTime fechaInicio, DateTime fechaFin, string objetivo, string idInstructor, string idCliente)
@@ -50,7 +48,6 @@ public class Rutina : Base
 
 		Medidas = new HashSet<MedidaRutina>();
 		Ejercicios = new HashSet<EjercicioRutina>();
-		GruposMusculares = new HashSet<GrupoMuscularRutina>();
 	}
 
 	public Rutina(Guid id)
@@ -59,7 +56,6 @@ public class Rutina : Base
 
 		Medidas = new HashSet<MedidaRutina>();
 		Ejercicios = new HashSet<EjercicioRutina>();
-		GruposMusculares = new HashSet<GrupoMuscularRutina>();
 	}
 
 	[Key]
@@ -90,7 +86,6 @@ public class Rutina : Base
 
 	public ICollection<EjercicioRutina> Ejercicios { get; set; }
 	public ICollection<MedidaRutina> Medidas { get; set; }
-	public ICollection<GrupoMuscularRutina> GruposMusculares { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
@@ -104,6 +99,18 @@ public class EjercicioRutina : Base
 	{
 		Id = id;
 		IdRutina = idRutina;
+		Series = series;
+		Repeticiones = repeticiones;
+		MinutosDescanso = minutosDescanso;
+		IdEjercicio = ejercicio.Id;
+		Ejercicio = ejercicio;
+		IdMaquina = maquina.Id;
+		Maquina = maquina;
+	}
+
+	public EjercicioRutina(Guid id, int series, int repeticiones, int minutosDescanso, Ejercicio ejercicio, Maquina maquina)
+	{
+		Id = id;
 		Series = series;
 		Repeticiones = repeticiones;
 		MinutosDescanso = minutosDescanso;
@@ -157,6 +164,15 @@ public class MedidaRutina : Base
 		TipoMedida = tipoMedida;
 	}
 
+	public MedidaRutina(Guid id, string valor, string comentario, TipoMedida tipoMedida)
+	{
+		Id = id;
+		Valor = valor;
+		Comentario = comentario;
+		IdTipoMedida = tipoMedida.Id;
+		TipoMedida = tipoMedida;
+	}
+
 	[Key]
 	public Guid Id { get; set; }
 
@@ -169,29 +185,6 @@ public class MedidaRutina : Base
 
 	public Guid IdTipoMedida { get; set; }
 	public TipoMedida TipoMedida { get; set; }
-
-	public override string ToString() => JsonSerializer.Serialize(this);
-}
-
-[Table("DETALLE_GRUPOS_MUSCULARES", Schema = "fitcare")]
-public class GrupoMuscularRutina : Base
-{
-	public GrupoMuscularRutina() : base() { }
-
-	public GrupoMuscularRutina(Guid id, Guid idRutina, GrupoMuscular grupoMuscular) {
-		Id = id;
-		IdRutina = idRutina;
-		IdGrupoMuscular = grupoMuscular.Id;
-		GrupoMuscular = grupoMuscular;
-	}
-
-	[Key]
-	public Guid Id { get; set; }
-
-	public Guid IdRutina { get; set; }
-
-	public Guid IdGrupoMuscular { get; set; }
-	public GrupoMuscular GrupoMuscular { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
