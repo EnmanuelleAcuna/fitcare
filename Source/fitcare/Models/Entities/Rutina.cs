@@ -176,13 +176,18 @@ public class MedidaRutina : Base
 	[Key]
 	public Guid Id { get; set; }
 
+	[ForeignKey(nameof(Rutina))]
+	[Column("IdRutina")]
 	public Guid IdRutina { get; set; }
+	public Rutina Rutina { get; set; }
 
 	[Column("ValorMedida")]
 	public string Valor { get; set; }
 
 	public string Comentario { get; set; }
 
+	[ForeignKey(nameof(TipoMedida))]
+	[Column("IdTipoMedida")]
 	public Guid IdTipoMedida { get; set; }
 	public TipoMedida TipoMedida { get; set; }
 

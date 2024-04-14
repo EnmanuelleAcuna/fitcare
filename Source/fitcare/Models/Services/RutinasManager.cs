@@ -62,6 +62,38 @@ public class RutinasManager : IRutinasManager<Rutina>
 
 		// Recorrer cada ejercicioRutina, medidaRutina y grupoMuscularRutina
 		// para establecer los valores de fecha y usuario de insercion
+		foreach(var ejercicioRutina in rutina.Ejercicios)
+		{
+			var existingEjercicio = await _db.Ejercicios.Include(e => e.TipoEjercicio).Where(e => e.Id == ejercicioRutina.IdEjercicio).FirstOrDefaultAsync();
+
+			if (existingEjercicio == null)
+				throw new Exception($"El ejercicio {ejercicioRutina.IdEjercicio} para la rutina no se ha encontrado en la BD.");
+			else
+				ejercicioRutina.Ejercicio = existingEjercicio;
+
+			var existingMaquina = await _db.Maquinas.Include(m => m.TipoMaquina).Where(m => m.Id == ejercicioRutina.IdMaquina).FirstOrDefaultAsync();
+
+			if (existingMaquina == null)
+				throw new Exception($"La máquina {ejercicioRutina.IdMaquina} para la rutina no se ha encontrado en la BD.");
+			else
+				ejercicioRutina.Maquina = existingMaquina;
+
+			ejercicioRutina.CreatedBy = user;
+			ejercicioRutina.DateCreated = DateTime.UtcNow;
+		}
+
+		foreach (var medida in rutina.Medidas)
+		{
+			var existingTipoMedida = await _db.TiposMedida.FindAsync(medida.IdTipoMedida);
+
+			if (existingTipoMedida == null)
+				throw new Exception($"El tipo de medida {medida.IdTipoMedida} para la rutina no se ha encontrado en la BD.");
+			else
+				medida.TipoMedida = existingTipoMedida;
+
+			medida.CreatedBy = user;
+			medida.DateCreated = DateTime.UtcNow;
+		}
 
 		await _db.Rutinas.AddAsync(rutina);
 		await _db.SaveChangesAsync();
