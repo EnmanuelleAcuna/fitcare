@@ -62,7 +62,7 @@ public class RutinasManager : IRutinasManager<Rutina>
 
 		// Recorrer cada ejercicioRutina, medidaRutina y grupoMuscularRutina
 		// para establecer los valores de fecha y usuario de insercion
-		foreach(var ejercicioRutina in rutina.Ejercicios)
+		foreach (var ejercicioRutina in rutina.Ejercicios)
 		{
 			var existingEjercicio = await _db.Ejercicios.Include(e => e.TipoEjercicio).Where(e => e.Id == ejercicioRutina.IdEjercicio).FirstOrDefaultAsync();
 

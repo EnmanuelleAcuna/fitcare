@@ -44,140 +44,124 @@
 							</div>
 						</div>
 
-						<div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel" data-interval="false">
-							<div class="carousel-inner">
-								<div class="carousel-item active">
-									<div class="card">
-										<div class="card-body">
-											<h5 class="card-title text-info">Datos preliminares</h5>
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title text-info">Datos preliminares</h5>
 
-											<div class="row">
-												<div class="col-sm-12 col-md-6">
-													<div class="form-group">
-														@Html.LabelFor(model => model.IdInstructor)
-														@Html.DropDownListFor(model => model.IdInstructor, new List<SelectListItem>(ViewBag.ListaInstructores), "Seleccione un instructor", new { @class = "form-controlform-control-sm" })
-														@Html.ValidationMessageFor(model => model.IdInstructor)
-													</div>
-												</div>
+								<div class="row">
+									<div class="col-sm-12 col-md-6">
+										<div class="form-group">
+											@Html.LabelFor(model => model.IdInstructor)
+											@Html.DropDownListFor(model => model.IdInstructor, new List<SelectListItem>(ViewBag.ListaInstructores), "Seleccione un instructor", new { @class = "form-controlform-control-sm" })
+											@Html.ValidationMessageFor(model => model.IdInstructor)
+										</div>
+									</div>
 
-												<div class="col-sm-12 col-md-6">
-													<div class="form-group">
-														@Html.LabelFor(model => model.IdCliente)
-														@Html.DropDownListFor(model => model.IdCliente, new List<SelectListItem>(ViewBag.ListaClientes), "Seleccione un cliente", new { @class = "form-controlform-control-sm" })
-														@Html.ValidationMessageFor(model => model.IdCliente)
-													</div>
-												</div>
+									<div class="col-sm-12 col-md-6">
+										<div class="form-group">
+											@Html.LabelFor(model => model.IdCliente)
+											@Html.DropDownListFor(model => model.IdCliente, new List<SelectListItem>(ViewBag.ListaClientes), "Seleccione un cliente", new { @class = "form-controlform-control-sm" })
+											@Html.ValidationMessageFor(model => model.IdCliente)
+										</div>
+									</div>
 
-												<div class="col-sm-12 col-md-4">
-													<div class="form-group">
-														@Html.LabelFor(model => model.FechaInicio)
-														<br />
-														@Html.EditorFor(model => model.FechaInicio, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de inicio" })
-														@Html.ValidationMessageFor(model => model.FechaInicio, "", new { @class = "text-danger" })
-													</div>
-												</div>
+									<div class="col-sm-12 col-md-4">
+										<div class="form-group">
+											@Html.LabelFor(model => model.FechaInicio)
+											<br />
+											@Html.EditorFor(model => model.FechaInicio, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de inicio" })
+											@Html.ValidationMessageFor(model => model.FechaInicio, "", new { @class = "text-danger" })
+										</div>
+									</div>
 
-												<div class="col-sm-12 col-md-4">
-													<div class="form-group">
-														@Html.LabelFor(model => model.FechaFin)
-														<br />
-														@Html.EditorFor(model => model.FechaFin, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de finalización" })
-														@Html.ValidationMessageFor(model => model.FechaFin, "", new { @class = "text-danger" })
-													</div>
-												</div>
+									<div class="col-sm-12 col-md-4">
+										<div class="form-group">
+											@Html.LabelFor(model => model.FechaFin)
+											<br />
+											@Html.EditorFor(model => model.FechaFin, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de finalización" })
+											@Html.ValidationMessageFor(model => model.FechaFin, "", new { @class = "text-danger" })
+										</div>
+									</div>
 
-												<div class="col-sm-12">
-													<div class="form-group">
-														@Html.LabelFor(model => model.Objetivo)
-														@Html.TextAreaFor(model => model.Objetivo, 4, 10, htmlAttributes: new { @class = "form-control form-control-sm", placeholder = "Digite el objetivo de la rutina"})
-														@Html.ValidationMessageFor(model => model.Objetivo, "", new { @class = "text-danger" })
-													</div>
-												</div>
-											</div>
+									<div class="col-sm-12">
+										<div class="form-group">
+											@Html.LabelFor(model => model.Objetivo)
+											@Html.TextAreaFor(model => model.Objetivo, 4, 10, htmlAttributes: new { @class = "form-control form-control-sm", placeholder = "Digite el objetivo de la rutina"})
+											@Html.ValidationMessageFor(model => model.Objetivo, "", new { @class = "text-danger" })
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
-											<div class="btn-group" role="group" aria-label="Basic example">
-												<button type="button" class="btn btn-sm btn-success" data-target="#carouselExampleSlidesOnly" data-slide-to="1">Medidas&#9;<i class="fa fa-arrow-right"></i></button>
-											</div>
+						<hr />
+
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title text-success">Medidas</h5>
+
+								<div class="row">
+									<div class="col-sm-12 col-md-6">
+										<div class="form-group">
+											<label for="medidas">Seleccione una medida a agregar</label>
+											<select name="medidas" id="medidas" class="form-control form-control-sm w-50">
+											<option value="0">Por favor seleccione un tipo de medida</option>
+											@foreach (var medida in ViewBag.ListaTiposMedida) {
+												<option value="@medida.Value">@medida.Text</option>
+											}
+											</select>
+										</div>
+
+										<div class="form-group">
+											<button type="button" id="btn_registrar_medida" name="btn_registrar_medida" class="btn btn-sm">Agregar medida seleccionada</button>
 										</div>
 									</div>
 								</div>
 
-								<div class="carousel-item">
-									<div class="card">
-										<div class="card-body">
-											<h5 class="card-title text-success">Medidas</h5>
+								<div class="row" id="contenedor_medidas_registradas">
+								</div>
+							</div>
+						</div>
 
-											<div class="row">
-												<div class="col-sm-12">
-													<div class="form-group">
-														<label for="medidas">Seleccione una medida a agregar</label>
-														<select name="medidas" id="medidas" class="form-control form-control-sm w-50">
-														<option value="0">Por favor seleccione un tipo de medida</option>
-														@foreach (var medida in ViewBag.ListaTiposMedida) {
-															<option value="@medida.Value">@medida.Text</option>
-														}
-														</select>
-													</div>
+						<hr />
 
-													<div class="form-group">
-														<button type="button" id="btn_registrar_medida" name="btn_registrar_medida" class="btn btn-sm">Agregar medida seleccionada</button>
-													</div>
-												</div>
-											</div>
+						<div class="card">
+							<div class="card-body">
+								<h5 class="card-title text-secondary">Ejercicios</h5>
 
-											<div class="row" id="contenedor_medidas_registradas">
-											</div>
-
-											<div class="btn-group" role="group" aria-label="Basic example">
-												<button type="button" class="btn btn-sm btn-info" data-target="#carouselExampleSlidesOnly" data-slide-to="0"><i class="fa fa-arrow-left"></i>&#9;Datos preliminares</button>
-												<button type="button" class="btn btn-sm btn-secondary" data-target="#carouselExampleSlidesOnly" data-slide-to="2">Ejercicios&#9;<i class="fa fa-arrow-right"></i></button>
-											</div>
+								<div class="row">
+									<div class="col-sm-12 col-md-6">
+										<div class="form-group">
+											<label for="ejercicios">Seleccione un ejercicio a agregar</label>
+											<select name="ejercicios" id="ejercicios" class="form-control form-control-sm w-50">
+											<option value="0">Por favor seleccione un ejercicio</option>
+											@foreach (var ejercicio in ViewBag.ListaEjercicios) {
+											<option value="@ejercicio.Value">@ejercicio.Text</option>
+											}
+											</select>
+										</div>
+										<div class="form-group">
+											<button type="button" id="btn_registrar_ejercicio" name="btn_registrar_ejercicio" class="btn btn-sm">Agregar ejercicio seleccionado</button>
+										</div>
+									</div>
+									<div class="col-sm-12 col-md-6">
+										<div class="form-group">
+											<label for="ejercicios">Seleccione una máqiuna para el ejercicio</label>
+											<select name="maquinas" id="maquinas" class="form-control form-control-sm w-50">
+											<option value="0">Por favor seleccione una maquina</option>
+											@foreach (var maquina in ViewBag.ListaMaquinas) {
+											<option value="@maquina.Value">@maquina.Text</option>
+											}
+											</select>
 										</div>
 									</div>
 								</div>
 
-								<div class="carousel-item">
-									<div class="card">
-										<div class="card-body">
-											<h5 class="card-title text-secondary">Ejercicios</h5>
+								<div class="row" id="contenedor_ejercicios_registrados">
+								</div>
 
-											<div class="row">
-												<div class="col-sm-12 col-md-6">
-													<div class="form-group">
-														<label for="ejercicios">Seleccione un ejercicio a agregar</label>
-														<select name="ejercicios" id="ejercicios" class="form-control form-control-sm w-50">
-														<option value="0">Por favor seleccione un ejercicio</option>
-														@foreach (var ejercicio in ViewBag.ListaEjercicios) {
-														<option value="@ejercicio.Value">@ejercicio.Text</option>
-														}
-														</select>
-													</div>
-													<div class="form-group">
-														<button type="button" id="btn_registrar_ejercicio" name="btn_registrar_ejercicio" class="btn btn-sm">Agregar ejercicio seleccionado</button>
-													</div>
-												</div>
-												<div class="col-sm-12 col-md-6">
-													<div class="form-group">
-														<label for="ejercicios">Seleccione una máqiuna para el ejercicio</label>
-														<select name="maquinas" id="maquinas" class="form-control form-control-sm w-50">
-														<option value="0">Por favor seleccione una maquina</option>
-														@foreach (var maquina in ViewBag.ListaMaquinas) {
-														<option value="@maquina.Value">@maquina.Text</option>
-														}
-														</select>
-													</div>
-												</div>
-											</div>
-
-											<div class="row" id="contenedor_ejercicios_registrados">
-											</div>
-
-											<div class="btn-group" role="group">
-												<button type="button" class="btn btn-sm btn-success" data-target="#carouselExampleSlidesOnly" data-slide-to="1"><i class="fa fa-arrow-left"></i>&#9;Medidas</button>
-												<button class="btn btn-sm btn-default" type="submit">Guardar&#9;<i class="fa fa-check"></i></button>
-											</div>
-										</div>
-									</div>
+								<div class="btn-group" role="group">
+									<button class="btn btn-sm btn-default" type="submit">Guardar&#9;<i class="fa fa-check"></i></button>
 								</div>
 							</div>
 						</div>

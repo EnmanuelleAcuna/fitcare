@@ -19,7 +19,7 @@ public class EmailSender : IEmailSender
 
 		using SmtpClient client = new();
 		await client.ConnectAsync("smtp.office365.com", 587, false);
-		client.Authenticate(correoOrigen.Address, "dmlpbkqxgbunbnqf");
+		client.Authenticate(correoOrigen.Address, "aalfxoiczycolyha");
 		_ = await client.SendAsync(message);
 		await client.DisconnectAsync(true);
 	}
