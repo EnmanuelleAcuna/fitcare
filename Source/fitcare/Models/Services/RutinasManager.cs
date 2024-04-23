@@ -26,14 +26,12 @@ public class RutinasManager : IRutinasManager<Rutina>
 
 	public async Task<Rutina> ReadByIdAsync(Guid id)
 	{
-		var rutinasDBSet = _db.Rutinas.Where(x => x.Id.Equals(id.ToString()));
-
-		rutinasDBSet.Include(i => i.Instructor);
-		rutinasDBSet.Include(c => c.Cliente);
-		rutinasDBSet.Include(r => r.Medidas).ThenInclude(m => m.TipoMedida);
-		rutinasDBSet.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.TipoEjercicio);
-
-		var rutina = await rutinasDBSet.FirstOrDefaultAsync();
+		var rutina = await _db.Rutinas.Include(i => i.Instructor)
+									  .Include(c => c.Cliente)
+									  .Include(r => r.Medidas).ThenInclude(m => m.TipoMedida)
+									  .Include(r => r.Ejercicios).ThenInclude(e => e.Maquina).ThenInclude(e => e.TipoMaquina)
+									  .Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.TipoEjercicio)
+									  .FirstOrDefaultAsync(x => x.Id.ToString().Equals(id.ToString()));
 
 		if (rutina == null)
 			throw new KeyNotFoundException($"No se encontró una rutina con el id {id}");

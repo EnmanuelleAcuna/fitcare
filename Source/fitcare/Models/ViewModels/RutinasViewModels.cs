@@ -48,6 +48,53 @@ public class RutinaViewModel
 	public int? CantidadEjercicios { get; set; } = 0;
 }
 
+public class DetalleRutinaViewModel
+{
+	public DetalleRutinaViewModel(Rutina rutina)
+	{
+		Id = rutina.Id.ToString();
+
+		Instructor = rutina.Instructor.FullName;
+		Cliente = rutina.Cliente.FullName;
+
+		FechaRealizacion = rutina.FechaRealizacion;
+		FechaInicio = rutina.FechaInicio;
+		FechaFin = rutina.FechaFin;
+		Objetivos = rutina.Objetivo;
+
+		CantidadEjercicios = rutina.Ejercicios?.Count;
+
+		Ejercicios = rutina.Ejercicios.Select(e => new EjercicioRutinaViewModel(e)).ToList();
+
+		Medidas = rutina.Medidas.Select(m => new MedidaRutinaViewModel(m)).ToList();
+	}
+
+	public string Id { get; set; }
+
+	[Display(Name = "Instructor")]
+	public string Instructor { get; set; }
+
+	[Display(Name = "Cliente")]
+	public string Cliente { get; set; }
+
+	[Display(Name = "Fecha de realización")]
+	public DateTime FechaRealizacion { get; set; }
+
+	[Display(Name = "Fecha de inicio")]
+	public DateTime FechaInicio { get; set; }
+
+	[Display(Name = "Fecha de finalización")]
+	public DateTime FechaFin { get; set; }
+
+	public string Objetivos { get; set; }
+
+	public int? CantidadEjercicios { get; set; } = 0;
+
+	public IEnumerable<EjercicioRutinaViewModel> Ejercicios { get; set; }
+
+	public IEnumerable<MedidaRutinaViewModel> Medidas { get; set; }
+}
+
 public class AgregarRutinaViewModel
 {
 	[Required(ErrorMessage = "El instructor es requerido.")]

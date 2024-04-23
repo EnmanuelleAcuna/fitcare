@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -109,6 +110,15 @@ namespace fitcare.Controllers
 
 			await CargarViewBags();
 			ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Rutina)));
+			return View(modelo);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Detalle(string id)
+		{
+			var rutina = await _rutinasManager.ReadByIdAsync(new Guid(id));
+			if (rutina == null) return NotFound();
+			var modelo = new DetalleRutinaViewModel(rutina);
 			return View(modelo);
 		}
 

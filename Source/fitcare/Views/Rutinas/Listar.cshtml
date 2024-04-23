@@ -47,6 +47,7 @@
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaFin)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().CantidadEjercicios)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Objetivos)</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -60,6 +61,10 @@
 										<td>@Rutina.FechaFin</td>
 										<td>@Rutina.CantidadEjercicios</td>
 										<td>@Rutina.Objetivos</td>
+										<td>
+											<a class="btn btn-sm btn-secondary" asp-controller="Rutinas" asp-action="Detalle"
+												asp-route-id="@Rutina.Id">Detalle</a>
+										</td>
 									</tr>
 								}
 							</tbody>
