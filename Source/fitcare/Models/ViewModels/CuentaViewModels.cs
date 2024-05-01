@@ -247,103 +247,68 @@ public class AgregarClienteViewModel : UsuarioViewModel
 	public ApplicationUser Entidad() => new(IdUsuario, new Guid(IdProvincia), new Guid(IdCanton), new Guid(IdDistrito), FechaInscripcion, FechaRenovacion);
 }
 
-// public class ModificarInstructorViewModel : InicioClientesInstructoresViewModel
-// {
-// 	public ModificarInstructorViewModel() { }
+public class ReporteInstructorViewModel
+{
+	public ReporteInstructorViewModel(ApplicationUser usuarioInstructor)
+	{
+		NumeroIdentificacion = usuarioInstructor.IdentificationNumber;
+		Nombre = string.Format(new CultureInfo("es-CR"), "{0} {1} {2}", usuarioInstructor.Name, usuarioInstructor.FirstLastName, usuarioInstructor.SecondLastName);
+		Correo = usuarioInstructor.Email;
+		Domicilio = string.Format(new CultureInfo("es-CR"), "{0}, cantón {1}, distrito {2}", usuarioInstructor.Provincia?.Nombre, usuarioInstructor.Canton?.Nombre, usuarioInstructor.Distrito?.Nombre);
+		FechaIngreso = usuarioInstructor.FechaIngresoInscripcion?.ToString("dd/MM/yyyy");
+		Estado = Convert.ToBoolean(usuarioInstructor.Active) ? "Activo" : "Inactivo";
+	}
 
-// 	public ModificarInstructorViewModel(ApplicationUser usuario, Instructor instructor) : base(usuario)
-// 	{
-// 		IdDistrito = instructor.Distrito.Id.ToString();
-// 		FechaIngreso = instructor.FechaIngreso;
-// 		URLImagen = instructor.Foto?.URL; // TODO: hace falta conseguir la foto en el controlador antes de llamar este metodo
-// 	}
+	[Display(Name = "Número de identificación")]
+	public string NumeroIdentificacion { get; set; }
 
-// 	[Display(Name = "Distrito")]
-// 	[Required(ErrorMessage = "El distrito es requerido")]
-// 	public string IdDistrito { get; set; }
+	[Display(Name = "Nombre")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Fecha de ingreso")]
-// 	[Required(ErrorMessage = "La fecha de ingreso es requerida")]
-// 	[DataType(DataType.Date)]
-// 	public DateTime FechaIngreso { get; set; }
+	[Display(Name = "Correo electrónico")]
+	public string Correo { get; set; }
 
-// 	[Display(Name = "Fotografía actual")]
-// 	public Uri URLImagen { get; set; } // Foto actual
+	[Display(Name = "Domicilio")]
+	public string Domicilio { get; set; }
 
-// 	[Display(Name = "Nueva fotografía")]
-// 	[Required(ErrorMessage = "La fotografía del instructor es requerida")]
-// 	public IFormFile Imagen { get; set; } // Nueva foto
+	[Display(Name = "Fecha de ingreso")]
+	public string FechaIngreso { get; set; }
 
-// 	public async Task<Instructor> Entidad(IDataCRUDBase<Distrito> repoDistritos)
-// 	{
-// 		Distrito distrito = await repoDistritos.ReadByIdAsync(Factory.SetGuid(IdDistrito));
-// 		Instructor instructor = new(Factory.SetGuid(IdUsuario), Convert.ToDateTime(FechaIngreso), distrito);
-// 		return instructor;
-// 	}
-// }
+	[Display(Name = "Estado")]
+	public string Estado { get; set; }
+}
 
-// public class ReporteInstructorViewModel
-// {
-// 	public ReporteInstructorViewModel()
-// 	{
-// 		//NumeroIdentificacion = instructor.NumeroIdentificacion;
-// 		//Nombre = string.Format(new CultureInfo("es-CR"), "{0} {1} {2}", instructor.Nombre, instructor.PrimerApellido, instructor.SegundoApellido);
-// 		//Correo = instructor.Email;
-// 		//Domicilio = string.Format(new CultureInfo("es-CR"), "{0}, cantón {1}, distrito {2}", instructor.Distrito.Canton.Provincia.Nombre, instructor.Distrito.Canton.Nombre, instructor.Distrito.Nombre);
-// 		//FechaIngreso = instructor.FechaIngreso.ToString("dd/MM/yyyy");
-// 		//Estado = instructor.Activo ? "Activo" : "Inactivo";
-// 	}
+public class ReporteClienteViewModel
+{
+	public ReporteClienteViewModel(ApplicationUser usuarioCliente)
+	{
+		NumeroIdentificacion = usuarioCliente.IdentificationNumber;
+		Nombre = string.Format(new CultureInfo("es-CR"), "{0} {1} {2}", usuarioCliente.Name, usuarioCliente.FirstLastName, usuarioCliente.SecondLastName);
+		Correo = usuarioCliente.Email;
+		Domicilio = string.Format(new CultureInfo("es-CR"), "{0}, cantón {1}, distrito {2}", usuarioCliente.Provincia?.Nombre, usuarioCliente.Canton?.Nombre, usuarioCliente.Distrito?.Nombre);
+		FechaInscripcion = usuarioCliente.FechaIngresoInscripcion?.ToString("dd/MM/yyyy");
+		FechaRenovacion = usuarioCliente.FechaRenovacion?.ToString("dd/MM/yyyy");
+		Estado = Convert.ToBoolean(usuarioCliente.Active) ? "Activo" : "Inactivo";
+	}
 
-// 	[Display(Name = "Número de identificación")]
-// 	public string NumeroIdentificacion { get; set; }
+	[Display(Name = "Número de identificación")]
+	public string NumeroIdentificacion { get; set; }
 
-// 	[Display(Name = "Nombre")]
-// 	public string Nombre { get; set; }
+	[Display(Name = "Nombre")]
+	public string Nombre { get; set; }
 
-// 	[Display(Name = "Correo electrónico")]
-// 	public string Correo { get; set; }
+	[Display(Name = "Correo electrónico")]
+	public string Correo { get; set; }
 
-// 	[Display(Name = "Domicilio")]
-// 	public string Domicilio { get; set; }
+	[Display(Name = "Domicilio")]
+	public string Domicilio { get; set; }
 
-// 	[Display(Name = "Fecha de ingreso")]
-// 	public string FechaIngreso { get; set; }
+	[Display(Name = "Fecha de inscripción")]
+	public string FechaInscripcion { get; set; }
 
-// 	[Display(Name = "Estado")]
-// 	public string Estado { get; set; }
-// }
+	[Display(Name = "Fecha de renovación")]
+	public string FechaRenovacion { get; set; }
 
-// public class ReporteClienteViewModel
-// {
-// 	public ReporteClienteViewModel()
-// 	{
-// 		//NumeroIdentificacion = cliente.NumeroIdentificacion;
-// 		//Nombre = string.Format(new CultureInfo("es-CR"), "{0} {1} {2}", cliente.Nombre, cliente.PrimerApellido, cliente.SegundoApellido);
-// 		//Correo = cliente.Email;
-// 		//Domicilio = string.Format(new CultureInfo("es-CR"), "{0}, cantón {1}, distrito {2}", cliente.Distrito.Canton.Provincia.Nombre, cliente.Distrito.Canton.Nombre, cliente.Distrito.Nombre);
-// 		//FechaInscripcion = cliente.FechaInscripcion.ToString("dd/MM/yyyy");
-// 		//FechaRenovacion = cliente.FechaRenovacion.ToString("dd/MM/yyyy");
-// 		//Estado = cliente.Activo ? "Activo" : "Inactivo";
-// 	}
-
-// 	[Display(Name = "Número de identificación")]
-// 	public string NumeroIdentificacion { get; set; }
-
-// 	[Display(Name = "Nombre")]
-// 	public string Nombre { get; set; }
-
-// 	[Display(Name = "Correo electrónico")]
-// 	public string Correo { get; set; }
-
-// 	[Display(Name = "Domicilio")]
-// 	public string Domicilio { get; set; }
-
-// 	[Display(Name = "Fecha de inscripción")]
-// 	public string FechaInscripcion { get; set; }
-
-// 	[Display(Name = "Fecha de renovación")]
-// 	public string FechaRenovacion { get; set; }
-
-// 	[Display(Name = "Estado")]
-// 	public string Estado { get; set; }
-// }
+	[Display(Name = "Estado")]
+	public string Estado { get; set; }
+}

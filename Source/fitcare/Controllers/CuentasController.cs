@@ -489,4 +489,18 @@ public class CuentasController : BaseController
 
 		return View(modelo);
 	}
+
+	public async Task<ActionResult> ReporteInstructores()
+	{
+		var usuariosInstructor = await _userManager.GetUsersInRoleWithDivisionTerritorialInfoAsync("Instructor");
+		var modelo = usuariosInstructor.Select(x => new ReporteInstructorViewModel(x));
+		return View(modelo);
+	}
+
+	public async Task<ActionResult> ReporteClientes()
+	{
+		var usuariosCliente = await _userManager.GetUsersInRoleWithDivisionTerritorialInfoAsync("Cliente");
+		var modelo = usuariosCliente.Select(x => new ReporteClienteViewModel(x));
+		return View(modelo);
+	}
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using fitcare.Models.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 {
 	private readonly IUserStore<ApplicationUser> _store;
 	private readonly RoleManager<ApplicationRole> _roleManager;
+	private readonly IDivisionTerritorialManager _divisionTerritorialManager;
 
 	public ApplicationUserManager(IUserStore<ApplicationUser> store,
 								  IOptions<IdentityOptions> optionsAccessor,
@@ -23,7 +25,8 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 								  IdentityErrorDescriber errors,
 								  IServiceProvider services,
 								  ILogger<UserManager<ApplicationUser>> logger,
-								  RoleManager<ApplicationRole> roleManager)
+								  RoleManager<ApplicationRole> roleManager,
+								  IDivisionTerritorialManager divisionTerritorialManager)
 								  : base(store,
 										 optionsAccessor,
 									 	 passwordHasher,
@@ -36,6 +39,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 	{
 		_store = store;
 		_roleManager = roleManager;
+		_divisionTerritorialManager = divisionTerritorialManager;
 	}
 
 	public async Task<IdentityResult> UpdateLastSession(ApplicationUser user)
@@ -142,5 +146,42 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		var allUsers = await Users.ToListAsync();
 		var usersNotInRole = allUsers.Except(usersInRole).ToList();
 		return usersNotInRole;
+	}
+
+	public async Task<IList<ApplicationUser>> GetUsersInRoleWithDivisionTerritorialInfoAsync(string roleName)
+	{
+		if (await _roleManager.FindByNameAsync(roleName) == null)
+			throw new InvalidOperationException($"Rol '{roleName}' no encontrado.");
+
+		var usersInRole = await GetUsersInRoleAsync(roleName);
+
+		foreach(var user in usersInRole)
+		{
+			if (user.IdProvincia != null)
+			{
+				var provincia = await _divisionTerritorialManager.Provincias.ReadByIdAsync(new Guid(user.IdProvincia?.ToString()));
+
+				if (provincia != null)
+					user.Provincia = provincia;
+			}
+
+			if (user.IdCanton != null)
+			{
+				var canton = await _divisionTerritorialManager.Cantones.ReadByIdAsync(new Guid(user.IdCanton?.ToString()));
+
+				if (canton != null)
+					user.Canton = canton;
+			}
+
+			if (user.IdDistrito != null)
+			{
+				var distrito = await _divisionTerritorialManager.Distritos.ReadByIdAsync(new Guid(user.IdDistrito?.ToString()));
+
+				if (distrito != null)
+					user.Distrito = distrito;
+			}
+		}
+
+		return usersInRole;
 	}
 }
