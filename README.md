@@ -103,3 +103,13 @@ TODO: Add your code references.
   - ObtenerPorId
   - ObtenerPorParametro
 <hr />
+
+## Reporte de rutinas
+- Contar solo con una opcion llamada "Reporte de Rutinas"
+- Colocar los siguientes filtros:
+  - Instructor
+  - Cliente
+  - Rango de fechas
+- Mostrar en los resultados solo el encabezado de la rutina (Incluyendo la cantidad de ejercicios)
+- Por cada rutina colocar el boton ver detalle de rutina.
+- Este detalle debe abrirse en una nueva pestaña del navegador.
