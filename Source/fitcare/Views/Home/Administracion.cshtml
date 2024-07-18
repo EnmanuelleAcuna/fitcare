@@ -26,7 +26,7 @@
 	<div class="row">
 		<div class="col s12">
 			<div class="card-deck">
-				@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
+				@* @if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
 				{
 					<div class="card">
 						<img src="~/images/user.svg" alt="Perfil" class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
@@ -37,7 +37,7 @@
 							<a href='#' class="btn btn-sm btn-block btn-dark">Mi perfil</a>
 						</div>
 					</div>
-				}
+				} *@
 
 				@if (User.IsInRole("Administrador"))
 				{
@@ -83,17 +83,16 @@
 							<p class="card-text text-center">Gestione las rutinas de sus clientes.</p>
 						}
 
-						@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
-						{
-							<a href='@Url.Action("Listar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Rutinas</a>
-							<a href='@Url.Action("Agregar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Registrar rutina</a>
-							<a href='@Url.Action("ReporteResumido", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas resumido</a>
-							<a href='@Url.Action("ReporteDetallado", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas detallado</a>
-						}
-
 						@if (User.IsInRole("Cliente"))
 						{
-							<a href="#" class="btn btn-sm btn-block btn-dark">Mis rutinas</a>
+							<a href='@Url.Action("Listar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Mis rutinas</a>
+						}
+
+						@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+						{
+							<a href='@Url.Action("Agregar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Registrar rutina</a>
+							<a href='@Url.Action("ReporteResumido", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas por cliente</a>
+							<a href='@Url.Action("ReporteDetallado", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte de rutinas por instructor</a>
 						}
 					</div>
 				</div>
