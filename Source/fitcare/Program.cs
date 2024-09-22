@@ -19,15 +19,12 @@ class Program
 	public static void Main(string[] args)
 	{
 		WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-		IConfiguration builderConfiguration = builder.Configuration;
-
-		builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = builderConfiguration["ApplicationInsights:ConnectionString"]);
-
-		builder.Services.Configure<ConnectionStringOptions>(builderConfiguration.GetSection("ConnectionStrings"));
-		builder.Services.AddOptions<ConnectionStringOptions>();
-
-		builder.Services.AddDbContext<FitcareDBContext>(options => options.UseSqlServer(builderConfiguration.GetConnectionString("DefaultConnection")));
-		builder.Services.AddDbContext<IdentityDBContext>(options => options.UseSqlServer(builderConfiguration.GetConnectionString("DefaultConnection")));
+		
+		builder.Services.AddLogging();
+		// builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = builderConfiguration["ApplicationInsights:ConnectionString"]);
+		
+		builder.Services.AddDbContext<FitcareDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+		builder.Services.AddDbContext<IdentityDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 		// ASP.Net Identity
 		builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -42,7 +39,7 @@ class Program
 
 		builder.Services.Configure<CookiePolicyOptions>(options =>
 		{
-			options.CheckConsentNeeded = context => false;
+			// options.CheckConsentNeeded = _ => false; By default is false
 			options.MinimumSameSitePolicy = SameSiteMode.Lax;
 		});
 
@@ -91,9 +88,4 @@ class Program
 		app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 		app.Run();
 	}
-}
-
-class ConnectionStringOptions
-{
-	public string DefaultConnection { get; set; }
 }
