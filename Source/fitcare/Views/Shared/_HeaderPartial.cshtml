@@ -1,4 +1,8 @@
-﻿<header>
+﻿@using fitcare.Models.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+<header>
 	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
 		<div class="container my-1">
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
@@ -15,13 +19,37 @@
 					<li class="nav-item">
 						@Html.ActionLink("Contáctenos", "Contacto", "Home", null, new { @class = "nav-link text-dark" })
 					</li>
-					@* <li class="nav-item"> *@
-					@* 	@Html.ActionLink("Privacidad", "Privacidad", "Home", null, new { @class = "nav-link text-dark" *@
-					@* 	}) *@
-					@* </li> *@
+					<li class="nav-item">
+						@Html.ActionLink("Privacidad", "Privacidad", "Home", null, new { @class = "nav-link text-dark"
+						})
+					</li>
+					@if (SignInManager.IsSignedIn(User))
+					{
+						<li class="nav-item">
+							@Html.ActionLink("Administración", "Administracion", "Home", null, new { @class = "nav-link text-dark"
+							})
+						</li>
+					}
 				</ul>
 
-				<partial name="_LoginPartial" />
+				<ul class="navbar-nav">
+					@if (SignInManager.IsSignedIn(User))
+					{
+					<li class="nav-item">
+						<div>
+							<form class="form-inline" asp-controller="Cuentas" asp-action="CerrarSesion" asp-route-returnUrl="@Url.Action("Index", "Home")">
+								<button type="submit" class="dropdown-item">Cerrar sesión</button>
+							</form>
+						</div>
+					</li>
+					}
+					else
+					{
+					<li class="nav-item">
+						<a class="nav-link text-dark" asp-controller="Cuentas" asp-action="IniciarSesion" title="Iniciar sesión en fitcare">Iniciar sesión</a>
+					</li>
+					}
+				</ul>
 			</div>
 		</div>
 	</nav>
