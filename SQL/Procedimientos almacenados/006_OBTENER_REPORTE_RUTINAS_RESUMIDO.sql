@@ -1,13 +1,12 @@
 USE fitcare;
 
 DROP PROCEDURE OBTENER_REPORTE_RUTINAS_RESUMIDO;
+GO;
 
-DELIMITER //
-
-CREATE PROCEDURE OBTENER_REPORTE_RUTINAS_RESUMIDO (
-    IN idInstructor NVARCHAR(100),
-    IN idCliente NVARCHAR(100)
-)
+CREATE PROCEDURE OBTENER_REPORTE_RUTINAS_RESUMIDO
+    @idInstructor NVARCHAR(100),
+    @idCliente NVARCHAR(100)
+AS
 BEGIN
 	SELECT
 		R.Id,
@@ -17,7 +16,7 @@ BEGIN
         R.Fecha_Inicio AS 'FechaInicio',
         R.Fecha_Fin AS 'FechaFin',
         R.Objetivo,
-        DATEDIFF(R.Fecha_Fin, R.Fecha_Inicio) AS 'DiasRutina',
+        DATEDIFF(DAY, R.Fecha_Fin, R.Fecha_Inicio) AS 'DiasRutina',
         COUNT(DR.IdRutina) AS 'CantidadEjerciciosRegistrados'
 	FROM RUTINAS AS R
 	INNER JOIN USUARIOS I
@@ -30,8 +29,6 @@ BEGIN
              AND
              R.IdCliente = CASE idCliente WHEN '' THEN R.IdCliente ELSE idCliente END
     GROUP BY R.Id, I.Nombre, I.PrimerApellido, I.SegundoApellido, C.Nombre, C.PrimerApellido, C.SegundoApellido, R.Fecha_Realizacion, R.Fecha_Inicio, R.Fecha_Fin, R.Objetivo;
-END //
+END;
 
-DELIMITER ;
-
-CALL OBTENER_REPORTE_RUTINAS_RESUMIDO ('', '');
+EXEC OBTENER_REPORTE_RUTINAS_RESUMIDO '', '';

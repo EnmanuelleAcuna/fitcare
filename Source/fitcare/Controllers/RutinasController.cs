@@ -30,6 +30,7 @@ namespace fitcare.Controllers
 		private readonly ApplicationUserManager<ApplicationUser> _userManager;
 		private readonly IEmailSender _emailSender;
 		private readonly ILogger<RutinasController> _logger;
+		private readonly IConfiguration _configuration;
 
 		public RutinasController(IRutinasManager<Rutina> rutinasManager,
 								 IManager<TipoMedida> tiposMedidaManager,
@@ -126,13 +127,8 @@ namespace fitcare.Controllers
 		public async Task<ActionResult> ReporteResumido()
 		{
 			await CargarViewBags();
-
-			// TODO
-			//IEnumerable<ReporteRutinaResumido> datosReporte = _repoRutinas.ObtenerReporteRutinasResumido(string.Empty, string.Empty);
-			//IEnumerable<ReporteRutinaResumidoViewModel> modelo = datosReporte.Select(i => new ReporteRutinaResumidoViewModel(i, _configuracion)).ToList();
-
-			//return View(modelo);
-			return View();
+			var viewModel = new List<ReporteRutinaResumidoViewModel>();
+			return View(viewModel);
 		}
 
 		[HttpPost]
@@ -140,44 +136,10 @@ namespace fitcare.Controllers
 		{
 			await CargarViewBags();
 
-			_ = idInstructor ?? string.Empty;
-			_ = idCliente ?? string.Empty;
+			IEnumerable<ReporteRutinaResumido> datosReporte = _rutinasManager.ObtenerReporteRutinasResumido(idInstructor, idCliente);
+			IEnumerable<ReporteRutinaResumidoViewModel> viewModel = datosReporte.Select(i => new ReporteRutinaResumidoViewModel(i, _configuration)).ToList();
 
-			// TODO
-			//IEnumerable<ReporteRutinaResumido> datosReporte = _repoRutinas.ObtenerReporteRutinasResumido(idInstructor, idCliente);
-			//IEnumerable<ReporteRutinaResumidoViewModel> Modelo = datosReporte.Select(i => new ReporteRutinaResumidoViewModel(i, _configuracion)).ToList();
-
-			//return View(Modelo);
-			return View();
-		}
-
-		[HttpGet]
-		public async Task<ActionResult> ReporteDetallado()
-		{
-			await CargarViewBags();
-
-			// TODO
-			//IEnumerable<ReporteRutinaDetallado> datosReporte = _repoRutinas.ObtenerReporteRutinasDetallado(string.Empty, string.Empty);
-			//IEnumerable<ReporteRutinaDetalladoViewModel> viewModelData = datosReporte.Select(i => new ReporteRutinaDetalladoViewModel(i, _configuracion)).ToList();
-
-			//return View(viewModelData);
-			return View();
-		}
-
-		[HttpPost]
-		public async Task<ActionResult> ReporteDetallado(string idInstructor, string idCliente)
-		{
-			await CargarViewBags();
-
-			_ = idInstructor ?? string.Empty;
-			_ = idCliente ?? string.Empty;
-
-			// TODO
-			//IEnumerable<ReporteRutinaDetallado> datosReporte = _repoRutinas.ObtenerReporteRutinasDetallado(idInstructor, idCliente);
-			//IEnumerable<ReporteRutinaDetalladoViewModel> viewModelData = datosReporte.Select(i => new ReporteRutinaDetalladoViewModel(i, _configuracion)).ToList();
-
-			//return View(viewModelData);
-			return View();
+			return View(viewModel);
 		}
 
 		private async Task CargarViewBags()
@@ -186,6 +148,9 @@ namespace fitcare.Controllers
 			ViewBag.ListaEjercicios = CargarListaSeleccionEjercicios(await _ejerciciosManager.ReadAllAsync());
 			ViewBag.ListaGruposMusculares = CargarListaSeleccionGruposMusculares(await _gruposMuscularesManager.ReadAllAsync());
 			ViewBag.ListaMaquinas = CargarListaSeleccionMaquinas(await _maquinasManager.ReadAllAsync());
+			
+			ViewBag.ListaClientes = CargarListaSeleccionClientes(await _userManager.GetUsersInRoleAsync("Cliente"));
+			ViewBag.ListaInstructores = CargarListaSeleccionInstructores(await _userManager.GetUsersInRoleAsync("Instructor"));
 		}
 	}
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json;
 
-namespace fitcare.Models.DataAccess;
+namespace fitcare.Models.ViewModels;
 
 public class ReporteRutinaResumido
 {

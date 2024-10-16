@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using fitcare.Models.DataAccess;
 using fitcare.Models.Entities;
 using fitcare.Models.Identity;
 using Microsoft.Extensions.Configuration;
@@ -200,56 +199,10 @@ public class MedidaRutinaViewModel
 	}
 }
 
-public class ReporteRutinaDetalladoViewModel
-{
-	public ReporteRutinaDetalladoViewModel(ReporteRutinaDetallado rutina, IConfiguration configuration)
-	{
-		if (rutina is null)
-			throw new ArgumentNullException(paramName: nameof(rutina), message: configuration["AppSettings:ModeloNulo"]);
-
-		NombreInstructor = rutina.NombreInstructor;
-		NombreCliente = rutina.NombreCliente;
-		FechaRegistro = rutina.FechaRegistro.ToString("dd/MM/yyyy");
-		FechaInicio = rutina.FechaInicio.ToString("dd/MM/yyyy");
-		FechaFin = rutina.FechaFin.ToString("dd/MM/yyyy");
-		Objetivo = rutina.Objetivo;
-		DiasRutina = rutina.DiasRutina;
-		CantidadEjerciciosRegistrados = rutina.CantidadEjerciciosRegistrados;
-
-		// Ejercicios = rutina.Ejercicios.Select(de => new DetalleEjercicioRutinaViewModel(de)).ToList();
-		// Medidas = rutina.Medidas.Select(mr => new DetalleMedidaViewModel(mr)).ToList();
-	}
-
-	[Display(Name = "Instructor")]
-	public string NombreInstructor { get; set; }
-
-	[Display(Name = "Cliente")]
-	public string NombreCliente { get; set; }
-
-	[Display(Name = "Registro")]
-	public string FechaRegistro { get; set; }
-
-	[Display(Name = "Inicio")]
-	public string FechaInicio { get; set; }
-
-	[Display(Name = "Finalización")]
-	public string FechaFin { get; set; }
-
-	public string Objetivo { get; set; }
-
-	[Display(Name = "Días")]
-	public int DiasRutina { get; set; }
-
-	[Display(Name = "Ejercicios")]
-	public int CantidadEjerciciosRegistrados { get; set; }
-
-	// public IEnumerable<DetalleEjercicioRutinaViewModel> Ejercicios { get; set; }
-
-	// public IEnumerable<DetalleMedidaViewModel> Medidas { get; set; }
-}
-
 public class ReporteRutinaResumidoViewModel
 {
+	public ReporteRutinaResumidoViewModel() { }
+	
 	public ReporteRutinaResumidoViewModel(ReporteRutinaResumido rutina, IConfiguration configuration)
 	{
 		if (rutina is null)

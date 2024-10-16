@@ -204,6 +204,18 @@ public class BaseController : Controller
 		IEnumerable<SelectListItem> listaSeleccionUsuarios = listaUsuarios.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = string.Format("{0} {1} {2}", p.Name, p.FirstLastName, p.SecondLastName) }).ToList();
 		return listaSeleccionUsuarios;
 	}
+	
+	public IEnumerable<SelectListItem> CargarListaSeleccionClientes(IEnumerable<ApplicationUser> listaUsuarios)
+	{
+		IEnumerable<SelectListItem> listaSeleccionUsuarios = listaUsuarios.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = string.Format("{0} {1} {2}", p.Name, p.FirstLastName, p.SecondLastName) }).ToList();
+		return listaSeleccionUsuarios;
+	}
+	
+	public IEnumerable<SelectListItem> CargarListaSeleccionInstructores(IEnumerable<ApplicationUser> listaUsuarios)
+	{
+		IEnumerable<SelectListItem> listaSeleccionUsuarios = listaUsuarios.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = string.Format("{0} {1} {2}", p.Name, p.FirstLastName, p.SecondLastName) }).ToList();
+		return listaSeleccionUsuarios;
+	}
 
 	// protected async Task CargarImagenUsuario(IEnumerable<Maquina> maquinas)
 	// {
