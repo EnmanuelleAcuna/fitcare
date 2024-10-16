@@ -55,6 +55,7 @@ namespace fitcare.Controllers
 			_userManager = userManager;
 			_emailSender = emailSender;
 			_logger = logger;
+			_configuration = configuration;
 		}
 
 		[HttpGet]
