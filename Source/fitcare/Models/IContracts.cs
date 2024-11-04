@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using fitcare.Models.Entities;
 using fitcare.Models.ViewModels;
 
-namespace fitcare.Models.Contracts;
+namespace fitcare.Models;
 
-public interface IManager<T>
+public interface IBaseCore<T>
 {
 	Task<IList<T>> ReadAllAsync();
 	Task<T> ReadByIdAsync(Guid id);
@@ -15,7 +15,7 @@ public interface IManager<T>
 	Task DeleteAsync(Guid id);
 }
 
-public interface IContactoManager<T>
+public interface IContactos<T>
 {
 	Task<IList<T>> ReadAllAsync();
 	Task<T> ReadByIdAsync(Guid id);
@@ -23,17 +23,18 @@ public interface IContactoManager<T>
 	Task DeleteAsync(Guid id);
 }
 
-public interface IDivisionTerritorialManager
+public interface IDivisionTerritorial
 {
-	IManager<Provincia> Provincias { get; }
-	IManager<Canton> Cantones { get; }
-	IManager<Distrito> Distritos { get; }
+	IBaseCore<Provincia> Provincias { get; }
+	IBaseCore<Canton> Cantones { get; }
+	IBaseCore<Distrito> Distritos { get; }
 }
 
-public interface IRutinasManager<T>
+public interface IRutinas<T>
 {
 	Task<IList<T>> ReadAllAsync();
 	Task<T> ReadByIdAsync(Guid id);
 	Task CreateAsync(T model, string user);
+	
 	IList<ReporteRutinaResumido> ObtenerReporteRutinasResumido(string idInstructor, string idCliente);
 }

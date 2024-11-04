@@ -3,49 +3,48 @@ using fitcare.Models.ViewModels;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
-namespace fitcare.Controllers
+namespace fitcare.Controllers;
+
+public class ErrorController : Controller
 {
-	public class ErrorController : Controller
+	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+	[IgnoreAntiforgeryToken]
+	public IActionResult Error()
 	{
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		[IgnoreAntiforgeryToken]
-		public IActionResult Error()
-		{
-			IExceptionHandlerFeature exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-			ErrorViewModel modelo = GetErrorViewModel(exceptionHandlerPathFeature, false);
-			return View(modelo);
-		}
+		IExceptionHandlerFeature exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+		ErrorViewModel modelo = GetErrorViewModel(exceptionHandlerPathFeature, false);
+		return View(modelo);
+	}
 
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		[IgnoreAntiforgeryToken]
-		public IActionResult ErrorDevelopment()
-		{
-			IExceptionHandlerFeature exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-			ErrorViewModel modelo = GetErrorViewModel(exceptionHandlerPathFeature, true);
-			return View("Error", modelo);
-		}
+	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+	[IgnoreAntiforgeryToken]
+	public IActionResult ErrorDevelopment()
+	{
+		IExceptionHandlerFeature exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+		ErrorViewModel modelo = GetErrorViewModel(exceptionHandlerPathFeature, true);
+		return View("Error", modelo);
+	}
 
-		private ErrorViewModel GetErrorViewModel(IExceptionHandlerFeature exceptionHandlerPathFeature, bool isDevelopment)
-		{
-			string exceptionMessage = exceptionHandlerPathFeature.Error.Message;
-			if (exceptionHandlerPathFeature.Error.InnerException != null)
-				exceptionMessage += $"\n {exceptionHandlerPathFeature.Error.InnerException.Message}";
+	private ErrorViewModel GetErrorViewModel(IExceptionHandlerFeature exceptionHandlerPathFeature, bool isDevelopment)
+	{
+		string exceptionMessage = exceptionHandlerPathFeature.Error.Message;
+		if (exceptionHandlerPathFeature.Error.InnerException != null)
+			exceptionMessage += $"\n {exceptionHandlerPathFeature.Error.InnerException.Message}";
 
-			ErrorViewModel modelo = new()
-			{
-				RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
-				ExceptionMessage = exceptionMessage,
-				StackTrace = isDevelopment ? exceptionHandlerPathFeature.Error.StackTrace : string.Empty
-			};
-			return modelo;
-		}
-
-		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-		[IgnoreAntiforgeryToken]
-		[Route("/404")]
-		public IActionResult Error404()
+		ErrorViewModel modelo = new()
 		{
-			return View();
-		}
+			RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+			ExceptionMessage = exceptionMessage,
+			StackTrace = isDevelopment ? exceptionHandlerPathFeature.Error.StackTrace : string.Empty
+		};
+		return modelo;
+	}
+
+	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+	[IgnoreAntiforgeryToken]
+	[Route("/404")]
+	public IActionResult Error404()
+	{
+		return View();
 	}
 }

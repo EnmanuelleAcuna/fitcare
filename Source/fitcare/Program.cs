@@ -1,6 +1,6 @@
 using System;
 using fitcare.Models;
-using fitcare.Models.Contracts;
+using fitcare.Models.Core;
 using fitcare.Models.Entities;
 using fitcare.Models.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -23,10 +23,9 @@ class Program
 		builder.Services.AddLogging();
 		// builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = builderConfiguration["ApplicationInsights:ConnectionString"]);
 		
-		builder.Services.AddDbContext<FitcareDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-		builder.Services.AddDbContext<IdentityDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 		// ASP.Net Identity
+		builder.Services.AddDbContext<IdentityDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+		
 		builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 		{
 			options.User.RequireUniqueEmail = true;
@@ -58,19 +57,21 @@ class Program
 			options.LoginPath = "/Cuentas/IniciarSesion";
 			options.Cookie.SameSite = SameSiteMode.Strict;
 		});
+		
+		builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-		builder.Services.AddScoped<IManager<Provincia>, ProvinciaManager>();
-		builder.Services.AddScoped<IManager<Canton>, CantonManager>();
-		builder.Services.AddScoped<IManager<Distrito>, DistritoManager>();
-		builder.Services.AddTransient<IDivisionTerritorialManager, DivisionTerritorialManager>();
-		builder.Services.AddScoped<IContactoManager<Contacto>, ContactosManager>();
-		builder.Services.AddTransient<IManager<TipoMaquina>, TiposMaquinaManager>();
-		builder.Services.AddTransient<IManager<Maquina>, MaquinasManager>();
-		builder.Services.AddTransient<IManager<TipoEjercicio>, TiposEjercicioManager>();
-		builder.Services.AddTransient<IManager<Ejercicio>, EjerciciosManager>();
-		builder.Services.AddTransient<IManager<TipoMedida>, TiposMedidaManager>();
-		builder.Services.AddTransient<IManager<GrupoMuscular>, GruposMuscularesManager>();
-		builder.Services.AddTransient<IRutinasManager<Rutina>, RutinasManager>();
+		builder.Services.AddScoped<IBaseCore<Provincia>, Provincias>();
+		builder.Services.AddScoped<IBaseCore<Canton>, Cantones>();
+		builder.Services.AddScoped<IBaseCore<Distrito>, Distritos>();
+		builder.Services.AddTransient<IDivisionTerritorial, DivisionTerritorial>();
+		builder.Services.AddScoped<IContactos<Contacto>, Contactos>();
+		builder.Services.AddTransient<IBaseCore<TipoMaquina>, TiposMaquina>();
+		builder.Services.AddTransient<IBaseCore<Maquina>, Maquinas>();
+		builder.Services.AddTransient<IBaseCore<TipoEjercicio>, TiposEjercicio>();
+		builder.Services.AddTransient<IBaseCore<Ejercicio>, Ejercicios>();
+		builder.Services.AddTransient<IBaseCore<TipoMedida>, TiposMedida>();
+		builder.Services.AddTransient<IBaseCore<GrupoMuscular>, GruposMusculares>();
+		builder.Services.AddTransient<IRutinas<Rutina>, Rutinas>();
 		builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 		builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

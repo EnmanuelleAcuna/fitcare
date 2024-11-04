@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
+using fitcare.Models;
 using fitcare.Models.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +19,7 @@ public class HomeController : BaseController
 
 	public HomeController(ApplicationUserManager<ApplicationUser> userManager,
 		RoleManager<ApplicationRole> roleManager,
-		IDivisionTerritorialManager divisionterritorial,
+		IDivisionTerritorial divisionterritorial,
 		IConfiguration configuration,
 		IHttpContextAccessor contextAccesor,
 		ILogger<HomeController> logger,

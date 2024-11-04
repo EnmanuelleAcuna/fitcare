@@ -1,14 +1,11 @@
 ﻿using fitcare.Models.Identity;
+using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace fitcare.Models.Entities;
+namespace fitcare.Models;
 
-public class FitcareDBContext : DbContext
+public class ApplicationDbContext : DbContext
 {
-	public FitcareDBContext() { }
-
-	public FitcareDBContext(DbContextOptions<FitcareDBContext> options) : base(options) { }
-
 	public virtual DbSet<Provincia> Provincias { get; set; }
 	public virtual DbSet<Canton> Cantones { get; set; }
 	public virtual DbSet<Distrito> Distritos { get; set; }
@@ -24,6 +21,10 @@ public class FitcareDBContext : DbContext
 	// public virtual DbSet<DetalleMedidas> DetalleMedidas { get; set; }
 	// public virtual DbSet<DetalleRutina> DetalleRutina { get; set; }
 	// public virtual DbSet<GruposMuscularesEjercicio> GruposMuscularesEjercicio { get; set; }
+	
+	public ApplicationDbContext() { }
+
+	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	{
@@ -34,8 +35,7 @@ public class FitcareDBContext : DbContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
-
-		// Usuarios
+		
 		modelBuilder.Entity<ApplicationUser>(b =>
 		{
 			b.ToTable("AspNetUsers", "dbo"); // Remap to table with different name

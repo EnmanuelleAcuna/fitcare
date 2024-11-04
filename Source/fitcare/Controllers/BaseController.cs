@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
+using fitcare.Models;
 using fitcare.Models.Entities;
 using fitcare.Models.Identity;
 using fitcare.Models.ViewModels;
@@ -21,21 +21,21 @@ namespace fitcare.Controllers;
 
 public class BaseController : Controller
 {
-	private readonly IDivisionTerritorialManager _divisionTerritorialManager;
+	private readonly IDivisionTerritorial _divisionTerritorial;
 	private readonly ApplicationUserManager<ApplicationUser> _userManager;
 	private readonly RoleManager<ApplicationRole> _roleManager;
 	private readonly IConfiguration _configuration;
 	private readonly IHttpContextAccessor _contextAccessor;
 	private readonly IWebHostEnvironment _environment;
 
-	public BaseController(IDivisionTerritorialManager divisionTerritorialManager,
+	public BaseController(IDivisionTerritorial divisionTerritorial,
 						  ApplicationUserManager<ApplicationUser> userManager,
 						  RoleManager<ApplicationRole> roleManager,
 						  IConfiguration configuration,
 						  IHttpContextAccessor contextAccessor,
 						  IWebHostEnvironment environment)
 	{
-		_divisionTerritorialManager = divisionTerritorialManager;
+		_divisionTerritorial = divisionTerritorial;
 		_userManager = userManager;
 		_roleManager = roleManager;
 		_configuration = configuration;
@@ -97,28 +97,28 @@ public class BaseController : Controller
 
 	public async Task<IList<SelectListItem>> CargarListaSeleccionProvincias()
 	{
-		IList<Provincia> provincias = await _divisionTerritorialManager.Provincias.ReadAllAsync();
+		IList<Provincia> provincias = await _divisionTerritorial.Provincias.ReadAllAsync();
 		IList<SelectListItem> listaSeleccionProvincias = provincias.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = p.Nombre }).ToList();
 		return listaSeleccionProvincias;
 	}
 
 	public async Task<IList<CantonesDistritosSelectListItem>> CargarListaSeleccionCantones()
 	{
-		IList<Canton> cantones = await _divisionTerritorialManager.Cantones.ReadAllAsync();
+		IList<Canton> cantones = await _divisionTerritorial.Cantones.ReadAllAsync();
 		IList<CantonesDistritosSelectListItem> listaSeleccionCantones = cantones.Select(c => new CantonesDistritosSelectListItem { Value = c.Id.ToString(), Text = c.Nombre, IdPadre = c.Provincia.Id.ToString() }).ToList();
 		return listaSeleccionCantones;
 	}
 
 	public async Task<IList<CantonesDistritosSelectListItem>> CargarListaSeleccionDistritos()
 	{
-		IList<Distrito> distritos = await _divisionTerritorialManager.Distritos.ReadAllAsync();
+		IList<Distrito> distritos = await _divisionTerritorial.Distritos.ReadAllAsync();
 		IList<CantonesDistritosSelectListItem> listaSeleccionDistritos = distritos.Select(d => new CantonesDistritosSelectListItem { Value = d.Id.ToString(), Text = d.Nombre, IdPadre = d.Canton.Id.ToString() }).ToList();
 		return listaSeleccionDistritos;
 	}
 
 	public async Task<IList<SelectListItem>> CargarListaSeleccionDistritosConCantonesProvincias()
 	{
-		IList<Distrito> distritos = await _divisionTerritorialManager.Distritos.ReadAllAsync();
+		IList<Distrito> distritos = await _divisionTerritorial.Distritos.ReadAllAsync();
 		IList<SelectListItem> listaSeleccionDistritos = distritos.Select(d => new SelectListItem { Value = Convert.ToString(d.Id.ToString(), new CultureInfo("es-CR")), Text = String.Format("{0}, {1}, {2}", d.Canton.Provincia.Nombre, d.Canton.Nombre, d.Nombre) }).ToList();
 		return listaSeleccionDistritos;
 	}

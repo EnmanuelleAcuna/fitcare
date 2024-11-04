@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace fitcare.Models;
+namespace fitcare.Models.Core;
 
-public class DivisionTerritorialManager : IDivisionTerritorialManager
+public class DivisionTerritorial : IDivisionTerritorial
 {
-	public IManager<Provincia> Provincias { get; private set; }
-	public IManager<Canton> Cantones { get; private set; }
-	public IManager<Distrito> Distritos { get; private set; }
+	public IBaseCore<Provincia> Provincias { get; private set; }
+	public IBaseCore<Canton> Cantones { get; private set; }
+	public IBaseCore<Distrito> Distritos { get; private set; }
 
-	public DivisionTerritorialManager(IManager<Provincia> provincias, IManager<Canton> cantones, IManager<Distrito> distritos)
+	public DivisionTerritorial(IBaseCore<Provincia> provincias, IBaseCore<Canton> cantones, IBaseCore<Distrito> distritos)
 	{
 		Provincias = provincias;
 		Cantones = cantones;
@@ -21,11 +20,11 @@ public class DivisionTerritorialManager : IDivisionTerritorialManager
 	}
 }
 
-public class ProvinciaManager : IManager<Provincia>
+public class Provincias : IBaseCore<Provincia>
 {
-	private readonly FitcareDBContext _db;
+	private readonly ApplicationDbContext _db;
 
-	public ProvinciaManager(FitcareDBContext db) => _db = db;
+	public Provincias(ApplicationDbContext db) => _db = db;
 
 	public async Task<IList<Provincia>> ReadAllAsync()
 	{
@@ -80,11 +79,11 @@ public class ProvinciaManager : IManager<Provincia>
 	}
 }
 
-public class CantonManager : IManager<Canton>
+public class Cantones : IBaseCore<Canton>
 {
-	private readonly FitcareDBContext _db;
+	private readonly ApplicationDbContext _db;
 
-	public CantonManager(FitcareDBContext db) => _db = db;
+	public Cantones(ApplicationDbContext db) => _db = db;
 
 	public async Task<IList<Canton>> ReadAllAsync()
 	{
@@ -146,11 +145,11 @@ public class CantonManager : IManager<Canton>
 	}
 }
 
-public class DistritoManager : IManager<Distrito>
+public class Distritos : IBaseCore<Distrito>
 {
-	private readonly FitcareDBContext _db;
+	private readonly ApplicationDbContext _db;
 
-	public DistritoManager(FitcareDBContext db) => _db = db;
+	public Distritos(ApplicationDbContext db) => _db = db;
 
 	public async Task<IList<Distrito>> ReadAllAsync()
 	{

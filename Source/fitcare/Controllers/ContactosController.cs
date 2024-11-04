@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
+using fitcare.Models;
 using fitcare.Models.Entities;
 using fitcare.Models.Extras;
 using fitcare.Models.Identity;
@@ -19,27 +19,27 @@ namespace fitcare.Controllers;
 [Authorize]
 public class ContactosController : BaseController
 {
-	private readonly IContactoManager<Contacto> _contactosManager;
+	private readonly IContactos<Contacto> _contactos;
 	private readonly ILogger<ContactosController> _logger;
 
-	public ContactosController(IContactoManager<Contacto> repoContactos,
-							   IDivisionTerritorialManager divisionTerritorialManager,
+	public ContactosController(IContactos<Contacto> repoContactos,
+							   IDivisionTerritorial divisionTerritorial,
 							   ApplicationUserManager<ApplicationUser> userManager,
 							   RoleManager<ApplicationRole> roleManager,
 							   IConfiguration configuration,
 							   IHttpContextAccessor contextAccesor,
 							   ILogger<ContactosController> logger,
 							   IWebHostEnvironment environment)
-	: base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
+	: base(divisionTerritorial, userManager, roleManager, configuration, contextAccesor, environment)
 	{
-		_contactosManager = repoContactos;
+		_contactos = repoContactos;
 		_logger = logger;
 	}
 
 	[HttpGet]
 	public async Task<ActionResult> Index()
 	{
-		var contactos = await _contactosManager.ReadAllAsync();
+		var contactos = await _contactos.ReadAllAsync();
 		var viewModel = contactos.Select(x => new ContactoViewModel(x));
 		return View(viewModel);
 	}
@@ -47,7 +47,7 @@ public class ContactosController : BaseController
 	[HttpGet]
 	public async Task<JsonResult> Detalle(string id)
 	{
-		var contacto = await _contactosManager.ReadByIdAsync(new Guid(id));
+		var contacto = await _contactos.ReadByIdAsync(new Guid(id));
 		var viewModel = new ContactoViewModel(contacto);
 		return Json(viewModel);
 	}
@@ -59,7 +59,7 @@ public class ContactosController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _contactosManager.CreateAsync(viewModel.Entidad());
+			await _contactos.CreateAsync(viewModel.Entidad());
 			return View(nameof(ConfirmacionContacto));
 		}
 
@@ -76,7 +76,7 @@ public class ContactosController : BaseController
 	[HttpGet]
 	public async Task<ActionResult> Eliminar(string id)
 	{
-		var contacto = await _contactosManager.ReadByIdAsync(new Guid(id));
+		var contacto = await _contactos.ReadByIdAsync(new Guid(id));
 		if (contacto == null) return NotFound();
 		var viewModel = new EliminarContactoViewModel(contacto);
 		return View(viewModel);
@@ -88,7 +88,7 @@ public class ContactosController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _contactosManager.DeleteAsync(new Guid(viewModel.Id));
+			await _contactos.DeleteAsync(new Guid(viewModel.Id));
 			return RedirectToAction(nameof(Index));
 		}
 

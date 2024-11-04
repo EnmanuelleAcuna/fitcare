@@ -4,7 +4,7 @@ namespace fitcare.Models.Entities;
 
 public class Base
 {
-	public Base() { }
+	protected Base() { }
 
 	public Base(string creadoPor, DateTime creadoEl)
 	{

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,7 +13,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 {
 	private readonly IUserStore<ApplicationUser> _store;
 	private readonly RoleManager<ApplicationRole> _roleManager;
-	private readonly IDivisionTerritorialManager _divisionTerritorialManager;
+	private readonly IDivisionTerritorial _divisionTerritorial;
 
 	public ApplicationUserManager(IUserStore<ApplicationUser> store,
 								  IOptions<IdentityOptions> optionsAccessor,
@@ -26,7 +25,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 								  IServiceProvider services,
 								  ILogger<UserManager<ApplicationUser>> logger,
 								  RoleManager<ApplicationRole> roleManager,
-								  IDivisionTerritorialManager divisionTerritorialManager)
+								  IDivisionTerritorial divisionTerritorial)
 								  : base(store,
 										 optionsAccessor,
 									 	 passwordHasher,
@@ -39,7 +38,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 	{
 		_store = store;
 		_roleManager = roleManager;
-		_divisionTerritorialManager = divisionTerritorialManager;
+		_divisionTerritorial = divisionTerritorial;
 	}
 
 	public async Task<IdentityResult> UpdateLastSession(ApplicationUser user)
@@ -159,7 +158,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		{
 			if (user.IdProvincia != null)
 			{
-				var provincia = await _divisionTerritorialManager.Provincias.ReadByIdAsync(new Guid(user.IdProvincia?.ToString()));
+				var provincia = await _divisionTerritorial.Provincias.ReadByIdAsync(new Guid(user.IdProvincia?.ToString()));
 
 				if (provincia != null)
 					user.Provincia = provincia;
@@ -167,7 +166,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 
 			if (user.IdCanton != null)
 			{
-				var canton = await _divisionTerritorialManager.Cantones.ReadByIdAsync(new Guid(user.IdCanton?.ToString()));
+				var canton = await _divisionTerritorial.Cantones.ReadByIdAsync(new Guid(user.IdCanton?.ToString()));
 
 				if (canton != null)
 					user.Canton = canton;
@@ -175,7 +174,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 
 			if (user.IdDistrito != null)
 			{
-				var distrito = await _divisionTerritorialManager.Distritos.ReadByIdAsync(new Guid(user.IdDistrito?.ToString()));
+				var distrito = await _divisionTerritorial.Distritos.ReadByIdAsync(new Guid(user.IdDistrito?.ToString()));
 
 				if (distrito != null)
 					user.Distrito = distrito;

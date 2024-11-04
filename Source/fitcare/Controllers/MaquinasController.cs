@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
+using fitcare.Models;
 using fitcare.Models.Entities;
 using fitcare.Models.Extras;
 using fitcare.Models.Identity;
@@ -20,30 +20,30 @@ namespace fitcare.Controllers;
 [Authorize]
 public class MaquinasController : BaseController
 {
-	private readonly IManager<TipoMaquina> _tiposMaquinaManager;
-	private readonly IManager<Maquina> _maquinasManager;
+	private readonly IBaseCore<TipoMaquina> _tiposMaquina;
+	private readonly IBaseCore<Maquina> _maquinas;
 	private readonly ILogger<MaquinasController> _logger;
 
-	public MaquinasController(IManager<TipoMaquina> tiposMaquinaManager,
-						  	  IManager<Maquina> maquinasManager,
-						  	  IDivisionTerritorialManager divisionTerritorialManager,
+	public MaquinasController(IBaseCore<TipoMaquina> tiposMaquina,
+						  	  IBaseCore<Maquina> maquinas,
+						  	  IDivisionTerritorial divisionTerritorial,
 						  	  ApplicationUserManager<ApplicationUser> userManager,
 						  	  RoleManager<ApplicationRole> roleManager,
 						  	  IConfiguration configuration,
 						  	  IHttpContextAccessor contextAccesor,
 						  	  ILogger<MaquinasController> logger,
 						  	  IWebHostEnvironment environment)
-							  : base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
+							  : base(divisionTerritorial, userManager, roleManager, configuration, contextAccesor, environment)
 	{
-		_tiposMaquinaManager = tiposMaquinaManager;
-		_maquinasManager = maquinasManager;
+		_tiposMaquina = tiposMaquina;
+		_maquinas = maquinas;
 		_logger = logger;
 	}
 
 	[HttpGet]
 	public async Task<IActionResult> ListarMaquinas()
 	{
-		var maquinas = await _maquinasManager.ReadAllAsync();
+		var maquinas = await _maquinas.ReadAllAsync();
 		var modeloVista = maquinas.Select(x => new MaquinaViewModel(x)).ToList();
 		return View(modeloVista);
 	}
@@ -51,7 +51,7 @@ public class MaquinasController : BaseController
 	[HttpGet]
 	public async Task<IActionResult> AgregarMaquina()
 	{
-		ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquinaManager.ReadAllAsync());
+		ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquina.ReadAllAsync());
 		return View();
 	}
 
@@ -61,21 +61,21 @@ public class MaquinasController : BaseController
 	{
 		if (!ModelState.IsValid)
 		{
-			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquinaManager.ReadAllAsync());
+			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquina.ReadAllAsync());
 			ModelState.AddModelError("", Messages.MensajeModeloInvalido);
 			return View(modeloVista);
 		}
 
-		await _maquinasManager.CreateAsync(modeloVista.Entidad(), CurrentUser);
+		await _maquinas.CreateAsync(modeloVista.Entidad(), CurrentUser);
 		return RedirectToAction(nameof(ListarMaquinas));
 	}
 
 	[HttpGet]
 	public async Task<IActionResult> EditarMaquina(string id)
 	{
-		var maquina = await _maquinasManager.ReadByIdAsync(new Guid(id));
+		var maquina = await _maquinas.ReadByIdAsync(new Guid(id));
 		if (maquina == null) return NotFound();
-		ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquinaManager.ReadAllAsync());
+		ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquina.ReadAllAsync());
 		var modelo = new EditarMaquinaViewModel(maquina);
 		return View(modelo);
 	}
@@ -86,19 +86,19 @@ public class MaquinasController : BaseController
 	{
 		if (!ModelState.IsValid)
 		{
-			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquinaManager.ReadAllAsync());
+			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquina.ReadAllAsync());
 			ModelState.AddModelError("", Messages.MensajeModeloInvalido);
 			return View(modeloVista);
 		}
 
-		await _maquinasManager.UpdateAsync(modeloVista.Entidad(), CurrentUser);
+		await _maquinas.UpdateAsync(modeloVista.Entidad(), CurrentUser);
 		return RedirectToAction(nameof(ListarMaquinas));
 	}
 
 	[HttpGet]
 	public async Task<IActionResult> EliminarMaquina(string id)
 	{
-		var maquina = await _maquinasManager.ReadByIdAsync(new Guid(id));
+		var maquina = await _maquinas.ReadByIdAsync(new Guid(id));
 		if (maquina == null) return NotFound();
 		EliminarMaquinaViewModel modeloVista = new(maquina);
 		return View(modeloVista);
@@ -113,14 +113,14 @@ public class MaquinasController : BaseController
 			return View(modelo);
 		}
 
-		await _maquinasManager.DeleteAsync(new Guid(modelo.Id));
+		await _maquinas.DeleteAsync(new Guid(modelo.Id));
 		return RedirectToAction(nameof(ListarMaquinas));
 	}
 
 	[HttpGet]
 	public async Task<JsonResult> DetalleMaquina(string id)
 	{
-		Maquina maquina = await _maquinasManager.ReadByIdAsync(new Guid(id));
+		Maquina maquina = await _maquinas.ReadByIdAsync(new Guid(id));
 		var modelo = new MaquinaViewModel(maquina);
 		return Json(modelo);
 	}
@@ -128,7 +128,7 @@ public class MaquinasController : BaseController
 	[HttpGet]
 	public async Task<ActionResult> ListarTiposMaquina()
 	{
-		IEnumerable<TipoMaquina> listaTiposMaquina = await _tiposMaquinaManager.ReadAllAsync();
+		IEnumerable<TipoMaquina> listaTiposMaquina = await _tiposMaquina.ReadAllAsync();
 		IEnumerable<TipoMaquinaViewModel> modelo = listaTiposMaquina.Select(x => new TipoMaquinaViewModel(x)).ToList();
 		return View(modelo);
 	}
@@ -145,7 +145,7 @@ public class MaquinasController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _tiposMaquinaManager.CreateAsync(modelo.Entidad(), GetCurrentUser());
+			await _tiposMaquina.CreateAsync(modelo.Entidad(), GetCurrentUser());
 			return RedirectToAction(nameof(ListarTiposMaquina));
 		}
 
@@ -156,7 +156,7 @@ public class MaquinasController : BaseController
 	[HttpGet]
 	public async Task<ActionResult> EditarTipoMaquina(string id)
 	{
-		TipoMaquina tipoMaquina = await _tiposMaquinaManager.ReadByIdAsync(new Guid(id));
+		TipoMaquina tipoMaquina = await _tiposMaquina.ReadByIdAsync(new Guid(id));
 		if (tipoMaquina == null) return NotFound();
 		var modelo = new EditarTipoMaquinaViewModel(tipoMaquina);
 		return View(modelo);
@@ -169,7 +169,7 @@ public class MaquinasController : BaseController
 		if (ModelState.IsValid)
 		{
 			TipoMaquina tipoMaquina = modelo.Entidad();
-			await _tiposMaquinaManager.UpdateAsync(tipoMaquina, GetCurrentUser());
+			await _tiposMaquina.UpdateAsync(tipoMaquina, GetCurrentUser());
 			return RedirectToAction(nameof(ListarTiposMaquina));
 		}
 
@@ -180,7 +180,7 @@ public class MaquinasController : BaseController
 	[HttpGet]
 	public async Task<ActionResult> EliminarTipoMaquina(string id)
 	{
-		TipoMaquina tipoMaquina = await _tiposMaquinaManager.ReadByIdAsync(new Guid(id));
+		TipoMaquina tipoMaquina = await _tiposMaquina.ReadByIdAsync(new Guid(id));
 		if (tipoMaquina == null) return NotFound();
 		var modelo = new EliminarTipoMaquinaViewModel(tipoMaquina);
 		return View(modelo);
@@ -191,7 +191,7 @@ public class MaquinasController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _tiposMaquinaManager.DeleteAsync(new Guid(modelo.Id));
+			await _tiposMaquina.DeleteAsync(new Guid(modelo.Id));
 			return RedirectToAction(nameof(ListarTiposMaquina));
 		}
 
@@ -202,7 +202,7 @@ public class MaquinasController : BaseController
 	[HttpGet]
 	public async Task<JsonResult> DetalleTipoMaquina(string id)
 	{
-		TipoMaquina tipoMaquina = await _tiposMaquinaManager.ReadByIdAsync(new Guid(id));
+		TipoMaquina tipoMaquina = await _tiposMaquina.ReadByIdAsync(new Guid(id));
 		var modelo = new TipoMaquinaViewModel(tipoMaquina);
 		return Json(modelo);
 	}

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.Json;
 using fitcare.Models.Entities;
 using fitcare.Models.Identity;
 using Microsoft.Extensions.Configuration;
@@ -240,4 +241,20 @@ public class ReporteRutinaResumidoViewModel
 
 	[Display(Name = "Ejercicios registrados")]
 	public int CantidadEjerciciosRegistrados { get; set; }
+}
+
+public class ReporteRutinaResumido
+{
+	public string Id { get; set; }
+	public string NombreInstructor { get; set; }
+	public string NombreCliente { get; set; }
+	public DateTime FechaRegistro { get; set; }
+	public DateTime FechaInicio { get; set; }
+	public DateTime FechaFin { get; set; }
+	public string Objetivo { get; set; }
+	public int DiasRutina { get; set; }
+	public int CantidadEjerciciosRegistrados { get; set; }
+
+	// Sobreescribir metodo ToString() de la clase para devolver el objeto en una cadena string en formato JSON
+	public override string ToString() => JsonSerializer.Serialize(this);
 }

@@ -8,20 +8,20 @@ using Xunit;
 
 namespace fitcare.Tests;
 
-public class RutinasManagerTests
+public class RutinasTests
 {
 	[Fact]
 	public async Task CreateAsync_Should_AddRutinaToDbContext()
 	{
 		// Arrange
-		var dbContextOptions = new DbContextOptionsBuilder<FitcareDBContext>()
+		var dbContextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
 			.UseInMemoryDatabase(databaseName: "InMemoryDatabase")
 			.ConfigureWarnings(warnings => warnings.Ignore(InMemoryEventId.TransactionIgnoredWarning))
 			.Options;
 
-		using (var dbContext = new FitcareDBContext(dbContextOptions))
+		using (var dbContext = new ApplicationDbContext(dbContextOptions))
 		{
-			var rutinasManager = new RutinasManager(dbContext);
+			var rutinasManager = new Rutinas(dbContext);
 
 			var rutina = new Rutina()
 			{

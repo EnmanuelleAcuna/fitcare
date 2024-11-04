@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
+using fitcare.Models;
 using fitcare.Models.Entities;
 using fitcare.Models.Extras;
 using fitcare.Models.Identity;
@@ -15,107 +15,106 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace fitcare.Controllers
+namespace fitcare.Controllers;
+
+[Authorize]
+public class GruposMuscularesController : BaseController
 {
-	[Authorize]
-	public class GruposMuscularesController : BaseController
+	private readonly IBaseCore<GrupoMuscular> _gruposMusculares;
+	private readonly ILogger<GruposMuscularesController> _logger;
+
+	public GruposMuscularesController(IBaseCore<GrupoMuscular> gruposMusculares,
+									  IDivisionTerritorial divisionTerritorial,
+									  ApplicationUserManager<ApplicationUser> userManager,
+									  RoleManager<ApplicationRole> roleManager,
+									  IConfiguration configuration,
+									  IHttpContextAccessor contextAccesor,
+									  ILogger<GruposMuscularesController> logger,
+									  IWebHostEnvironment environment)
+	: base(divisionTerritorial, userManager, roleManager, configuration, contextAccesor, environment)
 	{
-		private readonly IManager<GrupoMuscular> _gruposMuscularesManager;
-		private readonly ILogger<GruposMuscularesController> _logger;
+		_gruposMusculares = gruposMusculares;
+		_logger = logger;
+	}
 
-		public GruposMuscularesController(IManager<GrupoMuscular> gruposMuscularesManager,
-									 	  IDivisionTerritorialManager divisionTerritorialManager,
-									 	  ApplicationUserManager<ApplicationUser> userManager,
-										  RoleManager<ApplicationRole> roleManager,
-										  IConfiguration configuration,
-										  IHttpContextAccessor contextAccesor,
-										  ILogger<GruposMuscularesController> logger,
-										  IWebHostEnvironment environment)
-		: base(divisionTerritorialManager, userManager, roleManager, configuration, contextAccesor, environment)
+	[HttpGet]
+	public async Task<ActionResult> Listar()
+	{
+		IEnumerable<GrupoMuscular> listaGruposMusculares = await _gruposMusculares.ReadAllAsync();
+		IEnumerable<GrupoMuscularViewModel> modelo = listaGruposMusculares.Select(x => new GrupoMuscularViewModel(x)).ToList();
+		return View(modelo);
+	}
+
+	[HttpGet]
+	public ActionResult Agregar()
+	{
+		return View();
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<ActionResult> Agregar(AgregarGrupoMuscularViewModel modelo)
+	{
+		if (ModelState.IsValid)
 		{
-			_gruposMuscularesManager = gruposMuscularesManager;
-			_logger = logger;
+			await _gruposMusculares.CreateAsync(modelo.Entidad(), GetCurrentUser());
+			return RedirectToAction(nameof(Listar));
 		}
 
-		[HttpGet]
-		public async Task<ActionResult> Listar()
+		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(GrupoMuscular)));
+		return View(modelo);
+	}
+
+	[HttpGet]
+	public async Task<ActionResult> Editar(string id)
+	{
+		GrupoMuscular grupoMuscular = await _gruposMusculares.ReadByIdAsync(new Guid(id));
+		if (grupoMuscular == null) return NotFound();
+		EditarGrupoMuscularViewModel modelo = new(grupoMuscular);
+		return View(modelo);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<ActionResult> Editar(EditarGrupoMuscularViewModel modelo)
+	{
+		if (ModelState.IsValid)
 		{
-			IEnumerable<GrupoMuscular> listaGruposMusculares = await _gruposMuscularesManager.ReadAllAsync();
-			IEnumerable<GrupoMuscularViewModel> modelo = listaGruposMusculares.Select(x => new GrupoMuscularViewModel(x)).ToList();
-			return View(modelo);
+			await _gruposMusculares.UpdateAsync(modelo.Entidad(), GetCurrentUser());
+			return RedirectToAction(nameof(Listar));
 		}
 
-		[HttpGet]
-		public ActionResult Agregar()
+		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(GrupoMuscular)));
+		return View(modelo);
+	}
+
+	[HttpGet]
+	public async Task<ActionResult> Eliminar(string id)
+	{
+		GrupoMuscular grupoMuscular = await _gruposMusculares.ReadByIdAsync(new Guid(id));
+		EliminarGrupoMuscularViewModel modelo = new(grupoMuscular);
+
+		return View(modelo);
+	}
+
+	[HttpPost]
+	public async Task<ActionResult> Eliminar(EliminarGrupoMuscularViewModel modelo)
+	{
+		if (ModelState.IsValid)
 		{
-			return View();
+			await _gruposMusculares.DeleteAsync(new Guid(modelo.IdGrupoMuscular));
+			return RedirectToAction(nameof(Listar));
 		}
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Agregar(AgregarGrupoMuscularViewModel modelo)
-		{
-			if (ModelState.IsValid)
-			{
-				await _gruposMuscularesManager.CreateAsync(modelo.Entidad(), GetCurrentUser());
-				return RedirectToAction(nameof(Listar));
-			}
+		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoEjercicio)));
+		return View(modelo);
+	}
 
-			ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(GrupoMuscular)));
-			return View(modelo);
-		}
-
-		[HttpGet]
-		public async Task<ActionResult> Editar(string id)
-		{
-			GrupoMuscular grupoMuscular = await _gruposMuscularesManager.ReadByIdAsync(new Guid(id));
-			if (grupoMuscular == null) return NotFound();
-			EditarGrupoMuscularViewModel modelo = new(grupoMuscular);
-			return View(modelo);
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<ActionResult> Editar(EditarGrupoMuscularViewModel modelo)
-		{
-			if (ModelState.IsValid)
-			{
-				await _gruposMuscularesManager.UpdateAsync(modelo.Entidad(), GetCurrentUser());
-				return RedirectToAction(nameof(Listar));
-			}
-
-			ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(GrupoMuscular)));
-			return View(modelo);
-		}
-
-		[HttpGet]
-		public async Task<ActionResult> Eliminar(string id)
-		{
-			GrupoMuscular grupoMuscular = await _gruposMuscularesManager.ReadByIdAsync(new Guid(id));
-			EliminarGrupoMuscularViewModel modelo = new(grupoMuscular);
-
-			return View(modelo);
-		}
-
-		[HttpPost]
-		public async Task<ActionResult> Eliminar(EliminarGrupoMuscularViewModel modelo)
-		{
-			if (ModelState.IsValid)
-			{
-				await _gruposMuscularesManager.DeleteAsync(new Guid(modelo.IdGrupoMuscular));
-				return RedirectToAction(nameof(Listar));
-			}
-
-			ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoEjercicio)));
-			return View(modelo);
-		}
-
-		[HttpGet]
-		public async Task<JsonResult> Detalle(string id)
-		{
-			GrupoMuscular grupoMuscular = await _gruposMuscularesManager.ReadByIdAsync(new Guid(id));
-			var modelo = new GrupoMuscularViewModel(grupoMuscular);
-			return Json(modelo);
-		}
+	[HttpGet]
+	public async Task<JsonResult> Detalle(string id)
+	{
+		GrupoMuscular grupoMuscular = await _gruposMusculares.ReadByIdAsync(new Guid(id));
+		var modelo = new GrupoMuscularViewModel(grupoMuscular);
+		return Json(modelo);
 	}
 }

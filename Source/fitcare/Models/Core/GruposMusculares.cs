@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace fitcare.Models;
+namespace fitcare.Models.Core;
 
-public class GruposMuscularesManager : IManager<GrupoMuscular>
+public class GruposMusculares : IBaseCore<GrupoMuscular>
 {
-	private readonly FitcareDBContext _dbContext;
+	private readonly ApplicationDbContext _dbContext;
 
-	public GruposMuscularesManager(FitcareDBContext dbContext)
+	public GruposMusculares(ApplicationDbContext dbContext)
 	{
 		_dbContext = dbContext;
 	}

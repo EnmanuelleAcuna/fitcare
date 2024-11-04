@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace fitcare.Models;
+namespace fitcare.Models.Core;
 
-public class TiposMedidaManager : IManager<TipoMedida>
+public class TiposMedida : IBaseCore<TipoMedida>
 {
-	private readonly FitcareDBContext _dbContext;
+	private readonly ApplicationDbContext _dbContext;
 
-	public TiposMedidaManager(FitcareDBContext dbContext)
+	public TiposMedida(ApplicationDbContext dbContext)
 	{
 		_dbContext = dbContext;
 	}

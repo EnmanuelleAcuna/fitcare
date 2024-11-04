@@ -4,18 +4,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using fitcare.Models.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace fitcare.Models;
 
-public class RutinasManager : IRutinasManager<Rutina>
+public class Rutinas : IRutinas<Rutina>
 {
-	private readonly FitcareDBContext _db;
+	private readonly ApplicationDbContext _db;
 
-	public RutinasManager(FitcareDBContext db) => _db = db;
+	public Rutinas(ApplicationDbContext db) => _db = db;
 
 	public async Task<IList<Rutina>> ReadAllAsync()
 	{

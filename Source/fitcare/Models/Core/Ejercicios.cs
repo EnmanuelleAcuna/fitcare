@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace fitcare.Models;
+namespace fitcare.Models.Core;
 
-public class EjerciciosManager : IManager<Ejercicio>
+public class Ejercicios : IBaseCore<Ejercicio>
 {
-	private readonly FitcareDBContext _dbContext;
-	private readonly IManager<TipoEjercicio> _tiposEjercicioManager;
+	private readonly ApplicationDbContext _dbContext;
+	private readonly IBaseCore<TipoEjercicio> _tiposEjercicio;
 
-	public EjerciciosManager(FitcareDBContext dbContext, IManager<TipoEjercicio> tiposEjercicioManager)
+	public Ejercicios(ApplicationDbContext dbContext, IBaseCore<TipoEjercicio> tiposEjercicio)
 	{
 		_dbContext = dbContext;
-		_tiposEjercicioManager = tiposEjercicioManager;
+		_tiposEjercicio = tiposEjercicio;
 	}
 
 	public async Task<IList<Ejercicio>> ReadAllAsync()
@@ -32,7 +31,7 @@ public class EjerciciosManager : IManager<Ejercicio>
 
 	public async Task CreateAsync(Ejercicio ejercicio, string user)
 	{
-		var existingTipoEjercicio = await _tiposEjercicioManager.ReadByIdAsync(ejercicio.IdTipoEjercicio);
+		var existingTipoEjercicio = await _tiposEjercicio.ReadByIdAsync(ejercicio.IdTipoEjercicio);
 
 		if (existingTipoEjercicio == null)
 			throw new Exception($"El tipo de ejercicio {ejercicio.IdTipoEjercicio} para el ejercicio no se ha encontrado en la BD.");
@@ -71,11 +70,11 @@ public class EjerciciosManager : IManager<Ejercicio>
 	}
 }
 
-public class TiposEjercicioManager : IManager<TipoEjercicio>
+public class TiposEjercicio : IBaseCore<TipoEjercicio>
 {
-	private readonly FitcareDBContext _dbContext;
+	private readonly ApplicationDbContext _dbContext;
 
-	public TiposEjercicioManager(FitcareDBContext dbContext) => _dbContext = dbContext;
+	public TiposEjercicio(ApplicationDbContext dbContext) => _dbContext = dbContext;
 
 	public async Task<IList<TipoEjercicio>> ReadAllAsync()
 	{

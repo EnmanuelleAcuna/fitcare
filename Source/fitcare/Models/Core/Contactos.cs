@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace fitcare.Models;
+namespace fitcare.Models.Core;
 
-public class ContactosManager : IContactoManager<Contacto>
+public class Contactos : IContactos<Contacto>
 {
-	private readonly FitcareDBContext _db;
+	private readonly ApplicationDbContext _db;
 
-	public ContactosManager(FitcareDBContext db) => _db = db;
+	public Contactos(ApplicationDbContext db) => _db = db;
 
 	public async Task<IList<Contacto>> ReadAllAsync()
 	{

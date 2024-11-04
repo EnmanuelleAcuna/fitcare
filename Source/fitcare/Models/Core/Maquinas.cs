@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace fitcare.Models;
+namespace fitcare.Models.Core;
 
-public class MaquinasManager : IManager<Maquina>
+public class Maquinas : IBaseCore<Maquina>
 {
-	private readonly FitcareDBContext _dbContext;
-	private readonly IManager<TipoMaquina> _tiposMaquinaManager;
+	private readonly ApplicationDbContext _dbContext;
+	private readonly IBaseCore<TipoMaquina> _tiposMaquina;
 
-	public MaquinasManager(FitcareDBContext dbContext, IManager<TipoMaquina> tipoMaquinaManager)
+	public Maquinas(ApplicationDbContext dbContext, IBaseCore<TipoMaquina> tipoMaquina)
 	{
 		_dbContext = dbContext;
-		_tiposMaquinaManager = tipoMaquinaManager;
+		_tiposMaquina = tipoMaquina;
 	}
 
 	public async Task<IList<Maquina>> ReadAllAsync()
@@ -32,7 +31,7 @@ public class MaquinasManager : IManager<Maquina>
 
 	public async Task CreateAsync(Maquina maquina, string user)
 	{
-		var existingTipoMaquina = await _tiposMaquinaManager.ReadByIdAsync(maquina.IdTipoMaquina);
+		var existingTipoMaquina = await _tiposMaquina.ReadByIdAsync(maquina.IdTipoMaquina);
 
 		if (existingTipoMaquina == null)
 			throw new Exception($"El tipo de máquina {maquina.IdTipoMaquina} para la máquina no se ha encontrado en la BD.");
@@ -79,11 +78,11 @@ public class MaquinasManager : IManager<Maquina>
 	}
 }
 
-public class TiposMaquinaManager : IManager<TipoMaquina>
+public class TiposMaquina : IBaseCore<TipoMaquina>
 {
-	private readonly FitcareDBContext _dbContext;
+	private readonly ApplicationDbContext _dbContext;
 
-	public TiposMaquinaManager(FitcareDBContext dbContext) => _dbContext = dbContext;
+	public TiposMaquina(ApplicationDbContext dbContext) => _dbContext = dbContext;
 
 	public async Task<IList<TipoMaquina>> ReadAllAsync()
 	{

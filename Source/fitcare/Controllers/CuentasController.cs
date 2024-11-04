@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using fitcare.Models.Contracts;
+using fitcare.Models;
 using fitcare.Models.Extras;
 using fitcare.Models.Identity;
 using fitcare.Models.ViewModels;
@@ -31,7 +31,7 @@ public class CuentasController : BaseController
 	public CuentasController(ApplicationUserManager<ApplicationUser> userManager,
 							 RoleManager<ApplicationRole> roleManager,
 							 SignInManager<ApplicationUser> signInManager,
-							 IDivisionTerritorialManager divisionTerritorial,
+							 IDivisionTerritorial divisionTerritorial,
 							 IConfiguration configuration,
 							 IHttpContextAccessor contextAccesor,
 							 IEmailSender emailSender,
