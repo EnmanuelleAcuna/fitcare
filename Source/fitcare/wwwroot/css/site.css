@@ -146,3 +146,7 @@ input[type="checkbox"].input-validation-error {
 .max-height-24px {
   max-height: 24px !important;
 }
+
+.breadcrumb {
+	font-size: 0.8rem !important;
+}

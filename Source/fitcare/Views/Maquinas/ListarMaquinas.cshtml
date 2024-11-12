@@ -60,11 +60,11 @@
 										<td>@Maquina.FechaAdquisicion</td>
 										<td>
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<button id="BtnDetalle" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ModalDetalle"
+												<button id="BtnDetalle" class="btn btn-sm btn-light" data-toggle="modal" data-target="#ModalDetalle"
 													data-idmaquina="@Maquina.Id">Detalle</button>
-												<a class="btn btn-sm btn-secondary" asp-controller="Maquinas" asp-action="EditarMaquina"
+												<a class="btn btn-sm btn-light" asp-controller="Maquinas" asp-action="EditarMaquina"
 													asp-route-id="@Maquina.Id">Modificar</a>
-												<a class="btn btn-sm btn-danger" asp-controller="Maquinas" asp-action="EliminarMaquina"
+												<a class="btn btn-sm btn-light text-danger" asp-controller="Maquinas" asp-action="EliminarMaquina"
 													asp-route-id="@Maquina.Id">Eliminar</a>
 											</div>
 										</td>
