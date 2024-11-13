@@ -4,7 +4,7 @@
 	ViewBag.Title = "Tipos de máquina";
 }
 
-<div class="page-breadcrumb">
+<div class="container">
 	<div class="row">
 		<div class="col-5 align-self-center">
 			<h6 class="page-title">Lista de tipos de máquina</h6>
@@ -42,7 +42,7 @@
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Estado)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Codigo)</th>
-									<th>Acciones</th>
+									<th class="text-right"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -52,7 +52,7 @@
 										<td>@TipoMaquina.Nombre</td>
 										<td>@TipoMaquina.Estado</td>
 										<td>@TipoMaquina.Codigo</td>
-										<td>
+										<td class="text-right">
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
 												<button id="BtnDetalle" class="btn btn-sm btn-light text-primary" data-toggle="modal" data-target="#ModalDetalle"
 													data-idtipomaquina="@TipoMaquina.IdTipoMaquina">Detalle</button>

@@ -1,28 +1,21 @@
 # fitcare
 Plataforma para la gestión de gimnasios.
 
-## Proceso de planificación y seguimiento de trabajo: Básico
-https://docs.microsoft.com/en-us/azure/devops/boards/get-started/plan-track-work?view=azure-devops&tabs=basic-process&source=docs
+## Proceso de planificación y seguimiento de trabajo
+Básico, https://docs.microsoft.com/en-us/azure/devops/boards/get-started/plan-track-work?view=azure-devops&tabs=basic-process&source=docs
 
-## Arquitectura de la aplicación: Monolítica
-- Se hace uso de Clean architecture para la solución: https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture
+## Arquitectura de la aplicación
+- Monolítica: https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#what-is-a-monolithic-application
+- Clean architecture: https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture
 - Front end:
   - ASP.Net MVC.
   - JavaScript
   - jQuery
   - Razor
-- El back end es implementado con librerías de clases:
-  - Domain: Contiene las entidades principales, las interfaces (contratos) e implementaciones para managers o services.
-  - Infrastructure:
-    - Identity: proveedor de autenticación y autorización local, conectado a la base de datos SQLy capacidad de enviar correos electrónicos.
-    - Data: Para acceso a datos.
-  - Resumen:
-    - Frontend
-    - Web (MVC)
-	- Backend
-	- Domain (Entities, interfaces, Logic) (Class library)
-	- Data Persistence (EF Core/SQL Server) (Class library)
-	- Identity (EF Core/SQL Server) (Class Library)
+- Back end:
+	- Domain (Entities, interfaces, Logic)
+	- Data Persistence (EF Core/SQL Server)
+	- Identity (EF Core/SQL Server)
 
 ## Getting Started
 1.	[Installation process](#installation-process)
