@@ -4,10 +4,10 @@
 	ViewBag.Title = "Máquinas";
 }
 
-<div class="page-breadcrumb">
+<div class="container">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h4 class="page-title">Lista de máquinas</h4>
+			<h6 class="page-title">Lista de máquinas</h6>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -31,12 +31,12 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="AgregarMaquina" class="btn btn-sm btn-default">Agregar máquina</a>
+					<a asp-action="AgregarMaquina" class="btn btn-sm btn-secondary">Agregar máquina</a>
 
 					<hr />
 
 					<div class="table-responsive">
-						<table class="table table-hover table-sm">
+						<table class="table table-hover table-sm text-nowrap">
 							<thead>
 								<tr>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
@@ -45,7 +45,7 @@
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Codigo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().CodigoActivo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaAdquisicion)</th>
-									<th>Acciones</th>
+									<th class="text-right"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -58,9 +58,9 @@
 										<td>@Maquina.Codigo</td>
 										<td>@Maquina.CodigoActivo</td>
 										<td>@Maquina.FechaAdquisicion</td>
-										<td>
+										<td class="text-right">
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<button id="BtnDetalle" class="btn btn-sm btn-light" data-toggle="modal" data-target="#ModalDetalle"
+												<button id="BtnDetalle" class="btn btn-sm btn-light text-primary" data-toggle="modal" data-target="#ModalDetalle"
 													data-idmaquina="@Maquina.Id">Detalle</button>
 												<a class="btn btn-sm btn-light" asp-controller="Maquinas" asp-action="EditarMaquina"
 													asp-route-id="@Maquina.Id">Modificar</a>
