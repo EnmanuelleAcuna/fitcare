@@ -4,10 +4,10 @@
 	ViewBag.Title = "Tipos de ejercicio";
 }
 
-<div class="page-breadcrumb">
+<div class="container">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h4 class="page-title">Lista de tipos de ejercicio</h4>
+			<h6 class="page-title">Lista de tipos de ejercicio</h6>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -31,18 +31,18 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="AgregarTipoEjercicio" class="btn btn-sm btn-default">Agregar tipo de ejercicio</a>
+					<a asp-action="AgregarTipoEjercicio" class="btn btn-sm btn-secondary">Agregar tipo de ejercicio</a>
 
 					<hr />
 
 					<div class="table-responsive">
-						<table class="table table-hover table-sm">
+						<table class="table table-hover table-sm text-nowrap">
 							<thead>
 								<tr>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Codigo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Estado)</th>
-									<th>Acciones</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -53,13 +53,13 @@
 										<td>@TipoEjercicio.Nombre</td>
 										<td>@TipoEjercicio.Estado</td>
 
-										<td>
+										<td class="text-right">
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<button id="BtnDetalle" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ModalDetalle"
+												<button id="BtnDetalle" class="btn btn-sm btn-light text-primary" data-toggle="modal" data-target="#ModalDetalle"
 													data-idtipoejercicio="@TipoEjercicio.IdTipoEjercicio">Detalle</button>
-												<a class="btn btn-sm btn-secondary" asp-controller="Ejercicios" asp-action="EditarTipoEjercicio"
+												<a class="btn btn-sm btn-light" asp-controller="Ejercicios" asp-action="EditarTipoEjercicio"
 													asp-route-id="@TipoEjercicio.IdTipoEjercicio">Modificar</a>
-												<a class="btn btn-sm btn-danger" asp-controller="Ejercicios" asp-action="EliminarTipoEjercicio"
+												<a class="btn btn-sm btn-light text-danger" asp-controller="Ejercicios" asp-action="EliminarTipoEjercicio"
 													asp-route-id="@TipoEjercicio.IdTipoEjercicio">Eliminar</a>
 											</div>
 										</td>
