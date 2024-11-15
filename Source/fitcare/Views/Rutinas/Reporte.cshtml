@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ReporteRutinaResumidoViewModel>
 
 @{
-	ViewBag.Title = "Reporte de rutinas resumido";
+	ViewBag.Title = "Reporte de Rutinas";
 }
 
 <div class="container">
@@ -31,7 +31,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					@using (Html.BeginForm("ReporteResumido", "Rutinas", FormMethod.Post, new { autocomplete = "off" }))
+					@using (Html.BeginForm("Reporte", "Rutinas", FormMethod.Post, new { autocomplete = "off" }))
 					{
 						<div class="row mb-4">
 							<div class="col-sm-12 col-md-4">

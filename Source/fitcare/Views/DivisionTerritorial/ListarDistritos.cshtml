@@ -4,10 +4,10 @@
 	ViewBag.Title = "Distritos";
 }
 
-<div class="page-breadcrumb">
+<div class="container">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h4 class="page-title">Lista de distritos</h4>
+			<h6 class="page-title">Lista de distritos</h6>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -31,19 +31,19 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="AgregarDistrito" class="btn btn-sm btn-default">Agregar distrito</a>
+					<a asp-action="AgregarDistrito" class="btn btn-sm btn-secondary">Agregar distrito</a>
 
 					<hr />
 
 					<div class="table-responsive">
-						<table class="table table-hover table-sm">
+						<table class="table table-hover table-sm text-nowrap">
 							<thead>
 								<tr>
 									<th nowrap>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
 									<th nowrap>@Html.DisplayNameFor(m => m.FirstOrDefault().Canton)</th>
 									<th nowrap>@Html.DisplayNameFor(m => m.FirstOrDefault().Estado)</th>
 									<th nowrap>@Html.DisplayNameFor(m => m.FirstOrDefault().IdINEC)</th>
-									<th>Acciones</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -54,11 +54,11 @@
 										<td>@Distrito.Canton.Nombre</td>
 										<td>@Distrito.Estado</td>
 										<td>@Distrito.IdINEC</td>
-										<td>
+										<td class="text-right">
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<a class="btn btn-sm btn-secondary" asp-controller="DivisionTerritorial" asp-action="EditarDistrito"
+												<a class="btn btn-sm btn-light" asp-controller="DivisionTerritorial" asp-action="EditarDistrito"
 													asp-route-id="@Distrito.Id">Modificar</a>
-												<a class="btn btn-sm btn-danger" asp-controller="DivisionTerritorial" asp-action="EliminarDistrito"
+												<a class="btn btn-sm btn-light text-danger" asp-controller="DivisionTerritorial" asp-action="EliminarDistrito"
 													asp-route-id="@Distrito.Id">Eliminar</a>
 											</div>
 										</td>

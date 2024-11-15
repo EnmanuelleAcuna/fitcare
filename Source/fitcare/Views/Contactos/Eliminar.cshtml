@@ -4,13 +4,10 @@
 	ViewBag.Title = "Contactos";
 }
 
-<!-- ============================================================== -->
-<!-- Bread crumb -->
-<!-- ============================================================== -->
-<div class="page-breadcrumb">
+<div class="container">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h4 class="page-title">Eliminar contacto</h4>
+			<h6 class="page-title">Eliminar contacto</h6>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -31,16 +28,8 @@
 		</div>
 	</div>
 </div>
-<!-- ============================================================== -->
-<!-- End Bread crumb -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- Container fluid -->
-<!-- ============================================================== -->
+
 <div class="container-fluid">
-	<!-- ============================================================== -->
-	<!-- Start Page Content -->
-	<!-- ============================================================== -->
 	<div class="row">
 		<div class="col-12">
 			<div class="card shadow-sm">
@@ -58,9 +47,9 @@
 
 						<div class="row">
 							<div class="col-sm-12">
-								<h4>
+								<h6>
 									¿Seguro que desea eliminar el contacto registrado por <b>@Html.DisplayFor(model => model.Nombre)</b>?
-								</h4>
+								</h6>
 
 								<p>
 									Mensaje: @Html.DisplayFor(model => model.Mensaje)

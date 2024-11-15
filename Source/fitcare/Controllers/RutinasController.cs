@@ -125,7 +125,7 @@ public class RutinasController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> ReporteResumido()
+	public async Task<ActionResult> Reporte()
 	{
 		await CargarViewBags();
 		var viewModel = new List<ReporteRutinaResumidoViewModel>();
@@ -133,7 +133,7 @@ public class RutinasController : BaseController
 	}
 
 	[HttpPost]
-	public async Task<ActionResult> ReporteResumido(string idInstructor, string idCliente)
+	public async Task<ActionResult> Reporte(string idInstructor, string idCliente)
 	{
 		await CargarViewBags();
 

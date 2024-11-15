@@ -4,13 +4,10 @@
 	ViewBag.Title = "Contactos";
 }
 
-<!-- ============================================================== -->
-<!-- Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
-<div class="page-breadcrumb">
+<div class="container">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h4 class="page-title">Lista de contactos</h4>
+			<h6 class="page-title">Lista de contactos</h6>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -28,29 +25,21 @@
 		</div>
 	</div>
 </div>
-<!-- ============================================================== -->
-<!-- End Bread crumb and right sidebar toggle -->
-<!-- ============================================================== -->
-<!-- ============================================================== -->
-<!-- Container fluid -->
-<!-- ============================================================== -->
+
 <div class="container-fluid">
-	<!-- ============================================================== -->
-	<!-- Start Page Content -->
-	<!-- ============================================================== -->
 	<div class="row">
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
 					<div class="table-responsive">
-						<table class="table table-hover table-sm">
+						<table class="table table-hover table-sm text-nowrap">
 							<thead>
 								<tr>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Fecha)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Correo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Telefono)</th>
-									<th>Acciones</th>
+									<th></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -61,13 +50,13 @@
 										<td>@Contacto.Fecha</td>
 										<td>@Contacto.Correo</td>
 										<td>@Contacto.Telefono</td>
-										<td>
+										<td class="text-right">
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<button id="BtnDetalle" class="btn btn-sm btn-success" data-toggle="modal" data-target="#ModalDetalle"
+												<button id="BtnDetalle" class="btn btn-sm btn-light text-primary" data-toggle="modal" data-target="#ModalDetalle"
 													data-idcontacto="@Contacto.Id">
 													Detalle
 												</button>
-												<a class="btn btn-sm btn-danger" asp-controller="Contactos" asp-action="Eliminar"
+												<a class="btn btn-sm btn-light text-danger" asp-controller="Contactos" asp-action="Eliminar"
 													asp-route-id="@Contacto.Id">Eliminar</a>
 											</div>
 										</td>
@@ -81,13 +70,7 @@
 			</div>
 		</div>
 	</div>
-	<!-- ============================================================== -->
-	<!-- End Page Content -->
-	<!-- ============================================================== -->
 </div>
-<!-- ============================================================== -->
-<!-- End Container fluid -->
-<!-- ============================================================== -->
 
 <partial name="_Detalle" />
 

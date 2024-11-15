@@ -98,9 +98,11 @@ public class DetalleRutinaViewModel
 public class AgregarRutinaViewModel
 {
 	[Required(ErrorMessage = "El instructor es requerido.")]
+	[Display(Name = "Instructor")]
 	public string IdInstructor { get; set; }
 
 	[Required(ErrorMessage = "El cliente es requerido.")]
+	[Display(Name = "Cliente")]
 	public string IdCliente { get; set; }
 
 	[Display(Name = "Realización")]
