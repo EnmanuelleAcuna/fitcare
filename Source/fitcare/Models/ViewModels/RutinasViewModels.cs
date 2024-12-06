@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json;
 using fitcare.Models.Entities;
 using fitcare.Models.Identity;
-using Microsoft.Extensions.Configuration;
 
 namespace fitcare.Models.ViewModels;
 
@@ -202,61 +200,45 @@ public class MedidaRutinaViewModel
 	}
 }
 
-public class ReporteRutinaResumidoViewModel
+public class ReporteRutinaViewModel
 {
-	public ReporteRutinaResumidoViewModel() { }
+	public ReporteRutinaViewModel() { }
 	
-	public ReporteRutinaResumidoViewModel(ReporteRutinaResumido rutina, IConfiguration configuration)
+	public ReporteRutinaViewModel(Rutina rutina)
 	{
 		if (rutina is null)
-			throw new ArgumentNullException(paramName: nameof(rutina), message: configuration["AppSettings:ModeloNulo"]);
+			throw new ArgumentNullException(paramName: nameof(rutina), message: Extras.Messages.MensajeModeloNulo);
 
-		NombreInstructor = rutina.NombreInstructor;
-		NombreCliente = rutina.NombreCliente;
-		FechaRegistro = rutina.FechaRegistro.ToString("dd/MM/yyyy");
+		NombreInstructor = rutina.Instructor?.FullName;
+		NombreCliente = rutina.Cliente?.FullName;
+		FechaRegistro = rutina.FechaRealizacion.ToString("dd/MM/yyyy");
 		FechaInicio = rutina.FechaInicio.ToString("dd/MM/yyyy");
 		FechaFin = rutina.FechaFin.ToString("dd/MM/yyyy");
 		Objetivo = rutina.Objetivo;
-		DiasRutina = rutina.DiasRutina;
-		CantidadEjerciciosRegistrados = rutina.CantidadEjerciciosRegistrados;
+		DiasRutina = (rutina.FechaFin - rutina.FechaInicio).Days;
+		CantidadEjerciciosRegistrados = rutina.Ejercicios?.Count ?? 0;
 	}
 
 	[Display(Name = "Instructor")]
-	public string NombreInstructor { get; set; }
+	public string NombreInstructor { get; init; }
 
 	[Display(Name = "Cliente")]
-	public string NombreCliente { get; set; }
+	public string NombreCliente { get; init; }
 
 	[Display(Name = "Registro de rutina")]
-	public string FechaRegistro { get; set; }
+	public string FechaRegistro { get; init; }
 
 	[Display(Name = "Inicio")]
-	public string FechaInicio { get; set; }
+	public string FechaInicio { get; init; }
 
 	[Display(Name = "Finalización")]
-	public string FechaFin { get; set; }
+	public string FechaFin { get; init; }
 
-	public string Objetivo { get; set; }
+	public string Objetivo { get; init; }
 
 	[Display(Name = "Cantidad de días")]
-	public int DiasRutina { get; set; }
+	public int DiasRutina { get; init; }
 
 	[Display(Name = "Ejercicios registrados")]
-	public int CantidadEjerciciosRegistrados { get; set; }
-}
-
-public class ReporteRutinaResumido
-{
-	public string Id { get; set; }
-	public string NombreInstructor { get; set; }
-	public string NombreCliente { get; set; }
-	public DateTime FechaRegistro { get; set; }
-	public DateTime FechaInicio { get; set; }
-	public DateTime FechaFin { get; set; }
-	public string Objetivo { get; set; }
-	public int DiasRutina { get; set; }
-	public int CantidadEjerciciosRegistrados { get; set; }
-
-	// Sobreescribir metodo ToString() de la clase para devolver el objeto en una cadena string en formato JSON
-	public override string ToString() => JsonSerializer.Serialize(this);
+	public int CantidadEjerciciosRegistrados { get; init; }
 }

@@ -1,7 +1,9 @@
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MimeKit;
+using Microsoft.Identity.Client;
 
 namespace fitcare.Models.Identity;
 
@@ -18,8 +20,8 @@ public class EmailSender : IEmailSender
 		message.Body = new TextPart("html") { Text = htmlMessage };
 
 		using SmtpClient client = new();
-		await client.ConnectAsync("smtp.office365.com", 587, false);
-		client.Authenticate(correoOrigen.Address, "aalfxoiczycolyha");
+		await client.ConnectAsync("smtp.office365.com", 465, true);
+		await client.AuthenticateAsync(correoOrigen.Address, "hyxcrrbzlhndphou");
 		_ = await client.SendAsync(message);
 		await client.DisconnectAsync(true);
 	}

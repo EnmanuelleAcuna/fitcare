@@ -61,8 +61,9 @@ public class RutinasController : BaseController
 	[HttpGet]
 	public async Task<ActionResult> Listar()
 	{
-		IEnumerable<Rutina> listaRutinas = await _rutinas.ReadAllAsync();
-		IEnumerable<RutinaViewModel> modelo = listaRutinas.Select(x => new RutinaViewModel(x)).ToList();
+		ApplicationUser user = await _userManager.GetUserAsync(User);
+		IEnumerable<Rutina> rutinas = await _rutinas.ObtenerReporteRutinas(null, user.Id);
+		IEnumerable<RutinaViewModel> modelo = rutinas.Select(x => new RutinaViewModel(x)).ToList();
 		return View(modelo);
 	}
 
@@ -128,7 +129,7 @@ public class RutinasController : BaseController
 	public async Task<ActionResult> Reporte()
 	{
 		await CargarViewBags();
-		var viewModel = new List<ReporteRutinaResumidoViewModel>();
+		var viewModel = new List<ReporteRutinaViewModel>();
 		return View(viewModel);
 	}
 
@@ -137,8 +138,8 @@ public class RutinasController : BaseController
 	{
 		await CargarViewBags();
 
-		IEnumerable<ReporteRutinaResumido> datosReporte = _rutinas.ObtenerReporteRutinasResumido(idInstructor, idCliente);
-		IEnumerable<ReporteRutinaResumidoViewModel> viewModel = datosReporte.Select(i => new ReporteRutinaResumidoViewModel(i, _configuration)).ToList();
+		IEnumerable<Rutina> rutinas = await _rutinas.ObtenerReporteRutinas(idInstructor, idCliente);
+		IEnumerable<ReporteRutinaViewModel> viewModel = rutinas.Select(r => new ReporteRutinaViewModel(r)).ToList();
 
 		return View(viewModel);
 	}

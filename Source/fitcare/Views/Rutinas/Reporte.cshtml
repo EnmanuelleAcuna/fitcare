@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ReporteRutinaResumidoViewModel>
+﻿@model IEnumerable<ReporteRutinaViewModel>
 
 @{
 	ViewBag.Title = "Reporte de Rutinas";
@@ -57,15 +57,15 @@
 						</div>
 					}
 
-					<div class="table table-responsive">
+					<div class="table table-responsive table-sm text-nowrap">
 						<table id="example" class="display" style="width:100%">
 							<caption>
 								<small>
-								Reporte generado por el usuario: <span class="font-weight-bold">@User.Identity.Name</span>, el:
-								<span
-									class="font-weight-bold">
-									@DateTime.Now
-								</span>
+									Reporte generado por el usuario: <span class="font-weight-bold">@User.Identity.Name</span>, el:
+									<span
+										class="font-weight-bold">
+										@DateTime.Now
+									</span>
 								</small>
 							</caption>
 							<thead>
@@ -116,31 +116,37 @@
 </div>
 
 @section Scripts {
+	<script src="~/lib/datatables/js/dataTables.dataTables.min.js"></script>
+	<script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
 	<script type="text/javascript">
 	$(document).ready(function ()
 	{
 		$('#example').DataTable({
 			paging: true,
-			ordering: true
+			ordering: true,
+			lengthMenu: [
+				[10, 25, 50, -1],
+				[10, 25, 50, 'All']
+			],
+			info: true,
+			searching: false,
+			bLengthChange: false,
+			language:
+			{
+				"info":           "Mostrando _START_ a _END_ de _TOTAL_ registros",
+				"paginate": {
+					"first":      "<<",
+					"last":       ">>",
+					"next":       ">",
+					"previous":   "<"
+				},
+				"search":         "Buscar:",
+			}
 		});
 
 		@* $('#rutinas').DataTable({ *@
 			@* dom: 'Bfrtip',
-			buttons: [
-				{
-					extend: 'pdf',
-					text: 'Exportar a PDF',
-					filename: 'Reporte de rutinas',
-					title: 'Reporte de rutinas',
-					orientation: 'landscape'
-				},
-				{
-					extend: 'excel',
-					text: 'Exportar a Excel',
-					filename: 'Reporte de rutinas',
-					title: 'Reporte de rutinas'
-				}
-			], *@
 			@* paging: false, *@
 			@* ordering: false, *@
 			@* info: false, *@

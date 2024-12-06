@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using fitcare.Models;
+using fitcare.Models.Core;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;

@@ -35,19 +35,21 @@
 			<div class="card shadow-sm">
 				<div class="card-body">
 					<a asp-action="ListarClientes" class="btn btn-sm btn-secondary">Regresar</a>
-					<hr />
+					<hr/>
 
-					<div class="table-responsive">
-						<table class="table table-hover table-sm text-nowrap">
-							<thead>
+					@if (Model.Any())
+					{
+						<div class="table-responsive">
+							<table class="table table-hover table-sm text-nowrap">
+								<thead>
 								<tr>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Correo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Estado)</th>
 									<th></th>
 								</tr>
-							</thead>
-							<tbody>
+								</thead>
+								<tbody>
 								@foreach (var Usuario in Model)
 								{
 									<tr>
@@ -57,14 +59,21 @@
 										<td class="text-right">
 											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
 												<a class="btn btn-sm btn-secondary" asp-controller="Cuentas" asp-action="RegistrarCliente"
-													asp-route-id="@Usuario.IdUsuario">Seleccionar</a>
+												   asp-route-id="@Usuario.IdUsuario">
+													Seleccionar
+												</a>
 											</div>
 										</td>
 									</tr>
 								}
-							</tbody>
-						</table>
-					</div>
+								</tbody>
+							</table>
+						</div>
+					}
+					else
+					{
+						<p>No hay usuarios aplicables para seleccionar como nuevo cliente.</p>
+					}
 				</div>
 			</div>
 		</div>

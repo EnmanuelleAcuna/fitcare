@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using fitcare.Models.Entities;
-using fitcare.Models.ViewModels;
 
 namespace fitcare.Models;
 
@@ -36,5 +35,5 @@ public interface IRutinas<T>
 	Task<T> ReadByIdAsync(Guid id);
 	Task CreateAsync(T model, string user);
 	
-	IList<ReporteRutinaResumido> ObtenerReporteRutinasResumido(string idInstructor, string idCliente);
+	Task<IList<Rutina>> ObtenerReporteRutinas(string idInstructor, string idCliente);
 }

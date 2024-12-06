@@ -21,7 +21,7 @@
 							<a href='@Url.Action("Listar")'>Rutinas</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
-							Rutinas
+							Detalle
 						</li>
 					</ol>
 				</nav>
@@ -52,9 +52,9 @@
 								<tr>
 									<td>@Model.Instructor</td>
 									<td>@Model.Cliente</td>
-									<td>@Model.FechaRealizacion</td>
-									<td>@Model.FechaInicio</td>
-									<td>@Model.FechaFin</td>
+									<td>@Model.FechaRealizacion.ToString("dd/MM/yyyy")</td>
+									<td>@Model.FechaInicio.ToString("dd/MM/yyyy")</td>
+									<td>@Model.FechaFin.ToString("dd/MM/yyyy")	</td>
 									<td>@Model.CantidadEjercicios</td>
 									<td>@Model.Objetivos</td>
 								</tr>

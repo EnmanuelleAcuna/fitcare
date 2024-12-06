@@ -29,15 +29,15 @@ public class CuentasController : BaseController
 	private readonly ILogger<CuentasController> _logger;
 
 	public CuentasController(ApplicationUserManager<ApplicationUser> userManager,
-							 RoleManager<ApplicationRole> roleManager,
-							 SignInManager<ApplicationUser> signInManager,
-							 IDivisionTerritorial divisionTerritorial,
-							 IConfiguration configuration,
-							 IHttpContextAccessor contextAccesor,
-							 IEmailSender emailSender,
-							 ILogger<CuentasController> logger,
-							 IWebHostEnvironment environment)
-	: base(divisionTerritorial, userManager, roleManager, configuration, contextAccesor, environment)
+		RoleManager<ApplicationRole> roleManager,
+		SignInManager<ApplicationUser> signInManager,
+		IDivisionTerritorial divisionTerritorial,
+		IConfiguration configuration,
+		IHttpContextAccessor contextAccesor,
+		IEmailSender emailSender,
+		ILogger<CuentasController> logger,
+		IWebHostEnvironment environment)
+		: base(divisionTerritorial, userManager, roleManager, configuration, contextAccesor, environment)
 	{
 		_userManager = userManager;
 		_roleManager = roleManager;
@@ -71,7 +71,8 @@ public class CuentasController : BaseController
 
 		// This doesn't count login failures towards account lockout
 		// To enable password failures to trigger account lockout, change to shouldLockout: true
-		SignInResult result = await _signInManager.PasswordSignInAsync(modelo.Correo, modelo.Contrasena, isPersistent: false, lockoutOnFailure: false);
+		SignInResult result = await _signInManager.PasswordSignInAsync(modelo.Correo, modelo.Contrasena,
+			isPersistent: false, lockoutOnFailure: false);
 
 		if (result.Succeeded)
 		{
@@ -85,7 +86,8 @@ public class CuentasController : BaseController
 			return View(modelo);
 		}
 
-		if (result.RequiresTwoFactor) return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = false });
+		if (result.RequiresTwoFactor)
+			return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = false });
 		if (result.IsLockedOut) return RedirectToPage("./Lockout");
 
 		// Si llega a este punto, quiere decir que hubo un error
@@ -118,16 +120,22 @@ public class CuentasController : BaseController
 
 		ApplicationUser usuario = await _userManager.FindByEmailAsync(modelo.CorreoElectronico);
 
-		if (usuario is null) return View(nameof(SolicitarContrasenaConfirmada)); // No revelar que el usuario no existe, redirigir a la confirmación
+		if (usuario is null)
+			return
+				View(nameof(SolicitarContrasenaConfirmada)); // No revelar que el usuario no existe, redirigir a la confirmación
 
 		if ((bool)usuario.Active)
 		{
-			string token = await _userManager.GeneratePasswordResetTokenAsync(usuario); // Generar un token de restablecimiento de contraseña
+			string token =
+				await _userManager
+					.GeneratePasswordResetTokenAsync(usuario); // Generar un token de restablecimiento de contraseña
 
-			string urlRestablecimientoContrasena = Url.Action(nameof(RestablecerContrasena), "Cuentas", new { userId = usuario.Id, code = token }, protocol: Request.Scheme); // Crear enlace
+			string urlRestablecimientoContrasena = Url.Action(nameof(RestablecerContrasena), "Cuentas",
+				new { userId = usuario.Id, code = token }, protocol: Request.Scheme); // Crear enlace
 
 			// Configurar correo y enviarlo
-			string mensajeCorreo = string.Format(new CultureInfo("es-CR"), "Para restablecer su contraseña haga click <a href=\"{0}\">aquí</a>", urlRestablecimientoContrasena);
+			string mensajeCorreo = string.Format(new CultureInfo("es-CR"),
+				"Para restablecer su contraseña haga click <a href=\"{0}\">aquí</a>", urlRestablecimientoContrasena);
 			await _emailSender.SendEmailAsync(modelo.CorreoElectronico, "Restablecer contraseña", mensajeCorreo);
 
 			return View(nameof(SolicitarContrasenaConfirmada));
@@ -160,7 +168,10 @@ public class CuentasController : BaseController
 
 		ApplicationUser usuario = await _userManager.FindByEmailAsync(modelo.CorreoElectronico);
 
-		if (usuario is null) return View(nameof(RestablecerContrasenaConfirmada)); // No revelar que el usuario no existe, redirigir a la confirmación
+		if (usuario is null)
+			return
+				View(nameof(
+					RestablecerContrasenaConfirmada)); // No revelar que el usuario no existe, redirigir a la confirmación
 
 		IdentityResult result = await _userManager.ResetPasswordAsync(usuario, modelo.Code, modelo.Contrasena);
 
@@ -185,7 +196,7 @@ public class CuentasController : BaseController
 	[HttpGet]
 	public ActionResult AgregarUsuario()
 	{
-		ViewBag.ListaRoles = CargarListaSeleccionRoles();
+		ViewBag.ListaRoles = CargarListaSeleccionRolesSistema();
 		return View();
 	}
 
@@ -200,7 +211,9 @@ public class CuentasController : BaseController
 			IList<string> rolesSeleccionados = ObtenerRolesSeleccionados(collection);
 
 			IdentityResult usuarioCreado = await _userManager.CreateAsync(usuario, modelo.Contrasena);
-			IdentityResult rolesAsignados = usuarioCreado.Succeeded ? await _userManager.AddToRolesAsync(usuario, rolesSeleccionados) : IdentityResult.Failed();
+			IdentityResult rolesAsignados = usuarioCreado.Succeeded
+				? await _userManager.AddToRolesAsync(usuario, rolesSeleccionados)
+				: IdentityResult.Failed();
 
 			if (usuarioCreado.Succeeded && rolesAsignados.Succeeded) return RedirectToAction(nameof(ListarUsuarios));
 
@@ -209,7 +222,7 @@ public class CuentasController : BaseController
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(ApplicationUser)));
-		ViewBag.ListaRoles = CargarListaSeleccionRoles();
+		ViewBag.ListaRoles = CargarListaSeleccionRolesSistema();
 		return View(modelo);
 	}
 
@@ -224,7 +237,7 @@ public class CuentasController : BaseController
 
 		EditarUsuarioViewModel modelo = new(usuario, rolesUsuario);
 
-		ViewBag.ListaRoles = CargarListaSeleccionRoles();
+		ViewBag.ListaRoles = CargarListaSeleccionRolesSistema();
 
 		return View(modelo);
 	}
@@ -240,7 +253,9 @@ public class CuentasController : BaseController
 			IList<string> rolesSeleccionados = ObtenerRolesSeleccionados(collection);
 
 			IdentityResult usuarioActualizado = await _userManager.UpdatePersonalInformation(usuario);
-			IdentityResult rolesActualizados = usuarioActualizado.Succeeded ? await _userManager.ActualizarRolesUsuario(usuario, rolesSeleccionados) : IdentityResult.Failed();
+			IdentityResult rolesActualizados = usuarioActualizado.Succeeded
+				? await _userManager.ActualizarRolesUsuario(usuario, rolesSeleccionados)
+				: IdentityResult.Failed();
 
 			if (usuarioActualizado.Succeeded && rolesActualizados.Succeeded)
 			{
@@ -254,7 +269,7 @@ public class CuentasController : BaseController
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(ApplicationUser)));
-		ViewBag.ListaRoles = CargarListaSeleccionRoles();
+		ViewBag.ListaRoles = CargarListaSeleccionRolesSistema();
 
 		return View(modelo);
 	}
@@ -424,7 +439,8 @@ public class CuentasController : BaseController
 		{
 			var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
 
-			var usuarioRegistradoComoInstructor = await _userManager.RegistrarUsuarioComoInstructor(modelo.Entidad(), rutaFotografia);
+			var usuarioRegistradoComoInstructor =
+				await _userManager.RegistrarUsuarioComoInstructor(modelo.Entidad(), rutaFotografia);
 
 			if (usuarioRegistradoComoInstructor.Succeeded) return RedirectToAction(nameof(ListarInstructores));
 
@@ -474,7 +490,8 @@ public class CuentasController : BaseController
 		{
 			var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
 
-			var usuarioRegistradoComoCliente = await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), rutaFotografia);
+			var usuarioRegistradoComoCliente =
+				await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), rutaFotografia);
 
 			if (usuarioRegistradoComoCliente.Succeeded) return RedirectToAction(nameof(ListarClientes));
 

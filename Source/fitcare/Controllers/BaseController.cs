@@ -123,9 +123,16 @@ public class BaseController : Controller
 		return listaSeleccionDistritos;
 	}
 
-	public IList<SelectListItem> CargarListaSeleccionRoles()
+	public IList<SelectListItem> CargarListaSeleccionRolesGimnasio()
 	{
-		IList<ApplicationRole> listaRoles = _roleManager.Roles.ToList();
+		IList<ApplicationRole> listaRoles = _roleManager.Roles.Where(r => r.Name != "Administrador" && r.Name != "Usuario").ToList();
+		IList<SelectListItem> listaSeleccionRoles = listaRoles.Select(p => new SelectListItem { Value = p.Id, Text = p.Name }).ToList();
+		return listaSeleccionRoles;
+	}
+	
+	public IList<SelectListItem> CargarListaSeleccionRolesSistema()
+	{
+		IList<ApplicationRole> listaRoles = _roleManager.Roles.Where(r => r.Name != "Instructor" && r.Name != "Cliente").ToList();
 		IList<SelectListItem> listaSeleccionRoles = listaRoles.Select(p => new SelectListItem { Value = p.Id, Text = p.Name }).ToList();
 		return listaSeleccionRoles;
 	}

@@ -7,7 +7,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h6 class="page-title">Lista de rutinas</h6>
+			<h6 class="page-title">Mis rutinas</h6>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -31,16 +31,11 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="Agregar" class="btn btn-sm btn-secondary">Agregar rutina</a>
-
-					<hr />
-
 					<div class="table-responsive">
 						<table class="table table-hover table-sm text-nowrap">
 							<thead>
 								<tr>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Instructor)</th>
-									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Cliente)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaRealizacion)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaInicio)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaFin)</th>
@@ -54,10 +49,9 @@
 								{
 									<tr>
 										<td>@Rutina.Instructor</td>
-										<td>@Rutina.Cliente</td>
-										<td>@Rutina.FechaRealizacion</td>
-										<td>@Rutina.FechaInicio</td>
-										<td>@Rutina.FechaFin</td>
+										<td>@Rutina.FechaRealizacion.ToString("dd/MM/yyyy")</td>
+										<td>@Rutina.FechaInicio.ToString("dd/MM/yyyy")</td>
+										<td>@Rutina.FechaFin.ToString("dd/MM/yyyy")</td>
 										<td>@Rutina.CantidadEjercicios</td>
 										<td>@Rutina.Objetivos</td>
 										<td class="text-right">
