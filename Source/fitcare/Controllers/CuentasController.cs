@@ -49,7 +49,7 @@ public class CuentasController : BaseController
 
 	[HttpGet]
 	[AllowAnonymous]
-	public ActionResult IniciarSesion(string returnUrl = null)
+	public IActionResult IniciarSesion(string returnUrl = null)
 	{
 		ViewBag.ReturnUrl = returnUrl;
 		// await CreateDefaultUser();

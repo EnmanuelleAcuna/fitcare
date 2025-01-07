@@ -55,14 +55,23 @@ public class BaseController : Controller
 		await _roleManager.CreateAsync(rolInstructor);
 		await _roleManager.CreateAsync(rolCliente);
 
-		var usuario = new ApplicationUser(Guid.NewGuid().ToString(), "emanuelacu@gmail.com",
+		var usuario1 = new ApplicationUser(Guid.NewGuid().ToString(), "emanuelacu@gmail.com",
 										  "emanuelacu@gmail.com", "Enmanuelle", "Acuña", "Arguedas",
 										  "206830685", DateTime.Now, true);
 
-		var rolesSeleccionados = new List<string> { "Administrador", "Instructor" };
+		var rolesUsuario1 = new List<string> { "Administrador", "Instructor" };
 
-		await _userManager.CreateAsync(usuario, "ContraseñaGenerica");
-		await _userManager.AddToRolesAsync(usuario, rolesSeleccionados);
+		await _userManager.CreateAsync(usuario1, "Hola123@#");
+		await _userManager.AddToRolesAsync(usuario1, rolesUsuario1);
+		
+		var usuario2 = new ApplicationUser(Guid.NewGuid().ToString(), "mrjagonfa_001@hotmail.com",
+			"mrjagonfa_001@hotmail.com", "Jose Alexander", "Gonzalez", "Fallas",
+			"109300357", DateTime.Now, true);
+
+		var rolesUsuario2 = new List<string> { "Administrador", "Cliente" };
+
+		await _userManager.CreateAsync(usuario2, "Hola123@#");
+		await _userManager.AddToRolesAsync(usuario2, rolesUsuario2);
 
 		await Task.CompletedTask;
 	}
