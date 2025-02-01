@@ -59,7 +59,7 @@
 							<p class="card-text text-center">Gestione las rutinas de sus clientes.</p>
 							}
 
-							@if (User.IsInRole("Cliente"))
+							@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
 							{
 							<a href='@Url.Action("Listar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Mis rutinas</a>
 							}
