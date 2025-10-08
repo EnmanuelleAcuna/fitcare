@@ -1,0 +1,14 @@
+USE fitcare;
+
+CREATE TABLE fitcare.TiposEjercicio (
+	Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_TiposEjercicio PRIMARY KEY,
+	Codigo VARCHAR (100) NOT NULL CONSTRAINT UQ_TiposEjercicio_Codigo UNIQUE,
+	Nombre VARCHAR(255) NOT NULL,
+    Estado BIT NOT NULL,
+	DateCreated DATETIME NOT NULL CONSTRAINT DF_TiposEjercicio_DateCreated DEFAULT GETUTCDATE(),
+	CreatedBy NVARCHAR(100) NOT NULL,
+	DateUpdated DATETIME NULL,
+	UpdatedBy NVARCHAR(100) NULL
+);
+
+SELECT * FROM fitcare.TiposEjercicio;

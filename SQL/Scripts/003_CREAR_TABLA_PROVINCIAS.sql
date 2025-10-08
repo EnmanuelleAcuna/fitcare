@@ -1,0 +1,13 @@
+USE fitcare;
+
+CREATE TABLE fitcare.Provincias (
+	Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_Provincias PRIMARY KEY,
+	Nombre VARCHAR (100) NOT NULL,
+	Estado BIT NOT NULL,
+	DateCreated DATETIME NOT NULL CONSTRAINT DF_Provincias_DateCreated DEFAULT GETUTCDATE(),
+	CreatedBy NVARCHAR(100) NOT NULL,
+	DateUpdated DATETIME NULL,
+	UpdatedBy NVARCHAR(100) NULL
+);
+
+SELECT * FROM fitcare.Provincias;

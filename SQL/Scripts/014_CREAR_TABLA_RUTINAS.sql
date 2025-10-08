@@ -1,0 +1,21 @@
+USE fitcare;
+
+CREATE TABLE fitcare.Rutinas (
+	Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_Rutinas PRIMARY KEY,
+	IdInstructor
+	    NVARCHAR (450) NOT NULL CONSTRAINT FK_Rutinas_Instructores
+	    FOREIGN KEY REFERENCES dbo.AspNetUsers (Id),
+	IdCliente
+	    NVARCHAR (450) NOT NULL CONSTRAINT FK_Rutinas_Clientes
+	    FOREIGN KEY REFERENCES dbo.AspNetUsers (Id),
+	Fecha_Realizacion DATETIME NOT NULL,
+	Fecha_Inicio DATETIME NOT NULL,
+	Fecha_Fin DATETIME NOT NULL,
+	Objetivo VARCHAR(4000) NOT NULL,
+	DateCreated DATETIME NOT NULL CONSTRAINT DF_Rutinas_DateCreated DEFAULT GETUTCDATE(),
+	CreatedBy NVARCHAR(100) NOT NULL,
+	DateUpdated DATETIME NULL,
+	UpdatedBy NVARCHAR(100) NULL
+);
+
+SELECT * FROM fitcare.Rutinas;
