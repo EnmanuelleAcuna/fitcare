@@ -65,14 +65,6 @@ public static class Validators
 		ValidateCanton(distrito.Canton);
 	}
 
-	public static void ValidateContacto(Contacto contacto)
-	{
-		if (contacto is null)
-		{
-			throw new ArgumentNullException(paramName: nameof(contacto), message: Messages.MensajeModeloNulo);
-		}
-	}
-
 	public static void ValidateTipoMaquina(TipoMaquina tipoMaquina)
 	{
 		if (tipoMaquina is null)

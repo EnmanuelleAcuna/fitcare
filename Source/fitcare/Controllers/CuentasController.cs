@@ -51,6 +51,11 @@ public class CuentasController : BaseController
 	[AllowAnonymous]
 	public IActionResult IniciarSesion(string returnUrl = null)
 	{
+		if (_signInManager.IsSignedIn(User))
+		{
+			return RedirectToAction("Admin", "Home");
+		}
+		
 		ViewBag.ReturnUrl = returnUrl;
 		// await CreateDefaultUser();
 		return View();
@@ -61,7 +66,7 @@ public class CuentasController : BaseController
 	[ValidateAntiForgeryToken]
 	public async Task<IActionResult> IniciarSesion(IniciarSesionViewModel modelo, string returnUrl)
 	{
-		returnUrl ??= Url.Content("~/Home/Administracion");
+		returnUrl ??= Url.Content("~/Home/Admin");
 
 		if (!ModelState.IsValid)
 		{
@@ -100,7 +105,7 @@ public class CuentasController : BaseController
 	public async Task<IActionResult> CerrarSesion()
 	{
 		await _signInManager.SignOutAsync();
-		return RedirectToAction("Index", "Home");
+		return RedirectToAction("IniciarSesion", "Cuentas");
 	}
 
 	[HttpGet]

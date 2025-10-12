@@ -52,7 +52,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Properties\launchSettings.json" />
+	  <_ContentIncludedByDefault Remove="Views\Contactos\ConfirmacionContacto.cshtml" />
+	  <_ContentIncludedByDefault Remove="Views\Contactos\Eliminar.cshtml" />
+	  <_ContentIncludedByDefault Remove="Views\Contactos\Index.cshtml" />
+	  <_ContentIncludedByDefault Remove="Views\Contactos\_Detalle.cshtml" />
 	</ItemGroup>
 
 </Project>

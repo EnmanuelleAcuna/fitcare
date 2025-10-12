@@ -9,7 +9,6 @@ public class ApplicationDbContext : DbContext
 	public virtual DbSet<Provincia> Provincias { get; set; }
 	public virtual DbSet<Canton> Cantones { get; set; }
 	public virtual DbSet<Distrito> Distritos { get; set; }
-	public virtual DbSet<Contacto> Contactos { get; set; }
 	public virtual DbSet<TipoMaquina> TiposMaquina { get; set; }
 	public virtual DbSet<Maquina> Maquinas { get; set; }
 	public virtual DbSet<TipoEjercicio> TiposEjercicio { get; set; }

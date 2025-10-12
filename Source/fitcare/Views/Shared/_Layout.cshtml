@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using fitcare.Models.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -13,18 +17,61 @@
 
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 	<link rel="stylesheet" href="~/css/site.css"/>
-
 	<link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css"/>
 </head>
 
 <body>
-<partial name="_HeaderPartial"/>
+<header>
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+		<div class="container my-1">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+			        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="navbar-brand" asp-action="Admin" asp-controller="Home">
+							<img src="~/images/fitcare_logo_32.png" height="18" alt="fitcare" loading="lazy">
+						</a>
+					</li>
 
-<div class="mt-4 container body-content">
+					<li class="nav-item pt-1">
+						<a class="nav-link font-weight-bold text-primary" href='@Url.Action("AcercaDe", "Home")'>
+							Acerca de
+						</a>
+					</li>
+				</ul>
+
+				<ul class="navbar-nav">
+					@if (SignInManager.IsSignedIn(User))
+					{
+						<li class="nav-item pt-1">
+							<div>
+								<form class="form-inline" asp-controller="Cuentas" asp-action="CerrarSesion"
+								      asp-route-returnUrl="@Url.Action("IniciarSesion", "Cuentas")">
+									<button type="submit" class="dropdown-item text-danger font-weight-bold">
+										Cerrar sesión
+									</button>
+								</form>
+							</div>
+						</li>
+					}
+				</ul>
+			</div>
+		</div>
+	</nav>
+</header>
+
+<div class="mt-4 body-content">
 	@RenderBody()
 </div>
 
-<partial name="_FooterPartial"/>
+<footer>
+	<div class="container mt-4 text-center">
+		<small>&copy; @DateTime.Now.Year - fitcare</small>
+	</div>
+</footer>
 
 <script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -32,5 +79,4 @@
 
 @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>

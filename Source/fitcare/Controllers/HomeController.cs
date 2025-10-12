@@ -31,25 +31,14 @@ public class HomeController : BaseController
 	}
 
 	[HttpGet]
-	public IActionResult Index()
-	{
-		return View();
-	}
-
-	[HttpGet]
-	public ActionResult Contacto()
-	{
-		return View();
-	}
-
-	public IActionResult Privacidad()
+	public IActionResult AcercaDe()
 	{
 		return View();
 	}
 
 	[HttpGet]
 	[Authorize]
-	public async Task<ActionResult> Administracion()
+	public async Task<ActionResult> Admin()
 	{
 		string nombreUsuarioConectado = User.Identity.Name;
 		ApplicationUser usuarioConectado = await _userManager.FindByNameAsync(nombreUsuarioConectado);

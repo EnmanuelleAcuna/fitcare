@@ -93,7 +93,7 @@ public class BaseController : Controller
 			return Redirect(returnUrl);
 		}
 
-		return RedirectToAction("Index", "Home");
+		return RedirectToAction("IniciarSesion", "Cuentas");
 	}
 
 	public void AddErrors(IdentityResult Result)

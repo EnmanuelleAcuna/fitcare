@@ -64,7 +64,6 @@ class Program
 		builder.Services.AddScoped<IBaseCore<Canton>, Cantones>();
 		builder.Services.AddScoped<IBaseCore<Distrito>, Distritos>();
 		builder.Services.AddTransient<IDivisionTerritorial, DivisionTerritorial>();
-		builder.Services.AddScoped<IContactos<Contacto>, Contactos>();
 		builder.Services.AddTransient<IBaseCore<TipoMaquina>, TiposMaquina>();
 		builder.Services.AddTransient<IBaseCore<Maquina>, Maquinas>();
 		builder.Services.AddTransient<IBaseCore<TipoEjercicio>, TiposEjercicio>();
@@ -86,7 +85,7 @@ class Program
 		app.UseRouting();
 		app.UseAuthentication();
 		app.UseAuthorization();
-		app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
+		app.MapControllerRoute(name: "default", pattern: "{controller=Cuentas}/{action=IniciarSesion}/{id?}");
 		app.Run();
 	}
 }

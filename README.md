@@ -86,15 +86,6 @@ TODO: Add your code references.
   ```
   dotnet aspnet-codegenerator identity --dbContext PCG.Data.ApplicationDbContext --files "Account.ForgotPassword;Account.ForgotPasswordConfirmation;Account.Login;Account.Logout;Account.ResetPassword;Account.ResetPasswordConfirmation"
   ```
-- Orden preferido de métodos
-  - Agregar
-  - Actualizar/Editar/modificar
-  - Elliminar (Opcional)
-  - Alguna otra acción
-  - ObtenerTodos
-  - ObtenerTodosPorParametro
-  - ObtenerPorId
-  - ObtenerPorParametro
 <hr />
 
 ## Reporte de rutinas
