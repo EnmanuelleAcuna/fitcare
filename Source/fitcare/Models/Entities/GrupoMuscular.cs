@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace fitcare.Models.Entities;
 
-[Table("GRUPOS_MUSCULARES", Schema = "fitcare")]
+[Table("GruposMusculares", Schema = "fitcare")]
 public class GrupoMuscular : Base
 {
 	public GrupoMuscular() : base() { }

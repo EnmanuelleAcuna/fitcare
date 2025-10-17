@@ -177,7 +177,7 @@ public class EditarUsuarioViewModel
 
 	public ApplicationUser Entidad()
 	{
-		ApplicationUser usuario = new(IdUsuario, CorreoElectronico, CorreoElectronico, Nombre, PrimerApellido, SegundoApellido, NumeroIdentificacion, DateTime.Now, true);
+		ApplicationUser usuario = new(IdUsuario, CorreoElectronico, CorreoElectronico, Nombre, PrimerApellido, SegundoApellido, NumeroIdentificacion, DateTime.Now, Estado);
 		return usuario;
 	}
 }

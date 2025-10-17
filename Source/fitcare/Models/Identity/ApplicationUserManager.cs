@@ -55,7 +55,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		if (userRecord == null)
 			throw new KeyNotFoundException($"No user was found with the id {user.Id}");
 
-		userRecord.SetNewPersonalInformation(user.Name, user.FirstLastName, user.SecondLastName, user.IdentificationNumber);
+		userRecord.SetNewPersonalInformation(user.Name, user.FirstLastName, user.SecondLastName, user.IdentificationNumber, user.Active.Value);
 
 		IdentityResult result = await UpdateAsync(userRecord);
 		return result;

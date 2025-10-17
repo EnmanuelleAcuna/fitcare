@@ -14,7 +14,7 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="@Url.Action("Administracion", "Home")">Administración</a>
+							<a href="@Url.Action("Admin", "Home")">Administración</a>
 						</li>
 						<li class="breadcrumb-item">
 							<a href="@Url.Action("Listar")">Grupos musculares</a>
@@ -27,9 +27,7 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="container-fluid">
 	<div class="row">
 		<div class="col-12">
 			<div class="card shadow-sm">
@@ -63,8 +61,8 @@
 							</div>
 
 							<div class="col-12">
-								<input value="Guardar" class="btn btn-sm btn-primary" type="submit" />
-									@Html.ActionLink("Regresar", "Listar", null, null, new { @class = "btn btn-sm btn-secondary" })
+								<input value="Guardar" class="btn btn-sm btn-primary" type="submit"/>
+								@Html.ActionLink("Regresar", "Listar", null, null, new { @class = "btn btn-sm btn-secondary" })
 							</div>
 						</div>
 					}
@@ -75,5 +73,5 @@
 </div>
 
 @section Scripts{
-	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

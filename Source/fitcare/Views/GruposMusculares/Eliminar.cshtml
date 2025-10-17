@@ -14,7 +14,7 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href='@Url.Action("Administracion", "Home")'>Administración</a>
+							<a href='@Url.Action("Admin", "Home")'>Administración</a>
 						</li>
 						<li class="breadcrumb-item">
 							<a href='@Url.Action("Listar")'>GruposMusculares</a>
@@ -27,9 +27,7 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="container-fluid">
 	<div class="row">
 		<div class="col-12">
 			<div class="card shadow-sm">
@@ -48,12 +46,13 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<h6>
-									¿Seguro que desea eliminar el grupo muscular <b>@Html.DisplayFor(model => model.Nombre)</b>?
+									¿Seguro que desea eliminar el grupo muscular
+									<b>@Html.DisplayFor(model => model.Nombre)</b>?
 								</h6>
 							</div>
 
 							<div class="col-12">
-								<input value="Eliminar" class="btn btn-sm btn-danger" type="submit" />
+								<input value="Eliminar" class="btn btn-sm btn-danger" type="submit"/>
 								@Html.ActionLink("Regresar", "Listar", null, null, new { @class = "btn btn-sm btn-secondary" })
 							</div>
 						</div>

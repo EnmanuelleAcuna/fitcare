@@ -12,12 +12,14 @@ namespace fitcare.Models.Identity;
 /// </summary>
 public class ApplicationUser : IdentityUser
 {
-	public ApplicationUser() : base() {
+	public ApplicationUser() : base()
+	{
 		RutinasCliente = new HashSet<Rutina>();
 		RutinasInstructor = new HashSet<Rutina>();
 	}
 
-	public ApplicationUser(string userName) : base(userName) {
+	public ApplicationUser(string userName) : base(userName)
+	{
 		RutinasCliente = new HashSet<Rutina>();
 		RutinasInstructor = new HashSet<Rutina>();
 	}
@@ -73,75 +75,65 @@ public class ApplicationUser : IdentityUser
 
 	public bool? Active { get; private set; }
 
-	[ForeignKey(nameof(Provincia))]
-	public Guid? IdProvincia { get; set; }
+	[ForeignKey(nameof(Provincia))] public Guid? IdProvincia { get; set; }
+
 	public Provincia Provincia { get; set; }
 
-	[ForeignKey(nameof(Canton))]
-	public Guid? IdCanton { get; set; }
+	[ForeignKey(nameof(Canton))] public Guid? IdCanton { get; set; }
 	public Canton Canton { get; set; }
 
-	[ForeignKey(nameof(Distrito))]
-	public Guid? IdDistrito { get; set; }
+	[ForeignKey(nameof(Distrito))] public Guid? IdDistrito { get; set; }
 	public Distrito Distrito { get; set; }
 
 	public string URLFotografia { get; set; }
 
-	[Column("FechaIngresoInscripcion")]
-	public DateTime? FechaIngresoInscripcion { get; set; }
+	[Column("FechaIngresoInscripcion")] public DateTime? FechaIngresoInscripcion { get; set; }
 
 	public DateTime? FechaRenovacion { get; set; }
 
-	[NotMapped]
-	public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+	[NotMapped] public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 
 	#region Identity properties that does not need to be mapped in the DB
-	[NotMapped]
-	public override bool EmailConfirmed { get; set; }
 
-	[NotMapped]
-	public override string PhoneNumber { get; set; }
+	[NotMapped] public override bool EmailConfirmed { get; set; }
 
-	[NotMapped]
-	public override bool PhoneNumberConfirmed { get; set; }
+	[NotMapped] public override string PhoneNumber { get; set; }
 
-	[NotMapped]
-	public override bool TwoFactorEnabled { get; set; }
+	[NotMapped] public override bool PhoneNumberConfirmed { get; set; }
 
-	[NotMapped]
-	public override DateTimeOffset? LockoutEnd { get; set; }
+	[NotMapped] public override bool TwoFactorEnabled { get; set; }
 
-	[NotMapped]
-	public override bool LockoutEnabled { get; set; }
+	[NotMapped] public override DateTimeOffset? LockoutEnd { get; set; }
 
-	[NotMapped]
-	public override int AccessFailedCount { get; set; }
+	[NotMapped] public override bool LockoutEnabled { get; set; }
 
-	[NotMapped]
-	public override string ConcurrencyStamp { get; set; }
+	[NotMapped] public override int AccessFailedCount { get; set; }
 
-	[NotMapped]
-	public override string NormalizedEmail { get; set; }
+	[NotMapped] public override string ConcurrencyStamp { get; set; }
 
-	[NotMapped]
-	public override string NormalizedUserName { get; set; }
+	[NotMapped] public override string NormalizedEmail { get; set; }
+
+	[NotMapped] public override string NormalizedUserName { get; set; }
+
 	#endregion
 
 	[NotMapped]
-	public string FullName { get { return $"{Name} {FirstLastName} {SecondLastName}"; } }
+	public string FullName
+	{
+		get { return $"{Name} {FirstLastName} {SecondLastName}"; }
+	}
 
-	[InverseProperty("Instructor")]
-	public virtual ICollection<Rutina> RutinasInstructor { get; set; } = new List<Rutina>();
+	[InverseProperty("Instructor")] public virtual ICollection<Rutina> RutinasInstructor { get; set; } = new List<Rutina>();
 
-	[InverseProperty("Cliente")]
-	public virtual ICollection<Rutina> RutinasCliente { get; set; } = new List<Rutina>();
+	[InverseProperty("Cliente")] public virtual ICollection<Rutina> RutinasCliente { get; set; } = new List<Rutina>();
 
-	public void SetNewPersonalInformation(string name, string firstLastName, string secondLastName, string identification)
+	public void SetNewPersonalInformation(string name, string firstLastName, string secondLastName, string identification, bool isActive)
 	{
 		Name = name;
 		FirstLastName = firstLastName;
 		SecondLastName = secondLastName;
 		IdentificationNumber = identification;
+		Active = isActive;
 	}
 
 	public override string ToString() => JsonSerializer.Serialize(this);

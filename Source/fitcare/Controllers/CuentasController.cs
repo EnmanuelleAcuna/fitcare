@@ -73,6 +73,13 @@ public class CuentasController : BaseController
 			ModelState.AddModelError("", "Datos incorrectos.");
 			return View(modelo);
 		}
+		
+		ApplicationUser usuario = await _userManager.FindByEmailAsync(modelo.Correo);
+		if (usuario is null || (usuario.Active.HasValue && !usuario.Active.Value))
+		{
+			ModelState.AddModelError(string.Empty, "Correo electrónico y/o contraseña incorrectos.");
+			return View(modelo);
+		}
 
 		// This doesn't count login failures towards account lockout
 		// To enable password failures to trigger account lockout, change to shouldLockout: true
@@ -81,7 +88,6 @@ public class CuentasController : BaseController
 
 		if (result.Succeeded)
 		{
-			ApplicationUser usuario = await _userManager.FindByEmailAsync(modelo.Correo);
 			IdentityResult ultimaConexionActualizada = await _userManager.UpdateLastSession(usuario);
 			if (ultimaConexionActualizada.Succeeded) return RedirectToLocal(returnUrl);
 		}

@@ -14,7 +14,7 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href='@Url.Action("Administracion", "Home")'>Administración</a>
+							<a href='@Url.Action("Admin", "Home")'>Administración</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
 							Grupos musculares
@@ -24,45 +24,47 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="container-fluid">
 	<div class="row">
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
 					<a asp-action="Agregar" class="btn btn-sm btn-secondary">Agregar grupo muscular</a>
 
-					<hr />
+					<hr/>
 
 					<div class="table-responsive">
 						<table class="table table-hover table-sm text-nowrap">
 							<thead>
-								<tr>
-									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
-									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Descripcion)</th>
-									<th class="text-right"></th>
-								</tr>
+							<tr>
+								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
+								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Descripcion)</th>
+								<th class="text-right"></th>
+							</tr>
 							</thead>
 							<tbody>
-								@foreach (var GrupoMuscular in Model)
-								{
-									<tr>
-										<td>@GrupoMuscular.Nombre</td>
-										<td>@GrupoMuscular.Descripcion</td>
+							@foreach (var GrupoMuscular in Model)
+							{
+								<tr>
+									<td>@GrupoMuscular.Nombre</td>
+									<td>@GrupoMuscular.Descripcion</td>
 
-										<td class="text-right">
-											<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-												<button id="BtnDetalle" class="btn btn-sm btn-light text-primary" data-toggle="modal" data-target="#ModalDetalle"
-													data-idgrupomuscular="@GrupoMuscular.IdGrupoMuscular">Detalle</button>
-												<a class="btn btn-sm btn-light" asp-controller="GruposMusculares" asp-action="Editar"
-													asp-route-id="@GrupoMuscular.IdGrupoMuscular">Modificar</a>
-												<a class="btn btn-sm btn-light text-danger" asp-controller="GruposMusculares" asp-action="Eliminar"
-													asp-route-id="@GrupoMuscular.IdGrupoMuscular">Eliminar</a>
-											</div>
-										</td>
-									</tr>
-								}
+									<td class="text-right">
+										<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+											<button id="BtnDetalle" class="btn btn-sm btn-light text-primary"
+											        data-toggle="modal" data-target="#ModalDetalle"
+											        data-idgrupomuscular="@GrupoMuscular.IdGrupoMuscular">Detalle
+											</button>
+											<a class="btn btn-sm btn-light" asp-controller="GruposMusculares"
+											   asp-action="Editar"
+											   asp-route-id="@GrupoMuscular.IdGrupoMuscular">Modificar</a>
+											<a class="btn btn-sm btn-light text-danger"
+											   asp-controller="GruposMusculares" asp-action="Eliminar"
+											   asp-route-id="@GrupoMuscular.IdGrupoMuscular">Eliminar</a>
+										</div>
+									</td>
+								</tr>
+							}
 							</tbody>
 						</table>
 					</div>
@@ -72,12 +74,11 @@
 	</div>
 </div>
 
-<partial name="_Detalle" />
+<partial name="_Detalle"/>
 
 @section Scripts {
 	<script type="text/javascript">
-		$('#ModalDetalle').on('show.bs.modal', function (event)
-		{
+		$('#ModalDetalle').on('show.bs.modal', function (event) {
 			var button = $(event.relatedTarget); // Button that triggered the modal
 			var IdGrupoMuscular = button.data('idgrupomuscular'); // Extract info from data-* attributes
 
@@ -86,7 +87,7 @@
 			// Initiate an AJAX request here(and then do the updating in a callback).
 			$.ajax({
 				url: '@Url.Action("Detalle")',
-				data: { Id: IdGrupoMuscular },
+				data: {Id: IdGrupoMuscular},
 				dataType: "json",
 				type: 'GET',
 				success: handleData,
@@ -94,8 +95,7 @@
 			});
 		});
 
-		function handleData(data)
-		{
+		function handleData(data) {
 			console.log(data);
 			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 			var modal = $("#ModalDetalle");
@@ -108,8 +108,7 @@
 			modal.find('.modal-body .modificado-el').text(data.editadoEl);
 		}
 
-		function handleError()
-		{
+		function handleError() {
 			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 			var modal = $("#ModalDetalle");
 			modal.find('.modal-title .nombre').text("Error al obtener la información");
