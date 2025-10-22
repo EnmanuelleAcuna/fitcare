@@ -38,11 +38,26 @@ public class TiposMedidaController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> Listar()
+	public ActionResult Listar()
 	{
-		IEnumerable<TipoMedida> listaTiposMedida = await _tiposMedida.ReadAllAsync();
-		IEnumerable<TipoMedidaViewModel> modelo = listaTiposMedida.Select(x => new TipoMedidaViewModel(x)).ToList();
-		return View(modelo);
+		return View();
+	}
+
+	[HttpGet]
+	public async Task<JsonResult> ObtenerTiposMedida()
+	{
+		try
+		{
+			IEnumerable<TipoMedida> listaTiposMedida = await _tiposMedida.ReadAllAsync();
+			IEnumerable<TipoMedidaViewModel> modelo = listaTiposMedida.Select(x => new TipoMedidaViewModel(x)).ToList();
+
+			return Json(new { data = modelo });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al obtener tipos de medida para DataTables");
+			return Json(new { data = new List<TipoMedidaViewModel>() });
+		}
 	}
 
 	[HttpGet]
@@ -63,6 +78,34 @@ public class TiposMedidaController : BaseController
 
 		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(TipoMedida)));
 		return View(modelo);
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> AgregarAjax([FromBody] AgregarTipoMedidaViewModel modelo)
+	{
+		try
+		{
+			if (ModelState.IsValid)
+			{
+				await _tiposMedida.CreateAsync(modelo.Entidad(), GetCurrentUser());
+				return Json(new { success = true, message = "Tipo de medida agregado exitosamente" });
+			}
+
+			// Retornar errores de validación
+			var errors = ModelState
+				.Where(x => x.Value.Errors.Count > 0)
+				.ToDictionary(
+					kvp => kvp.Key,
+					kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault()
+				);
+
+			return Json(new { success = false, errors = errors });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al agregar tipo de medida mediante AJAX");
+			return Json(new { success = false, message = "Error al agregar el tipo de medida" });
+		}
 	}
 
 	[HttpGet]
@@ -88,6 +131,34 @@ public class TiposMedidaController : BaseController
 		return View(modelo);
 	}
 
+	[HttpPost]
+	public async Task<JsonResult> EditarAjax([FromBody] EditarTipoMedidaViewModel modelo)
+	{
+		try
+		{
+			if (ModelState.IsValid)
+			{
+				await _tiposMedida.UpdateAsync(modelo.Entidad(), GetCurrentUser());
+				return Json(new { success = true, message = "Tipo de medida actualizado exitosamente" });
+			}
+
+			// Retornar errores de validación
+			var errors = ModelState
+				.Where(x => x.Value.Errors.Count > 0)
+				.ToDictionary(
+					kvp => kvp.Key,
+					kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault()
+				);
+
+			return Json(new { success = false, errors = errors });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al actualizar tipo de medida mediante AJAX");
+			return Json(new { success = false, message = "Error al actualizar el tipo de medida" });
+		}
+	}
+
 	[HttpGet]
 	public async Task<ActionResult> Eliminar(string id)
 	{
@@ -108,6 +179,26 @@ public class TiposMedidaController : BaseController
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoEjercicio)));
 		return View(modelo);
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> EliminarAjax([FromBody] EliminarTipoMedidaViewModel modelo)
+	{
+		try
+		{
+			if (string.IsNullOrEmpty(modelo.IdTipoMedida))
+			{
+				return Json(new { success = false, message = "ID no válido" });
+			}
+
+			await _tiposMedida.DeleteAsync(new Guid(modelo.IdTipoMedida));
+			return Json(new { success = true, message = "Tipo de medida eliminado exitosamente" });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al eliminar tipo de medida mediante AJAX");
+			return Json(new { success = false, message = "Error al eliminar el tipo de medida. Puede estar siendo utilizado en otro registro." });
+		}
 	}
 
 	[HttpGet]

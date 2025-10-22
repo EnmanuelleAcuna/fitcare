@@ -1,5 +1,3 @@
-﻿@model IEnumerable<TipoMedidaViewModel>
-
 @{
 	ViewBag.Title = "Tipos de medida";
 }
@@ -29,42 +27,23 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="Agregar" class="btn btn-sm btn-secondary">Agregar tipo de medida</a>
+					<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#ModalAgregar">
+						<i class="fa fa-plus"></i> Agregar tipo de medida
+					</button>
 
 					<hr/>
 
 					<div class="table-responsive">
-						<table class="table table-hover table-sm text-nowrap">
+						<table id="tablaTiposMedida" class="table table-hover table-sm text-nowrap">
 							<thead>
 							<tr>
-								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Codigo)</th>
-								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
-								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Estado)</th>
+								<th>Código</th>
+								<th>Nombre</th>
+								<th>Estado</th>
 								<th class="text-right"></th>
 							</tr>
 							</thead>
 							<tbody>
-							@foreach (var TipoMedida in Model)
-							{
-								<tr>
-									<td>@TipoMedida.Codigo</td>
-									<td>@TipoMedida.Nombre</td>
-									<td>@TipoMedida.Estado</td>
-									<td class="text-right">
-										<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-											<button id="BtnDetalle" class="btn btn-sm btn-light text-primary"
-											        data-toggle="modal"
-											        data-target="#ModalDetalle"
-											        data-idtipomedida="@TipoMedida.Id">Detalle
-											</button>
-											<a class="btn btn-sm btn-light" asp-action="Editar"
-											   asp-route-id="@TipoMedida.Id">Modificar</a>
-											<a class="btn btn-sm btn-light text-danger" asp-action="Eliminar"
-											   asp-route-id="@TipoMedida.Id">Eliminar</a>
-										</div>
-									</td>
-								</tr>
-							}
 							</tbody>
 						</table>
 					</div>
@@ -75,29 +54,296 @@
 </div>
 
 <partial name="_Detalle"/>
+<partial name="_AgregarModal"/>
+<partial name="_EditarModal"/>
+<partial name="_EliminarModal"/>
 
 @section Scripts {
-	<script type="text/javascript">
-		$('#ModalDetalle').on('show.bs.modal', function (event) {
-			var button = $(event.relatedTarget); // Button that triggered the modal
-			var idTipoMedida = button.data('idtipomedida'); // Extract info from data-* attributes
-			console.log(idTipoMedida);
-			$("#ModalDetalle").find('.modal-title .nombre').text("Cargando...");
+	<link rel="stylesheet" href="~/lib/datatables/css/dataTables.bootstrap4.min.css"/>
+	<script type="text/javascript" src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
 
-			// Initiate an AJAX request here(and then do the updating in a callback).
-			$.ajax({
-				url: '@Url.Action("Detalle")',
-				data: {Id: idTipoMedida},
-				dataType: "json",
-				type: 'GET',
-				success: handleData,
-				error: handleError
+	<script type="text/javascript">
+		$(document).ready(function () {
+			let tablaTiposMedida = $('#tablaTiposMedida');
+			
+			// Inicializar DataTable
+			tablaTiposMedida.DataTable({
+				"ajax": {
+					"url": "@Url.Action("ObtenerTiposMedida")",
+					"type": "GET",
+					"datatype": "json"
+				},
+				"columns": [
+					{ "data": "codigo" },
+					{ "data": "nombre" },
+					{ "data": "estado" },
+					{
+						"data": null,
+						"render": function (data, type, row) {
+							return `<div class="btn-group btn-group-sm" role="group">
+								<button class="btn btn-sm btn-light text-primary btn-detalle"
+									data-toggle="modal"
+									data-target="#ModalDetalle"
+									data-id="${data.id}">Detalle</button>
+								<button class="btn btn-sm btn-light btn-editar"
+									data-toggle="modal"
+									data-target="#ModalEditar"
+									data-id="${data.id}"
+									data-codigo="${data.codigo}"
+									data-nombre="${data.nombre}"
+									data-estado="${data.estado}">Modificar</button>
+								<button class="btn btn-sm btn-light text-danger btn-eliminar"
+									data-toggle="modal"
+									data-target="#ModalEliminar"
+									data-id="${data.id}"
+									data-nombre="${data.nombre}">Eliminar</button>
+							</div>`;
+						},
+						"orderable": false,
+						"className": "text-right"
+					}
+				],
+				"language": {
+					"url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"
+				},
+				"processing": true,
+				"pageLength": 10,
+				"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
+				"order": [[1, "asc"]]
+			});
+
+			// Manejar el evento del modal de detalle con delegación de eventos
+			tablaTiposMedida.on('click', '.btn-detalle', function () {
+				var idTipoMedida = $(this).data('id');
+				console.log(idTipoMedida);
+				$("#ModalDetalle").find('.modal-title .nombre').text("Cargando...");
+
+				// Realizar petición AJAX para obtener detalles
+				$.ajax({
+					url: '@Url.Action("Detalle")',
+					data: { Id: idTipoMedida },
+					dataType: "json",
+					type: 'GET',
+					success: handleData,
+					error: handleError
+				});
+			});
+
+			// Manejar el formulario de agregar
+			$('#formAgregar').on('submit', function (e) {
+				e.preventDefault();
+
+				// Limpiar errores previos
+				$('#errorAgregar').addClass('d-none').text('');
+				$('#errorCodigo, #errorNombre').addClass('d-none').text('');
+
+				// Deshabilitar el botón de guardar mientras se procesa
+				$('#btnGuardarAgregar').prop('disabled', true).text('Guardando...');
+
+				var formData = {
+					Codigo: $('#CodigoAgregar').val(),
+					Nombre: $('#NombreAgregar').val(),
+					Estado: $('#EstadoAgregar').is(':checked')
+				};
+
+				$.ajax({
+					url: '@Url.Action("AgregarAjax")',
+					type: 'POST',
+					data: JSON.stringify(formData),
+					contentType: 'application/json',
+					dataType: 'json',
+					success: function (response) {
+						if (response.success) {
+							// Cerrar el modal
+							$('#ModalAgregar').modal('hide');
+							// Limpiar el formulario
+							$('#formAgregar')[0].reset();
+							// Recargar la tabla
+							tablaTiposMedida.DataTable().ajax.reload();
+							// Opcional: Mostrar mensaje de éxito
+							alert('Tipo de medida agregado exitosamente');
+						} else {
+							// Mostrar errores de validación
+							if (response.errors) {
+								for (var key in response.errors) {
+									if (key === 'Codigo') {
+										$('#errorCodigo').removeClass('d-none').text(response.errors[key]);
+									} else if (key === 'Nombre') {
+										$('#errorNombre').removeClass('d-none').text(response.errors[key]);
+									}
+								}
+							} else {
+								$('#errorAgregar').removeClass('d-none').text(response.message || 'Error al agregar el tipo de medida');
+							}
+						}
+					},
+					error: function (xhr, status, error) {
+						$('#errorAgregar').removeClass('d-none').text('Error al comunicarse con el servidor');
+					},
+					complete: function () {
+						// Rehabilitar el botón
+						$('#btnGuardarAgregar').prop('disabled', false).text('Guardar');
+					}
+				});
+			});
+
+			// Limpiar el formulario cuando se cierra el modal
+			$('#ModalAgregar').on('hidden.bs.modal', function () {
+				$('#formAgregar')[0].reset();
+				$('#errorAgregar').addClass('d-none').text('');
+				$('#errorCodigo, #errorNombre').addClass('d-none').text('');
+			});
+
+			// Cargar datos en el modal de editar cuando se abre
+			$('#ModalEditar').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				var id = button.data('id');
+				var codigo = button.data('codigo');
+				var nombre = button.data('nombre');
+				var estado = button.data('estado');
+
+				// Llenar el formulario
+				$('#IdEditar').val(id);
+				$('#CodigoEditar').val(codigo);
+				$('#NombreEditar').val(nombre);
+				$('#EstadoEditar').prop('checked', estado === 'Activo' || estado === true);
+
+				// Limpiar errores previos
+				$('#errorEditar').addClass('d-none').text('');
+				$('#errorCodigoEditar, #errorNombreEditar').addClass('d-none').text('');
+			});
+
+			// Manejar el formulario de editar
+			$('#formEditar').on('submit', function (e) {
+				e.preventDefault();
+
+				// Limpiar errores previos
+				$('#errorEditar').addClass('d-none').text('');
+				$('#errorCodigoEditar, #errorNombreEditar').addClass('d-none').text('');
+
+				// Deshabilitar el botón de guardar mientras se procesa
+				$('#btnGuardarEditar').prop('disabled', true).text('Guardando...');
+
+				var formData = {
+					Id: $('#IdEditar').val(),
+					Codigo: $('#CodigoEditar').val(),
+					Nombre: $('#NombreEditar').val(),
+					Estado: $('#EstadoEditar').is(':checked')
+				};
+
+				$.ajax({
+					url: '@Url.Action("EditarAjax")',
+					type: 'POST',
+					data: JSON.stringify(formData),
+					contentType: 'application/json',
+					dataType: 'json',
+					success: function (response) {
+						if (response.success) {
+							// Cerrar el modal
+							$('#ModalEditar').modal('hide');
+							// Recargar la tabla
+							tablaTiposMedida.DataTable().ajax.reload();
+							// Opcional: Mostrar mensaje de éxito
+							alert('Tipo de medida actualizado exitosamente');
+						} else {
+							// Mostrar errores de validación
+							if (response.errors) {
+								for (var key in response.errors) {
+									if (key === 'Codigo') {
+										$('#errorCodigoEditar').removeClass('d-none').text(response.errors[key]);
+									} else if (key === 'Nombre') {
+										$('#errorNombreEditar').removeClass('d-none').text(response.errors[key]);
+									}
+								}
+							} else {
+								$('#errorEditar').removeClass('d-none').text(response.message || 'Error al actualizar el tipo de medida');
+							}
+						}
+					},
+					error: function (xhr, status, error) {
+						$('#errorEditar').removeClass('d-none').text('Error al comunicarse con el servidor');
+					},
+					complete: function () {
+						// Rehabilitar el botón
+						$('#btnGuardarEditar').prop('disabled', false).text('Guardar cambios');
+					}
+				});
+			});
+
+			// Limpiar el formulario cuando se cierra el modal de editar
+			$('#ModalEditar').on('hidden.bs.modal', function () {
+				$('#formEditar')[0].reset();
+				$('#errorEditar').addClass('d-none').text('');
+				$('#errorCodigoEditar, #errorNombreEditar').addClass('d-none').text('');
+			});
+
+			// Cargar datos en el modal de eliminar cuando se abre
+			$('#ModalEliminar').on('show.bs.modal', function (event) {
+				var button = $(event.relatedTarget);
+				var id = button.data('id');
+				var nombre = button.data('nombre');
+
+				// Llenar el formulario
+				$('#IdEliminar').val(id);
+				$('#NombreEliminar').text(nombre);
+
+				// Limpiar errores previos
+				$('#errorEliminar').addClass('d-none').text('');
+			});
+
+			// Manejar el formulario de eliminar
+			$('#formEliminar').on('submit', function (e) {
+				e.preventDefault();
+
+				// Limpiar errores previos
+				$('#errorEliminar').addClass('d-none').text('');
+
+				// Deshabilitar el botón de eliminar mientras se procesa
+				$('#btnConfirmarEliminar').prop('disabled', true).text('Eliminando...');
+
+				var formData = {
+					IdTipoMedida: $('#IdEliminar').val()
+				};
+
+				$.ajax({
+					url: '@Url.Action("EliminarAjax")',
+					type: 'POST',
+					data: JSON.stringify(formData),
+					contentType: 'application/json',
+					dataType: 'json',
+					success: function (response) {
+						if (response.success) {
+							// Cerrar el modal
+							$('#ModalEliminar').modal('hide');
+							// Recargar la tabla
+							tablaTiposMedida.DataTable().ajax.reload();
+							// Opcional: Mostrar mensaje de éxito
+							alert('Tipo de medida eliminado exitosamente');
+						} else {
+							$('#errorEliminar').removeClass('d-none').text(response.message || 'Error al eliminar el tipo de medida');
+						}
+					},
+					error: function (xhr, status, error) {
+						$('#errorEliminar').removeClass('d-none').text('Error al comunicarse con el servidor');
+					},
+					complete: function () {
+						// Rehabilitar el botón
+						$('#btnConfirmarEliminar').prop('disabled', false).text('Eliminar');
+					}
+				});
+			});
+
+			// Limpiar el formulario cuando se cierra el modal de eliminar
+			$('#ModalEliminar').on('hidden.bs.modal', function () {
+				$('#formEliminar')[0].reset();
+				$('#errorEliminar').addClass('d-none').text('');
+				$('#NombreEliminar').text('');
 			});
 		});
 
 		function handleData(data) {
 			console.log(data);
-			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 			var modal = $("#ModalDetalle");
 			modal.find('.modal-title .nombre').text(data.nombre);
 			modal.find('.modal-body .codigo').text(data.codigo);
@@ -109,10 +355,10 @@
 		}
 
 		function handleError() {
-			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
 			var modal = $("#ModalDetalle");
 			modal.find('.modal-title .nombre').text("Error al obtener la información");
 			modal.find('.modal-body .estado').text('N/A');
+			modal.find('.modal-body .codigo').text('N/A');
 			modal.find('.modal-body .creado-por').text('N/A');
 			modal.find('.modal-body .creado-el').text('N/A');
 			modal.find('.modal-body .modificado-por').text('N/A');
