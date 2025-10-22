@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace fitcare.Models.Entities;
 
-[Table("TIPOS_MEDIDA", Schema = "fitcare")]
+[Table("TiposMedida", Schema = "fitcare")]
 public class TipoMedida : Base
 {
 	public TipoMedida() : base()
