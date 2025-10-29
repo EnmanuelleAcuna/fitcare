@@ -60,7 +60,7 @@ public class Maquina : Base
 	public DateTime FechaAdquisicion { get; set; }
 
 	[ForeignKey(nameof(TipoMaquina))]
-	[Column("Id_Tipo_Maquina")]
+	[Column("IdTipoMaquina")]
 	public Guid IdTipoMaquina { get; set; }
 	public TipoMaquina TipoMaquina { get; set; }
 
@@ -69,7 +69,7 @@ public class Maquina : Base
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
 
-[Table("TIPOS_MAQUINA", Schema = "fitcare")]
+[Table("TIPOSMAQUINA", Schema = "fitcare")]
 public class TipoMaquina : Base
 {
 	public TipoMaquina() : base()
