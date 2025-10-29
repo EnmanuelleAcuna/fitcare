@@ -230,9 +230,9 @@ public class AgregarClienteViewModel : UsuarioViewModel
 	[Required(ErrorMessage = "El Distrito es requerido.")]
 	public string IdDistrito { get; set; }
 
-	[Display(Name = "Fotografía")]
-	[Required(ErrorMessage = "La fotografía es requerida.")]
-	public IFormFile ProfilePicture { get; set; }
+	// [Display(Name = "Fotografía")]
+	// [Required(ErrorMessage = "La fotografía es requerida.")]
+	// public IFormFile ProfilePicture { get; set; }
 
 	[Display(Name = "Fecha de inscripción")]
 	[Required(ErrorMessage = "La fecha de inscripción es requerida")]

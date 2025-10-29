@@ -28,7 +28,7 @@
 							<p class="card-text text-center">Gestión de máquinas.</p>
 							<a href='@Url.Action("ListarTiposMaquina", "Maquinas")'
 							   class="btn btn-sm btn-block btn-dark">Tipos de máquina</a>
-							<a href='@Url.Action("ListarMaquinas", "Maquinas")' class="btn btn-sm btn-block btn-dark">Máquinas</a>
+							<a href='@Url.Action("ListarMaquinas", "Maquinas")' class="btn btn-sm btn-block btn-dark disabled">Máquinas</a>
 						</div>
 					</div>
 
@@ -47,7 +47,7 @@
 							<a href='@Url.Action("ListarTiposEjercicio", "Ejercicios")'
 							   class="btn btn-sm btn-block btn-dark">Tipos de ejercicio</a>
 							<a href='@Url.Action("ListarEjercicios", "Ejercicios")'
-							   class="btn btn-sm btn-block btn-dark">Ejercicios</a>
+							   class="btn btn-sm btn-block btn-dark disabled">Ejercicios</a>
 						</div>
 					</div>
 
@@ -69,16 +69,18 @@
 
 							@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
 							{
-								<a href='@Url.Action("Listar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Mis
-									rutinas</a>
+								<a href='@Url.Action("Listar", "Rutinas")' class="btn btn-sm btn-block btn-dark disabled">
+									Mis rutinas
+								</a>
 							}
 
 							@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
 							{
-								<a href='@Url.Action("Agregar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Registrar
+								<a href='@Url.Action("Agregar", "Rutinas")' class="btn btn-sm btn-block btn-dark disabled">Registrar
 									rutina</a>
-								<a href='@Url.Action("Reporte", "Rutinas")' class="btn btn-sm btn-block btn-dark">Reporte
-									de rutinas</a>
+								<a href='@Url.Action("Reporte", "Rutinas")' class="btn btn-sm btn-block btn-dark disabled">
+									Reporte de rutinas
+								</a>
 							}
 						</div>
 					</div>
@@ -99,7 +101,7 @@
 						<div class="card-body">
 							<h5 class="card-title text-center font-weight-bold">Clientes</h5>
 							<p class="card-text text-center">Gestione sus clientes.</p>
-							<a href='@Url.Action("ListarClientes", "Cuentas")' class="btn btn-sm btn-block btn-dark">Clientes</a>
+							@* <a href='@Url.Action("ListarClientes", "Cuentas")' class="btn btn-sm btn-block btn-dark">Clientes</a> *@
 							<a href='@Url.Action("RegistrarNuevoCliente", "Cuentas")'
 							   class="btn btn-sm btn-block btn-dark">Registrar cliente</a>
 							<a href='@Url.Action("ReporteClientes", "Cuentas")' class="btn btn-sm btn-block btn-dark">Reporte
@@ -118,11 +120,11 @@
 							<h5 class="card-title text-center font-weight-bold">Instructores</h5>
 							<p class="card-text text-center">Gestione sus instructores.</p>
 							<a href='@Url.Action("ListarInstructores", "Cuentas")'
-							   class="btn btn-sm btn-block btn-dark">Instructores</a>
+							   class="btn btn-sm btn-block btn-dark disabled">Instructores</a>
 							<a href='@Url.Action("RegistrarNuevoInstructor", "Cuentas")'
-							   class="btn btn-sm btn-block btn-dark">Registrar instructor</a>
+							   class="btn btn-sm btn-block btn-dark disabled">Registrar instructor</a>
 							<a href='@Url.Action("ReporteInstructores", "Cuentas")'
-							   class="btn btn-sm btn-block btn-dark">Reporte de instructores</a>
+							   class="btn btn-sm btn-block btn-dark disabled">Reporte de instructores</a>
 						</div>
 					</div>
 				}
@@ -143,33 +145,33 @@
 		</div>
 	</div>
 
-	@if (User.IsInRole("Administrador"))
-	{
-		<div class="row mb-4">
-			<div class="col-12">
-				<div class="card-deck">
-					@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
-					{
-					}
-
-					@* Otras opciones *@
-					<div class="card" style="max-width: 16rem;">
-						<img src="~/images/admin_1.svg" alt="Opciones"
-						     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
-
-						<div class="card-body">
-							<h5 class="card-title text-center font-weight-bold">Opciones</h5>
-							<p class="card-text text-center">Más opciones</p>
-							<a href='@Url.Action("ListarProvincias", "DivisionTerritorial")'
-							   class="btn btn-sm btn-block btn-dark">Provincias</a>
-							<a href='@Url.Action("ListarCantones", "DivisionTerritorial")'
-							   class="btn btn-sm btn-block btn-dark">Cantones</a>
-							<a href='@Url.Action("ListarDistritos", "DivisionTerritorial")'
-							   class="btn btn-sm btn-block btn-dark">Distritos</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	}
+	@* @if (User.IsInRole("Administrador")) *@
+	@* { *@
+	@* 	<div class="row mb-4"> *@
+	@* 		<div class="col-12"> *@
+	@* 			<div class="card-deck"> *@
+	@* 				@if (User.IsInRole("Cliente") || User.IsInRole("Administrador")) *@
+	@* 				{ *@
+	@* 				} *@
+	@* *@
+	@* 				$1$ Otras opciones #1# *@
+	@* 				<div class="card" style="max-width: 16rem;"> *@
+	@* 					<img src="~/images/admin_1.svg" alt="Opciones" *@
+	@* 					     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light"> *@
+	@* *@
+	@* 					<div class="card-body"> *@
+	@* 						<h5 class="card-title text-center font-weight-bold">Opciones</h5> *@
+	@* 						<p class="card-text text-center">Más opciones</p> *@
+	@* 						<a href='@Url.Action("ListarProvincias", "DivisionTerritorial")' *@
+	@* 						   class="btn btn-sm btn-block btn-dark">Provincias</a> *@
+	@* 						<a href='@Url.Action("ListarCantones", "DivisionTerritorial")' *@
+	@* 						   class="btn btn-sm btn-block btn-dark">Cantones</a> *@
+	@* 						<a href='@Url.Action("ListarDistritos", "DivisionTerritorial")' *@
+	@* 						   class="btn btn-sm btn-block btn-dark">Distritos</a> *@
+	@* 					</div> *@
+	@* 				</div> *@
+	@* 			</div> *@
+	@* 		</div> *@
+	@* 	</div> *@
+	@* } *@
 </div>

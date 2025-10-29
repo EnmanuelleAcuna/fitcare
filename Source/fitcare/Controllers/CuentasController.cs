@@ -499,10 +499,10 @@ public class CuentasController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
+			// var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
 
 			var usuarioRegistradoComoCliente =
-				await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), rutaFotografia);
+				await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), string.Empty);
 
 			if (usuarioRegistradoComoCliente.Succeeded) return RedirectToAction(nameof(ListarClientes));
 
