@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace fitcare.Models.Entities;
 
-[Table("EJERCICIOS", Schema = "fitcare")]
+[Table("Ejercicios", Schema = "fitcare")]
 public class Ejercicio : Base
 {
 	public Ejercicio() : base()
@@ -46,7 +46,7 @@ public class Ejercicio : Base
 	public bool Estado { get; set; }
 
 	[ForeignKey(nameof(TipoEjercicio))]
-	[Column("Id_Tipo_Ejercicio")]
+	[Column("IdTipoEjercicio")]
 	public Guid IdTipoEjercicio { get; set; }
 	public TipoEjercicio TipoEjercicio { get; set; }
 
@@ -55,7 +55,7 @@ public class Ejercicio : Base
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
 
-[Table("TIPOS_EJERCICIO", Schema = "fitcare")]
+[Table("TIPOSEJERCICIO", Schema = "fitcare")]
 public class TipoEjercicio : Base
 {
 	public TipoEjercicio() : base()
