@@ -27,8 +27,8 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#ModalAgregar">
-						<i class="fa fa-plus"></i> Agregar tipo de medida
+					<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ModalAgregar">
+						Agregar tipo de medida
 					</button>
 
 					<hr/>
@@ -59,6 +59,8 @@
 <partial name="_EliminarModal"/>
 
 @section Scripts {
+	@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
 	<link rel="stylesheet" href="~/lib/datatables/css/dataTables.bootstrap4.min.css"/>
 	<script type="text/javascript" src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
@@ -115,8 +117,7 @@
 
 			// Manejar el evento del modal de detalle con delegación de eventos
 			tablaTiposMedida.on('click', '.btn-detalle', function () {
-				var idTipoMedida = $(this).data('id');
-				console.log(idTipoMedida);
+				let idTipoMedida = $(this).data('id');
 				$("#ModalDetalle").find('.modal-title .nombre').text("Cargando...");
 
 				// Realizar petición AJAX para obtener detalles
@@ -134,9 +135,12 @@
 			$('#formAgregar').on('submit', function (e) {
 				e.preventDefault();
 
-				// Limpiar errores previos
-				$('#errorAgregar').addClass('d-none').text('');
-				$('#errorCodigo, #errorNombre').addClass('d-none').text('');
+				var form = $(this);
+
+				// Validar el formulario usando jQuery Unobtrusive Validation
+				if (!form.valid()) {
+					return; // Detener si la validación falla
+				}
 
 				// Deshabilitar el botón de guardar mientras se procesa
 				$('#btnGuardarAgregar').prop('disabled', true).text('Guardando...');
@@ -147,39 +151,39 @@
 					Estado: $('#EstadoAgregar').is(':checked')
 				};
 
+				// Obtener el token anti-forgery del formulario
+				var token = $('input[name="__RequestVerificationToken"]', form).val();
+
 				$.ajax({
 					url: '@Url.Action("AgregarAjax")',
 					type: 'POST',
 					data: JSON.stringify(formData),
 					contentType: 'application/json',
 					dataType: 'json',
+					headers: {
+						'RequestVerificationToken': token
+					},
 					success: function (response) {
 						if (response.success) {
 							// Cerrar el modal
 							$('#ModalAgregar').modal('hide');
-							// Limpiar el formulario
-							$('#formAgregar')[0].reset();
 							// Recargar la tabla
 							tablaTiposMedida.DataTable().ajax.reload();
-							// Opcional: Mostrar mensaje de éxito
-							alert('Tipo de medida agregado exitosamente');
+							// Mostrar mensaje de éxito
+							mostrarToast('Tipo de medida agregado exitosamente', 'success');
 						} else {
-							// Mostrar errores de validación
+							// Mostrar errores de validación del servidor
 							if (response.errors) {
-								for (var key in response.errors) {
-									if (key === 'Codigo') {
-										$('#errorCodigo').removeClass('d-none').text(response.errors[key]);
-									} else if (key === 'Nombre') {
-										$('#errorNombre').removeClass('d-none').text(response.errors[key]);
-									}
-								}
-							} else {
-								$('#errorAgregar').removeClass('d-none').text(response.message || 'Error al agregar el tipo de medida');
+								var validator = form.validate();
+								validator.showErrors(response.errors);
+							} else if (response.message) {
+								// Mostrar mensaje de error general
+								mostrarToast(response.message, 'danger');
 							}
 						}
 					},
 					error: function (xhr, status, error) {
-						$('#errorAgregar').removeClass('d-none').text('Error al comunicarse con el servidor');
+						mostrarToast('Error al comunicarse con el servidor', 'danger');
 					},
 					complete: function () {
 						// Rehabilitar el botón
@@ -188,11 +192,17 @@
 				});
 			});
 
-			// Limpiar el formulario cuando se cierra el modal
+			// Inicializar el modal de agregar cuando se abre
+			$('#ModalAgregar').on('show.bs.modal', function () {
+				// Establecer Estado como checked por defecto
+				$('#EstadoAgregar').prop('checked', true);
+			});
+
+			// Limpiar el formulario cuando se cierra el modal de agregar
 			$('#ModalAgregar').on('hidden.bs.modal', function () {
-				$('#formAgregar')[0].reset();
-				$('#errorAgregar').addClass('d-none').text('');
-				$('#errorCodigo, #errorNombre').addClass('d-none').text('');
+				var form = $('#formAgregar');
+				form[0].reset();
+				form.validate().resetForm(); // Limpiar mensajes de validación
 			});
 
 			// Cargar datos en el modal de editar cuando se abre
@@ -209,18 +219,21 @@
 				$('#NombreEditar').val(nombre);
 				$('#EstadoEditar').prop('checked', estado === 'Activo' || estado === true);
 
-				// Limpiar errores previos
-				$('#errorEditar').addClass('d-none').text('');
-				$('#errorCodigoEditar, #errorNombreEditar').addClass('d-none').text('');
+				// Limpiar errores y validación previos
+				var form = $('#formEditar');
+				form.validate().resetForm();
 			});
 
 			// Manejar el formulario de editar
 			$('#formEditar').on('submit', function (e) {
 				e.preventDefault();
 
-				// Limpiar errores previos
-				$('#errorEditar').addClass('d-none').text('');
-				$('#errorCodigoEditar, #errorNombreEditar').addClass('d-none').text('');
+				var form = $(this);
+
+				// Validar el formulario usando jQuery Unobtrusive Validation
+				if (!form.valid()) {
+					return; // Detener si la validación falla
+				}
 
 				// Deshabilitar el botón de guardar mientras se procesa
 				$('#btnGuardarEditar').prop('disabled', true).text('Guardando...');
@@ -232,37 +245,39 @@
 					Estado: $('#EstadoEditar').is(':checked')
 				};
 
+				// Obtener el token anti-forgery del formulario
+				var token = $('input[name="__RequestVerificationToken"]', form).val();
+
 				$.ajax({
 					url: '@Url.Action("EditarAjax")',
 					type: 'POST',
 					data: JSON.stringify(formData),
 					contentType: 'application/json',
 					dataType: 'json',
+					headers: {
+						'RequestVerificationToken': token
+					},
 					success: function (response) {
 						if (response.success) {
 							// Cerrar el modal
 							$('#ModalEditar').modal('hide');
 							// Recargar la tabla
 							tablaTiposMedida.DataTable().ajax.reload();
-							// Opcional: Mostrar mensaje de éxito
-							alert('Tipo de medida actualizado exitosamente');
+							// Mostrar mensaje de éxito
+							mostrarToast('Tipo de medida actualizado exitosamente', 'success');
 						} else {
-							// Mostrar errores de validación
+							// Mostrar errores de validación del servidor
 							if (response.errors) {
-								for (var key in response.errors) {
-									if (key === 'Codigo') {
-										$('#errorCodigoEditar').removeClass('d-none').text(response.errors[key]);
-									} else if (key === 'Nombre') {
-										$('#errorNombreEditar').removeClass('d-none').text(response.errors[key]);
-									}
-								}
-							} else {
-								$('#errorEditar').removeClass('d-none').text(response.message || 'Error al actualizar el tipo de medida');
+								var validator = form.validate();
+								validator.showErrors(response.errors);
+							} else if (response.message) {
+								// Mostrar mensaje de error general
+								mostrarToast(response.message, 'danger');
 							}
 						}
 					},
 					error: function (xhr, status, error) {
-						$('#errorEditar').removeClass('d-none').text('Error al comunicarse con el servidor');
+						mostrarToast('Error al comunicarse con el servidor', 'danger');
 					},
 					complete: function () {
 						// Rehabilitar el botón
@@ -273,9 +288,9 @@
 
 			// Limpiar el formulario cuando se cierra el modal de editar
 			$('#ModalEditar').on('hidden.bs.modal', function () {
-				$('#formEditar')[0].reset();
-				$('#errorEditar').addClass('d-none').text('');
-				$('#errorCodigoEditar, #errorNombreEditar').addClass('d-none').text('');
+				var form = $('#formEditar');
+				form[0].reset();
+				form.validate().resetForm(); // Limpiar mensajes de validación
 			});
 
 			// Cargar datos en el modal de eliminar cuando se abre
@@ -287,17 +302,13 @@
 				// Llenar el formulario
 				$('#IdEliminar').val(id);
 				$('#NombreEliminar').text(nombre);
-
-				// Limpiar errores previos
-				$('#errorEliminar').addClass('d-none').text('');
 			});
 
 			// Manejar el formulario de eliminar
 			$('#formEliminar').on('submit', function (e) {
 				e.preventDefault();
 
-				// Limpiar errores previos
-				$('#errorEliminar').addClass('d-none').text('');
+				var form = $(this);
 
 				// Deshabilitar el botón de eliminar mientras se procesa
 				$('#btnConfirmarEliminar').prop('disabled', true).text('Eliminando...');
@@ -306,26 +317,33 @@
 					IdTipoMedida: $('#IdEliminar').val()
 				};
 
+				// Obtener el token anti-forgery del formulario
+				var token = $('input[name="__RequestVerificationToken"]', form).val();
+
 				$.ajax({
 					url: '@Url.Action("EliminarAjax")',
 					type: 'POST',
 					data: JSON.stringify(formData),
 					contentType: 'application/json',
 					dataType: 'json',
+					headers: {
+						'RequestVerificationToken': token
+					},
 					success: function (response) {
 						if (response.success) {
 							// Cerrar el modal
 							$('#ModalEliminar').modal('hide');
 							// Recargar la tabla
 							tablaTiposMedida.DataTable().ajax.reload();
-							// Opcional: Mostrar mensaje de éxito
-							alert('Tipo de medida eliminado exitosamente');
-						} else {
-							$('#errorEliminar').removeClass('d-none').text(response.message || 'Error al eliminar el tipo de medida');
+							// Mostrar mensaje de éxito
+							mostrarToast('Tipo de medida eliminado exitosamente', 'success');
+						} else if (response.message) {
+							// Mostrar mensaje de error/advertencia (puede estar en uso)
+							mostrarToast(response.message, 'warning');
 						}
 					},
 					error: function (xhr, status, error) {
-						$('#errorEliminar').removeClass('d-none').text('Error al comunicarse con el servidor');
+						mostrarToast('Error al comunicarse con el servidor', 'danger');
 					},
 					complete: function () {
 						// Rehabilitar el botón
@@ -336,14 +354,13 @@
 
 			// Limpiar el formulario cuando se cierra el modal de eliminar
 			$('#ModalEliminar').on('hidden.bs.modal', function () {
-				$('#formEliminar')[0].reset();
-				$('#errorEliminar').addClass('d-none').text('');
+				var form = $('#formEliminar');
+				form[0].reset();
 				$('#NombreEliminar').text('');
 			});
 		});
 
 		function handleData(data) {
-			console.log(data);
 			var modal = $("#ModalDetalle");
 			modal.find('.modal-title .nombre').text(data.nombre);
 			modal.find('.modal-body .codigo').text(data.codigo);

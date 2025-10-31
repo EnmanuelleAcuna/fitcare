@@ -1,47 +1,50 @@
+@model EditarTipoMedidaViewModel
+
 <!-- Modal Editar -->
 <div class="modal fade" id="ModalEditar" tabindex="-1" role="dialog" aria-labelledby="ModalEditarTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalEditarTitle">
+                <h6 class="modal-title" id="ModalEditarTitle">
                     <i class="fa fa-fw fa-edit"></i>
                     Modificar tipo de medida
-                </h5>
+                </h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true"><i class="fa fa-fw fa-window-close"></i></span>
                 </button>
             </div>
-            <form id="formEditar">
+            @using (Html.BeginForm("EditarAjax", "TiposMedida", FormMethod.Post, new { id = "formEditar" }))
+            {
+                @Html.AntiForgeryToken()
+
                 <div class="modal-body">
-                    <div class="alert alert-danger d-none" id="errorEditar" role="alert"></div>
+                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
 
-                    <input type="hidden" id="IdEditar" name="Id" />
+                    @Html.HiddenFor(m => m.Id, new { id = "IdEditar" })
 
                     <div class="form-group">
-                        <label for="CodigoEditar">Código</label>
-                        <input type="text" class="form-control form-control-sm" id="CodigoEditar" name="Codigo" required />
-                        <small class="text-danger d-none" id="errorCodigoEditar"></small>
+                        @Html.LabelFor(m => m.Codigo, new { @for = "CodigoEditar" })
+                        @Html.TextBoxFor(m => m.Codigo, new { @class = "form-control form-control-sm", id = "CodigoEditar" })
+                        @Html.ValidationMessageFor(m => m.Codigo, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group">
-                        <label for="NombreEditar">Nombre</label>
-                        <input type="text" class="form-control form-control-sm" id="NombreEditar" name="Nombre" required />
-                        <small class="text-danger d-none" id="errorNombreEditar"></small>
+                        @Html.LabelFor(m => m.Nombre, new { @for = "NombreEditar" })
+                        @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-sm", id = "NombreEditar" })
+                        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group">
-                        <label for="EstadoEditar">Estado</label>
-                        <div>
-                            <input type="checkbox" id="EstadoEditar" name="Estado" value="true" />
-                            <label for="EstadoEditar" class="ml-1">Activo</label>
-                        </div>
+                        @Html.LabelFor(m => m.Estado)
+                        <br/>
+                        @Html.CheckBoxFor(m => m.Estado, new { id = "EstadoEditar" })
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-sm btn-primary" id="btnGuardarEditar">Guardar cambios</button>
+                    <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-sm btn-primary" id="btnGuardarEditar">Guardar</button>
                 </div>
-            </form>
+            }
         </div>
     </div>
 </div>

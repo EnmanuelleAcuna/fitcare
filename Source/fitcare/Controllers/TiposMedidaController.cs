@@ -81,6 +81,7 @@ public class TiposMedidaController : BaseController
 	}
 
 	[HttpPost]
+	[ValidateAntiForgeryToken]
 	public async Task<JsonResult> AgregarAjax([FromBody] AgregarTipoMedidaViewModel modelo)
 	{
 		try
@@ -132,6 +133,7 @@ public class TiposMedidaController : BaseController
 	}
 
 	[HttpPost]
+	[ValidateAntiForgeryToken]
 	public async Task<JsonResult> EditarAjax([FromBody] EditarTipoMedidaViewModel modelo)
 	{
 		try
@@ -182,6 +184,7 @@ public class TiposMedidaController : BaseController
 	}
 
 	[HttpPost]
+	[ValidateAntiForgeryToken]
 	public async Task<JsonResult> EliminarAjax([FromBody] EliminarTipoMedidaViewModel modelo)
 	{
 		try

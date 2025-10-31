@@ -1,45 +1,48 @@
+@model AgregarTipoMedidaViewModel
+
 <!-- Modal Agregar -->
 <div class="modal fade" id="ModalAgregar" tabindex="-1" role="dialog" aria-labelledby="ModalAgregarTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ModalAgregarTitle">
+                <h6 class="modal-title" id="ModalAgregarTitle">
                     <i class="fa fa-fw fa-plus-circle"></i>
                     Agregar nuevo tipo de medida
-                </h5>
+                </h6>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true"><i class="fa fa-fw fa-window-close"></i></span>
                 </button>
             </div>
-            <form id="formAgregar">
+            @using (Html.BeginForm("AgregarAjax", "TiposMedida", FormMethod.Post, new { id = "formAgregar" }))
+            {
+                @Html.AntiForgeryToken()
+
                 <div class="modal-body">
-                    <div class="alert alert-danger d-none" id="errorAgregar" role="alert"></div>
+                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
 
                     <div class="form-group">
-                        <label for="CodigoAgregar">Código</label>
-                        <input type="text" class="form-control form-control-sm" id="CodigoAgregar" name="Codigo" placeholder="Digite el código del nuevo tipo de medida" required />
-                        <small class="text-danger d-none" id="errorCodigo"></small>
+                        @Html.LabelFor(m => m.Codigo, new { @for = "CodigoAgregar" })
+                        @Html.TextBoxFor(m => m.Codigo, new { @class = "form-control form-control-sm", placeholder = "Digite el código del nuevo tipo de medida", id = "CodigoAgregar" })
+                        @Html.ValidationMessageFor(m => m.Codigo, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group">
-                        <label for="NombreAgregar">Nombre</label>
-                        <input type="text" class="form-control form-control-sm" id="NombreAgregar" name="Nombre" placeholder="Digite el nombre del nuevo tipo de medida" required />
-                        <small class="text-danger d-none" id="errorNombre"></small>
+                        @Html.LabelFor(m => m.Nombre, new { @for = "NombreAgregar" })
+                        @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-sm", placeholder = "Digite el nombre del nuevo tipo de medida", id = "NombreAgregar" })
+                        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
                     </div>
 
                     <div class="form-group">
-                        <label for="EstadoAgregar">Estado</label>
-                        <div>
-                            <input type="checkbox" id="EstadoAgregar" name="Estado" value="true" checked />
-                            <label for="EstadoAgregar" class="ml-1">Activo</label>
-                        </div>
+                        @Html.LabelFor(m => m.Estado)
+                        <br/>
+                        @Html.CheckBoxFor(m => m.Estado, new { id = "EstadoAgregar" })
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-sm btn-primary" id="btnGuardarAgregar">Guardar</button>
                 </div>
-            </form>
+            }
         </div>
     </div>
 </div>

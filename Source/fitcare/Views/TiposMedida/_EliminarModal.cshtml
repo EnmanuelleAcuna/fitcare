@@ -1,21 +1,26 @@
+@model EliminarTipoMedidaViewModel
+
 <!-- Modal Eliminar -->
 <div class="modal fade" id="ModalEliminar" tabindex="-1" role="dialog" aria-labelledby="ModalEliminarTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="ModalEliminarTitle">
+                <h6 class="modal-title" id="ModalEliminarTitle">
                     <i class="fa fa-fw fa-trash"></i>
                     Eliminar tipo de medida
-                </h5>
+                </h6>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span aria-hidden="true"><i class="fa fa-fw fa-window-close"></i></span>
                 </button>
             </div>
-            <form id="formEliminar">
-                <div class="modal-body">
-                    <div class="alert alert-danger d-none" id="errorEliminar" role="alert"></div>
+            @using (Html.BeginForm("EliminarAjax", "TiposMedida", FormMethod.Post, new { id = "formEliminar" }))
+            {
+                @Html.AntiForgeryToken()
 
-                    <input type="hidden" id="IdEliminar" name="Id" />
+                <div class="modal-body">
+                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+
+                    @Html.HiddenFor(m => m.IdTipoMedida, new { id = "IdEliminar" })
 
                     <h6>¿Está seguro que desea eliminar el tipo de medida <strong><span id="NombreEliminar"></span></strong>?</h6>
 
@@ -25,10 +30,10 @@
                     </p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-sm btn-danger" id="btnConfirmarEliminar">Eliminar</button>
                 </div>
-            </form>
+            }
         </div>
     </div>
 </div>
