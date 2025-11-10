@@ -448,10 +448,10 @@ public class CuentasController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
+			// var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
 
 			var usuarioRegistradoComoInstructor =
-				await _userManager.RegistrarUsuarioComoInstructor(modelo.Entidad(), rutaFotografia);
+				await _userManager.RegistrarUsuarioComoInstructor(modelo.Entidad(), string.Empty);
 
 			if (usuarioRegistradoComoInstructor.Succeeded) return RedirectToAction(nameof(ListarInstructores));
 
@@ -530,5 +530,39 @@ public class CuentasController : BaseController
 		var usuariosCliente = await _userManager.GetUsersInRoleWithDivisionTerritorialInfoAsync("Cliente");
 		var modelo = usuariosCliente.Select(x => new ReporteClienteViewModel(x));
 		return View(modelo);
+	}
+
+	[HttpGet]
+	public async Task<JsonResult> ObtenerCantonesPorProvincia(string idProvincia)
+	{
+		if (string.IsNullOrEmpty(idProvincia))
+		{
+			return Json(new List<object>());
+		}
+
+		var cantones = await CargarListaSeleccionCantones();
+		var cantonesFiltrados = cantones
+			.Where(c => c.IdPadre == idProvincia)
+			.Select(c => new { value = c.Value, text = c.Text })
+			.ToList();
+
+		return Json(cantonesFiltrados);
+	}
+
+	[HttpGet]
+	public async Task<JsonResult> ObtenerDistritosPorCanton(string idCanton)
+	{
+		if (string.IsNullOrEmpty(idCanton))
+		{
+			return Json(new List<object>());
+		}
+
+		var distritos = await CargarListaSeleccionDistritos();
+		var distritosFiltrados = distritos
+			.Where(d => d.IdPadre == idCanton)
+			.Select(d => new { value = d.Value, text = d.Text })
+			.ToList();
+
+		return Json(distritosFiltrados);
 	}
 }

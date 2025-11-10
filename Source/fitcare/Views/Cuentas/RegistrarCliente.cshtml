@@ -16,11 +16,8 @@
 						<li class="breadcrumb-item">
 							<a href="@Url.Action("Admin", "Home")">Administración</a>
 						</li>
-						<li class="breadcrumb-item">
-							<a href="@Url.Action("ListarClientes")">Clientes</a>
-						</li>
 						<li class="breadcrumb-item active" aria-current="page">
-							Registrar
+							Registrar cliente
 						</li>
 					</ol>
 				</nav>
@@ -50,7 +47,7 @@
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
 									@Html.LabelFor(model => model.IdProvincia)
-									@Html.DropDownListFor(model => model.IdProvincia, new List<SelectListItem>(ViewBag.Provincias), "Seleccione una provincia", new { @class = "form-control form-control-sm" })
+									@Html.DropDownListFor(model => model.IdProvincia, new List<SelectListItem>(ViewBag.Provincias), "Seleccione una provincia", new { @class = "form-control form-control-sm", id = "selectProvincia" })
 									@Html.ValidationMessageFor(model => model.IdProvincia)
 								</div>
 							</div>
@@ -58,7 +55,7 @@
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
 									@Html.LabelFor(model => model.IdCanton)
-									@Html.DropDownListFor(model => model.IdCanton, new List<SelectListItem>(ViewBag.Cantones), "Seleccione un canton", new { @class = "form-control form-control-sm" })
+									@Html.DropDownListFor(model => model.IdCanton, new List<SelectListItem>(), "Seleccione primero una provincia", new { @class = "form-control form-control-sm", id = "selectCanton", disabled = "disabled" })
 									@Html.ValidationMessageFor(model => model.IdCanton)
 								</div>
 							</div>
@@ -66,7 +63,7 @@
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
 									@Html.LabelFor(model => model.IdDistrito)
-									@Html.DropDownListFor(model => model.IdDistrito, new List<SelectListItem>(ViewBag.Distritos), "Seleccione un distrito", new { @class = "form-control form-control-sm" })
+									@Html.DropDownListFor(model => model.IdDistrito, new List<SelectListItem>(), "Seleccione primero un cantón", new { @class = "form-control form-control-sm", id = "selectDistrito", disabled = "disabled" })
 									@Html.ValidationMessageFor(model => model.IdDistrito)
 								</div>
 							</div>
@@ -111,4 +108,80 @@
 
 @section Scripts{
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			// Evento cuando cambia la provincia
+			$('#selectProvincia').on('change', function () {
+				var idProvincia = $(this).val();
+				var $selectCanton = $('#selectCanton');
+				var $selectDistrito = $('#selectDistrito');
+
+				// Limpiar y deshabilitar cantones y distritos
+				$selectCanton.empty().append('<option value="">Cargando...</option>').prop('disabled', true);
+				$selectDistrito.empty().append('<option value="">Seleccione primero un cantón</option>').prop('disabled', true);
+
+				if (idProvincia) {
+					// Cargar cantones de la provincia seleccionada
+					$.ajax({
+						url: '@Url.Action("ObtenerCantonesPorProvincia", "Cuentas")',
+						type: 'GET',
+						data: { idProvincia: idProvincia },
+						success: function (data) {
+							$selectCanton.empty().append('<option value="">Seleccione un cantón</option>');
+
+							if (data && data.length > 0) {
+								$.each(data, function (index, canton) {
+									$selectCanton.append($('<option></option>').val(canton.value).text(canton.text));
+								});
+								$selectCanton.prop('disabled', false);
+							} else {
+								$selectCanton.append('<option value="">No hay cantones disponibles</option>');
+							}
+						},
+						error: function () {
+							$selectCanton.empty().append('<option value="">Error al cargar cantones</option>');
+						}
+					});
+				} else {
+					$selectCanton.empty().append('<option value="">Seleccione primero una provincia</option>');
+				}
+			});
+
+			// Evento cuando cambia el cantón
+			$('#selectCanton').on('change', function () {
+				var idCanton = $(this).val();
+				var $selectDistrito = $('#selectDistrito');
+
+				// Limpiar y deshabilitar distritos
+				$selectDistrito.empty().append('<option value="">Cargando...</option>').prop('disabled', true);
+
+				if (idCanton) {
+					// Cargar distritos del cantón seleccionado
+					$.ajax({
+						url: '@Url.Action("ObtenerDistritosPorCanton", "Cuentas")',
+						type: 'GET',
+						data: { idCanton: idCanton },
+						success: function (data) {
+							$selectDistrito.empty().append('<option value="">Seleccione un distrito</option>');
+
+							if (data && data.length > 0) {
+								$.each(data, function (index, distrito) {
+									$selectDistrito.append($('<option></option>').val(distrito.value).text(distrito.text));
+								});
+								$selectDistrito.prop('disabled', false);
+							} else {
+								$selectDistrito.append('<option value="">No hay distritos disponibles</option>');
+							}
+						},
+						error: function () {
+							$selectDistrito.empty().append('<option value="">Error al cargar distritos</option>');
+						}
+					});
+				} else {
+					$selectDistrito.empty().append('<option value="">Seleccione primero un cantón</option>');
+				}
+			});
+		});
+	</script>
 }
