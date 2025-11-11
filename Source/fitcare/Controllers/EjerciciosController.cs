@@ -67,6 +67,8 @@ public class EjerciciosController : BaseController
 		}
 
 		await _ejercicios.CreateAsync(modelo.Entidad(), GetCurrentUser());
+		TempData["ToastMessage"] = "Ejercicio agregado exitosamente";
+		TempData["ToastType"] = "success";
 		return RedirectToAction(nameof(ListarEjercicios));
 	}
 
@@ -91,6 +93,8 @@ public class EjerciciosController : BaseController
 		}
 
 		await _ejercicios.UpdateAsync(modelo.Entidad(), GetCurrentUser());
+		TempData["ToastMessage"] = "Ejercicio actualizado exitosamente";
+		TempData["ToastType"] = "success";
 		return RedirectToAction(nameof(ListarEjercicios));
 	}
 
@@ -111,8 +115,19 @@ public class EjerciciosController : BaseController
 			return View(modelo);
 		}
 
-		await _ejercicios.DeleteAsync(new Guid(modelo.Id));
-		return RedirectToAction(nameof(ListarEjercicios));
+		try
+		{
+			await _ejercicios.DeleteAsync(new Guid(modelo.Id));
+			TempData["ToastMessage"] = "Ejercicio eliminado exitosamente";
+			TempData["ToastType"] = "success";
+			return RedirectToAction(nameof(ListarEjercicios));
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al eliminar ejercicio");
+			ModelState.AddModelError("", "Error al eliminar el ejercicio. Puede estar siendo utilizado en otro registro.");
+			return View(modelo);
+		}
 	}
 
 	[HttpGet]
@@ -144,6 +159,8 @@ public class EjerciciosController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _tiposEjercicio.CreateAsync(modelo.Entidad(), GetCurrentUser());
+			TempData["ToastMessage"] = "Tipo de ejercicio agregado exitosamente";
+			TempData["ToastType"] = "success";
 			return RedirectToAction(nameof(ListarTiposEjercicio));
 		}
 
@@ -168,6 +185,8 @@ public class EjerciciosController : BaseController
 		{
 			TipoEjercicio tipoEjercicio = modelo.Entidad();
 			await _tiposEjercicio.UpdateAsync(tipoEjercicio, GetCurrentUser());
+			TempData["ToastMessage"] = "Tipo de ejercicio actualizado exitosamente";
+			TempData["ToastType"] = "success";
 			return RedirectToAction(nameof(ListarTiposEjercicio));
 		}
 
@@ -189,8 +208,19 @@ public class EjerciciosController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _tiposEjercicio.DeleteAsync(new Guid(modelo.IdTipoEjercicio));
-			return RedirectToAction(nameof(ListarTiposEjercicio));
+			try
+			{
+				await _tiposEjercicio.DeleteAsync(new Guid(modelo.IdTipoEjercicio));
+				TempData["ToastMessage"] = "Tipo de ejercicio eliminado exitosamente";
+				TempData["ToastType"] = "success";
+				return RedirectToAction(nameof(ListarTiposEjercicio));
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error al eliminar tipo de ejercicio");
+				ModelState.AddModelError("", "Error al eliminar el tipo de ejercicio. Puede estar siendo utilizado en otro registro.");
+				return View(modelo);
+			}
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoEjercicio)));

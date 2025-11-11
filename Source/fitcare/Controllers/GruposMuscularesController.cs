@@ -58,6 +58,8 @@ public class GruposMuscularesController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _gruposMusculares.CreateAsync(modelo.Entidad(), GetCurrentUser());
+			TempData["ToastMessage"] = "Grupo muscular agregado exitosamente";
+			TempData["ToastType"] = "success";
 			return RedirectToAction(nameof(Listar));
 		}
 
@@ -81,6 +83,8 @@ public class GruposMuscularesController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _gruposMusculares.UpdateAsync(modelo.Entidad(), GetCurrentUser());
+			TempData["ToastMessage"] = "Grupo muscular actualizado exitosamente";
+			TempData["ToastType"] = "success";
 			return RedirectToAction(nameof(Listar));
 		}
 
@@ -102,11 +106,22 @@ public class GruposMuscularesController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _gruposMusculares.DeleteAsync(new Guid(modelo.IdGrupoMuscular));
-			return RedirectToAction(nameof(Listar));
+			try
+			{
+				await _gruposMusculares.DeleteAsync(new Guid(modelo.IdGrupoMuscular));
+				TempData["ToastMessage"] = "Grupo muscular eliminado exitosamente";
+				TempData["ToastType"] = "success";
+				return RedirectToAction(nameof(Listar));
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error al eliminar grupo muscular");
+				ModelState.AddModelError("", "Error al eliminar el grupo muscular. Puede estar siendo utilizado en otro registro.");
+				return View(modelo);
+			}
 		}
 
-		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoEjercicio)));
+		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(GrupoMuscular)));
 		return View(modelo);
 	}
 

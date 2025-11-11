@@ -67,6 +67,8 @@ public class MaquinasController : BaseController
 		}
 
 		await _maquinas.CreateAsync(modeloVista.Entidad(), CurrentUser);
+		TempData["ToastMessage"] = "Máquina agregada exitosamente";
+		TempData["ToastType"] = "success";
 		return RedirectToAction(nameof(ListarMaquinas));
 	}
 
@@ -92,6 +94,8 @@ public class MaquinasController : BaseController
 		}
 
 		await _maquinas.UpdateAsync(modeloVista.Entidad(), CurrentUser);
+		TempData["ToastMessage"] = "Máquina actualizada exitosamente";
+		TempData["ToastType"] = "success";
 		return RedirectToAction(nameof(ListarMaquinas));
 	}
 
@@ -113,8 +117,19 @@ public class MaquinasController : BaseController
 			return View(modelo);
 		}
 
-		await _maquinas.DeleteAsync(new Guid(modelo.Id));
-		return RedirectToAction(nameof(ListarMaquinas));
+		try
+		{
+			await _maquinas.DeleteAsync(new Guid(modelo.Id));
+			TempData["ToastMessage"] = "Máquina eliminada exitosamente";
+			TempData["ToastType"] = "success";
+			return RedirectToAction(nameof(ListarMaquinas));
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al eliminar máquina");
+			ModelState.AddModelError("", "Error al eliminar la máquina. Puede estar siendo utilizada en otro registro.");
+			return View(modelo);
+		}
 	}
 
 	[HttpGet]

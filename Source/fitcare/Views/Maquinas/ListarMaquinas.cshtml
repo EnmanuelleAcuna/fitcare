@@ -85,6 +85,11 @@
 	<script type="text/javascript" src="~/lib/fancybox/jquery.fancybox.min.js"></script>
 
 	<script type="text/javascript">
+		// Mostrar notificación si existe TempData
+		$(document).ready(function () {
+			mostrarNotificacion('@TempData["ToastMessage"]', '@TempData["ToastType"]');
+		});
+
 		$('#ModalDetalle').on('show.bs.modal', function (event)
 		{
 			var button = $(event.relatedTarget); // Button that triggered the modal
