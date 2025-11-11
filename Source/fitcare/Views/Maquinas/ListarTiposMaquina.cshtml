@@ -75,6 +75,16 @@
 
 @section Scripts {
 	<script type="text/javascript">
+		// Mostrar notificación si existe TempData
+		$(document).ready(function () {
+			@if (TempData["ToastMessage"] != null)
+			{
+				<text>
+				mostrarToast('@TempData["ToastMessage"]', '@TempData["ToastType"]');
+				</text>
+			}
+		});
+
 		$('#ModalDetalle').on('show.bs.modal', function (event)
 		{
 			var button = $(event.relatedTarget); // Button that triggered the modal

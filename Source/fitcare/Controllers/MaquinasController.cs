@@ -146,6 +146,8 @@ public class MaquinasController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _tiposMaquina.CreateAsync(modelo.Entidad(), GetCurrentUser());
+			TempData["ToastMessage"] = "Tipo de máquina agregado exitosamente";
+			TempData["ToastType"] = "success";
 			return RedirectToAction(nameof(ListarTiposMaquina));
 		}
 
@@ -170,6 +172,8 @@ public class MaquinasController : BaseController
 		{
 			TipoMaquina tipoMaquina = modelo.Entidad();
 			await _tiposMaquina.UpdateAsync(tipoMaquina, GetCurrentUser());
+			TempData["ToastMessage"] = "Tipo de máquina actualizado exitosamente";
+			TempData["ToastType"] = "success";
 			return RedirectToAction(nameof(ListarTiposMaquina));
 		}
 
@@ -191,8 +195,19 @@ public class MaquinasController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _tiposMaquina.DeleteAsync(new Guid(modelo.Id));
-			return RedirectToAction(nameof(ListarTiposMaquina));
+			try
+			{
+				await _tiposMaquina.DeleteAsync(new Guid(modelo.Id));
+				TempData["ToastMessage"] = "Tipo de máquina eliminado exitosamente";
+				TempData["ToastType"] = "success";
+				return RedirectToAction(nameof(ListarTiposMaquina));
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error al eliminar tipo de máquina");
+				ModelState.AddModelError("", "Error al eliminar el tipo de máquina. Puede estar siendo utilizado en otro registro.");
+				return View(modelo);
+			}
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoMaquina)));
