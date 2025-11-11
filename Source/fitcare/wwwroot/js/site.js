@@ -70,3 +70,15 @@ function mostrarToast(mensaje, tipo = 'success') {
 		$(this).remove();
 	});
 }
+
+/**
+ * Función para mostrar notificaciones desde TempData
+ * Llama a mostrarToast si el mensaje no es nulo/vacío
+ * @param {string} mensaje - El mensaje desde TempData["ToastMessage"]
+ * @param {string} tipo - El tipo desde TempData["ToastType"]
+ */
+function mostrarNotificacion(mensaje, tipo) {
+	if (mensaje && mensaje.trim() !== '') {
+		mostrarToast(mensaje, tipo || 'success');
+	}
+}

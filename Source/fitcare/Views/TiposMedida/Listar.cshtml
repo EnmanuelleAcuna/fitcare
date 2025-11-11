@@ -142,11 +142,11 @@
 				e.preventDefault();
 
 				let form = $(this);
-				
+
 				if (!form.valid()) { // Validar el formulario usando jQuery Unobtrusive Validation
 					return; // Detener si la validación falla
 				}
-				
+
 				$('#btnGuardarAgregar').prop('disabled', true).text('Guardando...'); // Deshabilitar el botón de guardar mientras se procesa
 
 				let formData = {
@@ -154,7 +154,7 @@
 					Nombre: $('#NombreAgregar').val(),
 					Estado: $('#EstadoAgregar').is(':checked')
 				};
-				
+
 				var token = $('input[name="__RequestVerificationToken"]', form).val(); // Obtener el token anti-forgery del formulario
 
 				$.ajax({
@@ -167,21 +167,21 @@
 						'RequestVerificationToken': token
 					},
 					success: function (response) {
-						if (response.success) {							
-							$('#ModalAgregar').modal('hide'); // Cerrar el modal							
-							tablaTiposMedida.DataTable().ajax.reload(); // Recargar la tabla							
-							mostrarToast('Tipo de medida agregado exitosamente', 'success'); // Mostrar mensaje de éxito
+						if (response.success) {
+							$('#ModalAgregar').modal('hide'); // Cerrar el modal
+							tablaTiposMedida.DataTable().ajax.reload(); // Recargar la tabla
+							mostrarNotificacion('Tipo de medida agregado exitosamente', 'success'); // Mostrar mensaje de éxito
 						} else {
 							if (response.errors) { // Mostrar errores de validación del servidor
 								var validator = form.validate();
 								validator.showErrors(response.errors);
 							} else if (response.message) {
-								mostrarToast(response.message, 'danger'); // Mostrar mensaje de error general
+								mostrarNotificacion(response.message, 'danger'); // Mostrar mensaje de error general
 							}
 						}
 					},
 					error: function (xhr, status, error) {
-						mostrarToast('Error al comunicarse con el servidor', 'danger');
+						mostrarNotificacion('Error al comunicarse con el servidor', 'danger');
 					},
 					complete: function () {
 						$('#btnGuardarAgregar').prop('disabled', false).text('Guardar'); // Rehabilitar el botón
@@ -252,18 +252,18 @@
 						if (response.success) {
 							$('#ModalEditar').modal('hide'); // Cerrar el modal
 							tablaTiposMedida.DataTable().ajax.reload(); // Recargar la tabla
-							mostrarToast('Tipo de medida actualizado exitosamente', 'success'); // Mostrar mensaje de éxito
+							mostrarNotificacion('Tipo de medida actualizado exitosamente', 'success'); // Mostrar mensaje de éxito
 						} else {
 							if (response.errors) { // Mostrar errores de validación del servidor
 								var validator = form.validate();
 								validator.showErrors(response.errors);
 							} else if (response.message) {
-								mostrarToast(response.message, 'danger'); // Mostrar mensaje de error general
+								mostrarNotificacion(response.message, 'danger'); // Mostrar mensaje de error general
 							}
 						}
 					},
 					error: function (xhr, status, error) {
-						mostrarToast('Error al comunicarse con el servidor', 'danger');
+						mostrarNotificacion('Error al comunicarse con el servidor', 'danger');
 					},
 					complete: function () {
 						$('#btnGuardarEditar').prop('disabled', false).text('Guardar cambios'); // Rehabilitar el botón
@@ -319,13 +319,13 @@
 						if (response.success) {
 							$('#ModalEliminar').modal('hide'); // Cerrar el modal
 							tablaTiposMedida.DataTable().ajax.reload(); // Recargar la tabla
-							mostrarToast('Tipo de medida eliminado exitosamente', 'success'); // Mostrar mensaje de éxito
+							mostrarNotificacion('Tipo de medida eliminado exitosamente', 'success'); // Mostrar mensaje de éxito
 						} else if (response.message) {
-							mostrarToast(response.message, 'warning'); // Mostrar mensaje de error/advertencia (puede estar en uso)
+							mostrarNotificacion(response.message, 'warning'); // Mostrar mensaje de error/advertencia (puede estar en uso)
 						}
 					},
 					error: function (xhr, status, error) {
-						mostrarToast('Error al comunicarse con el servidor', 'danger');
+						mostrarNotificacion('Error al comunicarse con el servidor', 'danger');
 					},
 					complete: function () {
 						$('#btnConfirmarEliminar').prop('disabled', false).text('Eliminar'); // Rehabilitar el botón

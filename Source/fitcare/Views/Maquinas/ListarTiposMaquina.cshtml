@@ -77,12 +77,7 @@
 	<script type="text/javascript">
 		// Mostrar notificación si existe TempData
 		$(document).ready(function () {
-			@if (TempData["ToastMessage"] != null)
-			{
-				<text>
-				mostrarToast('@TempData["ToastMessage"]', '@TempData["ToastType"]');
-				</text>
-			}
+			mostrarNotificacion('@TempData["ToastMessage"]', '@TempData["ToastType"]');
 		});
 
 		$('#ModalDetalle').on('show.bs.modal', function (event)
