@@ -47,9 +47,9 @@ public class BaseController : Controller
 	{
 		if (await _userManager.Users.AnyAsync()) return;
 
-		var rolAdministrador = new ApplicationRole(Guid.NewGuid().ToString(), "Administrador", "Administrador del sistema.");
-		var rolInstructor = new ApplicationRole(Guid.NewGuid().ToString(), "Instructor", "Instructor del gimnasio.");
-		var rolCliente = new ApplicationRole(Guid.NewGuid().ToString(), "Cliente", "Cliente del gimnasio.");
+		var rolAdministrador = new ApplicationRole(Guid.NewGuid().ToString(), "Administrador", "Administrador del sistema.", true);
+		var rolInstructor = new ApplicationRole(Guid.NewGuid().ToString(), "Instructor", "Instructor del gimnasio.", true);
+		var rolCliente = new ApplicationRole(Guid.NewGuid().ToString(), "Cliente", "Cliente del gimnasio.", true);
 
 		await _roleManager.CreateAsync(rolAdministrador);
 		await _roleManager.CreateAsync(rolInstructor);

@@ -28,7 +28,7 @@
 			<div class="card shadow-sm">
 				<div class="card-body">
 					<button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ModalAgregar">
-						Agregar tipo de medida
+						Agregar
 					</button>
 
 					<hr/>
@@ -95,11 +95,11 @@
 									data-codigo="${data.codigo}"
 									data-nombre="${data.nombre}"
 									data-estado="${data.estado}">Modificar</button>
-								<button class="btn btn-sm btn-light text-danger btn-eliminar"
+								@*<button class="btn btn-sm btn-light text-danger btn-eliminar"
 									data-toggle="modal"
 									data-target="#ModalEliminar"
 									data-id="${data.id}"
-									data-nombre="${data.nombre}">Eliminar</button>
+									data-nombre="${data.nombre}">Eliminar</button>*@
 							</div>`;
 						},
 						"orderable": false,
@@ -278,67 +278,67 @@
 				form.validate().resetForm(); // Limpiar mensajes de validación
 			});
 
-			let modalEliminar = $('#ModalEliminar');
-			// Cargar datos en el modal de eliminar cuando se abre
-			modalEliminar.on('show.bs.modal', function (event) {
-				let button = $(event.relatedTarget);
-				
-				// Cargar datos
-				let id = button.data('id');
-				let nombre = button.data('nombre');
+			// let modalEliminar = $('#ModalEliminar');
+			// // Cargar datos en el modal de eliminar cuando se abre
+			// modalEliminar.on('show.bs.modal', function (event) {
+			// 	let button = $(event.relatedTarget);
+			//	
+			// 	// Cargar datos
+			// 	let id = button.data('id');
+			// 	let nombre = button.data('nombre');
+			//
+			// 	// Llenar el formulario
+			// 	$('#IdEliminar').val(id);
+			// 	$('#NombreEliminar').text(nombre);
+			// });
 
-				// Llenar el formulario
-				$('#IdEliminar').val(id);
-				$('#NombreEliminar').text(nombre);
-			});
-
-			// Manejar el submit del formulario de eliminar
-			$('#formEliminar').on('submit', function (e) {
-				e.preventDefault();
-
-				let form = $(this);
-				
-				$('#btnConfirmarEliminar').prop('disabled', true).text('Eliminando...'); // Deshabilitar el botón de eliminar mientras se procesa
-
-				let formData = {
-					IdTipoMedida: $('#IdEliminar').val()
-				};
-				
-				let token = $('input[name="__RequestVerificationToken"]', form).val(); // Obtener el token anti-forgery del formulario
-
-				$.ajax({
-					url: '@Url.Action("EliminarAjax")',
-					type: 'POST',
-					data: JSON.stringify(formData),
-					contentType: 'application/json',
-					dataType: 'json',
-					headers: {
-						'RequestVerificationToken': token
-					},
-					success: function (response) {
-						if (response.success) {
-							$('#ModalEliminar').modal('hide'); // Cerrar el modal
-							tablaTiposMedida.DataTable().ajax.reload(); // Recargar la tabla
-							mostrarNotificacion('Tipo de medida eliminado exitosamente', 'success'); // Mostrar mensaje de éxito
-						} else if (response.message) {
-							mostrarNotificacion(response.message, 'warning'); // Mostrar mensaje de error/advertencia (puede estar en uso)
-						}
-					},
-					error: function (xhr, status, error) {
-						mostrarNotificacion('Error al comunicarse con el servidor', 'danger');
-					},
-					complete: function () {
-						$('#btnConfirmarEliminar').prop('disabled', false).text('Eliminar'); // Rehabilitar el botón
-					}
-				});
-			});
+			// // Manejar el submit del formulario de eliminar
+			// $('#formEliminar').on('submit', function (e) {
+			// 	e.preventDefault();
+			//
+			// 	let form = $(this);
+			//	
+			// 	$('#btnConfirmarEliminar').prop('disabled', true).text('Eliminando...'); // Deshabilitar el botón de eliminar mientras se procesa
+			//
+			// 	let formData = {
+			// 		IdTipoMedida: $('#IdEliminar').val()
+			// 	};
+			//	
+			// 	let token = $('input[name="__RequestVerificationToken"]', form).val(); // Obtener el token anti-forgery del formulario
+			//
+			// 	$.ajax({
+			// 		url: '@Url.Action("EliminarAjax")',
+			// 		type: 'POST',
+			// 		data: JSON.stringify(formData),
+			// 		contentType: 'application/json',
+			// 		dataType: 'json',
+			// 		headers: {
+			// 			'RequestVerificationToken': token
+			// 		},
+			// 		success: function (response) {
+			// 			if (response.success) {
+			// 				$('#ModalEliminar').modal('hide'); // Cerrar el modal
+			// 				tablaTiposMedida.DataTable().ajax.reload(); // Recargar la tabla
+			// 				mostrarNotificacion('Tipo de medida eliminado exitosamente', 'success'); // Mostrar mensaje de éxito
+			// 			} else if (response.message) {
+			// 				mostrarNotificacion(response.message, 'warning'); // Mostrar mensaje de error/advertencia (puede estar en uso)
+			// 			}
+			// 		},
+			// 		error: function (xhr, status, error) {
+			// 			mostrarNotificacion('Error al comunicarse con el servidor', 'danger');
+			// 		},
+			// 		complete: function () {
+			// 			$('#btnConfirmarEliminar').prop('disabled', false).text('Eliminar'); // Rehabilitar el botón
+			// 		}
+			// 	});
+			// });
 
 			// Limpiar el formulario cuando se cierra el modal de eliminar
-			modalEliminar.on('hidden.bs.modal', function () {
-				let form = $('#formEliminar');
-				form[0].reset();
-				$('#NombreEliminar').text('');
-			});
+			// modalEliminar.on('hidden.bs.modal', function () {
+			// 	let form = $('#formEliminar');
+			// 	form[0].reset();
+			// 	$('#NombreEliminar').text('');
+			// });
 		});
 
 		function handleData(data) {

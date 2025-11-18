@@ -11,6 +11,7 @@ public class GrupoMuscularViewModel : BaseViewModel
 		IdGrupoMuscular = grupoMuscular.Id.ToString();
 		Nombre = grupoMuscular.Nombre;
 		Descripcion = grupoMuscular.Descripcion;
+		Estado = grupoMuscular.Estado ? "Activo" : "Inactivo";
 	}
 
 	public string IdGrupoMuscular { get; set; }
@@ -19,6 +20,8 @@ public class GrupoMuscularViewModel : BaseViewModel
 
 	[Display(Name = "Descripcion")]
 	public string Descripcion { get; set; }
+	
+	public string Estado { get; set; }	
 }
 
 public class AgregarGrupoMuscularViewModel
@@ -32,8 +35,11 @@ public class AgregarGrupoMuscularViewModel
 	[Required(ErrorMessage = "La descripción es requerida.")]
 	[StringLength(4000, ErrorMessage = "El nombre no puede exceder los 4000 caracteres")]
 	public string Descripcion { get; set; }
+	
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
-	public GrupoMuscular Entidad() => new(Guid.NewGuid(), Nombre, Descripcion);
+	public GrupoMuscular Entidad() => new(Guid.NewGuid(), Nombre, Descripcion, Estado);
 }
 
 public class EditarGrupoMuscularViewModel : BaseViewModel
@@ -45,6 +51,7 @@ public class EditarGrupoMuscularViewModel : BaseViewModel
 		Id = grupoMuscular.Id.ToString();
 		Nombre = grupoMuscular.Nombre;
 		Descripcion = grupoMuscular.Descripcion;
+		Estado = grupoMuscular.Estado;
 	}
 
 	[Required(ErrorMessage = "El id es requerido")]
@@ -59,8 +66,11 @@ public class EditarGrupoMuscularViewModel : BaseViewModel
 	[Required(ErrorMessage = "ELa descripción es requerida.")]
 	[StringLength(4000, ErrorMessage = "El nombre no puede exceder los 4000 caracteres")]
 	public string Descripcion { get; set; }
+	
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
-	public GrupoMuscular Entidad() => new(new Guid(Id), Nombre, Descripcion);
+	public GrupoMuscular Entidad() => new(new Guid(Id), Nombre, Descripcion, Estado);
 }
 
 public class EliminarGrupoMuscularViewModel

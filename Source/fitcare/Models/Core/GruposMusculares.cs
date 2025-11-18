@@ -46,6 +46,7 @@ public class GruposMusculares : IBaseCore<GrupoMuscular>
 
 		record.Nombre = grupoMuscular.Nombre;
 		record.Descripcion = grupoMuscular.Descripcion;
+		record.Estado = grupoMuscular.Estado;
 
 		record.UpdatedBy = user;
 		record.DateUpdated = DateTime.UtcNow;

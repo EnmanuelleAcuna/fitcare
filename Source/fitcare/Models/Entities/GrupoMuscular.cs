@@ -9,11 +9,12 @@ public class GrupoMuscular : Base
 {
 	public GrupoMuscular() : base() { }
 
-	public GrupoMuscular(Guid id, string nombre, string descripcion)
+	public GrupoMuscular(Guid id, string nombre, string descripcion, bool estado)
 	{
 		Id = id;
 		Nombre = nombre;
 		Descripcion = descripcion;
+		Estado = estado;
 	}
 
 	public GrupoMuscular(Guid id)
@@ -24,6 +25,7 @@ public class GrupoMuscular : Base
 	public Guid Id { get; set; }
 	public string Nombre { get; set; }
 	public string Descripcion { get; set; }
+	public bool Estado { get; set; }
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }

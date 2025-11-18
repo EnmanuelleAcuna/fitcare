@@ -11,11 +11,14 @@ public class InicioRolesViewModel
 		IdRol = rol.Id;
 		Nombre = rol.Name;
 		Descripcion = rol.Description;
+		Estado = rol.Estado ? "Activo" : "Inactivo";
 	}
 
 	public string IdRol { get; set; }
 
 	public string Nombre { get; set; }
+	
+	public string Estado { get; set; }
 
 	[Display(Name = "Descripción")]
 	public string Descripcion { get; set; }
@@ -31,10 +34,13 @@ public class NuevoRolViewModel
 	[Required(ErrorMessage = "La descripción es requerida.")]
 	[StringLength(250, ErrorMessage = "La descripción no debe exceder los 250 caracteres.")]
 	public string Descripcion { get; set; }
+	
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
 	public ApplicationRole Entidad()
 	{
-		ApplicationRole rol = new(Guid.NewGuid().ToString(), Nombre, Descripcion);
+		ApplicationRole rol = new(Guid.NewGuid().ToString(), Nombre, Descripcion, Estado);
 		return rol;
 	}
 }
@@ -48,6 +54,7 @@ public class EditarRolViewModel
 		IdRol = rol.Id;
 		Nombre = rol.Name;
 		Descripcion = rol.Description;
+		Estado = rol.Estado;
 	}
 
 	public string IdRol { get; set; }
@@ -60,10 +67,13 @@ public class EditarRolViewModel
 	[Required(ErrorMessage = "La descripción es requerida.")]
 	[StringLength(250, ErrorMessage = "La descripción no puede exceder los 250 caracteres.")]
 	public string Descripcion { get; set; }
+	
+	[Display(Name = "Activo")]
+	public bool Estado { get; set; }
 
 	public ApplicationRole Entidad()
 	{
-		ApplicationRole rol = new(IdRol, Nombre, Descripcion);
+		ApplicationRole rol = new(IdRol, Nombre, Descripcion, Estado);
 		return rol;
 	}
 }

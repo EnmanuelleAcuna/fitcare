@@ -29,7 +29,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="AgregarTipoMaquina" class="btn btn-sm btn-secondary">Agregar tipo de máquina</a>
+					<a asp-action="AgregarTipoMaquina" class="btn btn-sm btn-primary">Agregar</a>
 
 					<hr />
 
@@ -56,8 +56,8 @@
 													data-idtipomaquina="@TipoMaquina.IdTipoMaquina">Detalle</button>
 												<a class="btn btn-sm btn-light" asp-controller="Maquinas" asp-action="EditarTipoMaquina"
 													asp-route-id="@TipoMaquina.IdTipoMaquina">Modificar</a>
-												<a class="btn btn-sm btn-light text-danger" asp-controller="Maquinas" asp-action="EliminarTipoMaquina"
-													asp-route-id="@TipoMaquina.IdTipoMaquina">Eliminar</a>
+												@* <a class="btn btn-sm btn-light text-danger" asp-controller="Maquinas" asp-action="EliminarTipoMaquina" *@
+												@* 	asp-route-id="@TipoMaquina.IdTipoMaquina">Eliminar</a> *@
 											</div>
 										</td>
 									</tr>

@@ -29,7 +29,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="AgregarTipoEjercicio" class="btn btn-sm btn-secondary">Agregar tipo de ejercicio</a>
+					<a asp-action="AgregarTipoEjercicio" class="btn btn-sm btn-primary">Agregar</a>
 
 					<hr />
 
@@ -57,8 +57,8 @@
 													data-idtipoejercicio="@TipoEjercicio.IdTipoEjercicio">Detalle</button>
 												<a class="btn btn-sm btn-light" asp-controller="Ejercicios" asp-action="EditarTipoEjercicio"
 													asp-route-id="@TipoEjercicio.IdTipoEjercicio">Modificar</a>
-												<a class="btn btn-sm btn-light text-danger" asp-controller="Ejercicios" asp-action="EliminarTipoEjercicio"
-													asp-route-id="@TipoEjercicio.IdTipoEjercicio">Eliminar</a>
+												@* <a class="btn btn-sm btn-light text-danger" asp-controller="Ejercicios" asp-action="EliminarTipoEjercicio" *@
+												@* 	asp-route-id="@TipoEjercicio.IdTipoEjercicio">Eliminar</a> *@
 											</div>
 										</td>
 									</tr>

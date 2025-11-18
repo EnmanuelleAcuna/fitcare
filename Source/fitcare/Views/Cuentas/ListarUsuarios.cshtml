@@ -29,7 +29,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					@Html.ActionLink("Agregar", "AgregarUsuario", null, null, new { @class = "btn btn-sm btn-secondary" })
+					@Html.ActionLink("Agregar", "AgregarUsuario", null, null, new { @class = "btn btn-sm btn-primary" })
 
 					<hr/>
 
@@ -55,9 +55,9 @@
 											<a class="btn btn-sm btn-light" asp-controller="Cuentas"
 											   asp-action="EditarUsuario"
 											   asp-route-id="@Usuario.IdUsuario">Modificar</a>
-											<a class="btn btn-sm btn-light text-danger" asp-controller="Cuentas"
-											   asp-action="EliminarUsuario"
-											   asp-route-id="@Usuario.IdUsuario">Eliminar</a>
+											@* <a class="btn btn-sm btn-light text-danger" asp-controller="Cuentas" *@
+											@*    asp-action="EliminarUsuario" *@
+											@*    asp-route-id="@Usuario.IdUsuario">Eliminar</a> *@
 										</div>
 									</td>
 								</tr>

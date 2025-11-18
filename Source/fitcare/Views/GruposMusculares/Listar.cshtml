@@ -29,7 +29,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<a asp-action="Agregar" class="btn btn-sm btn-secondary">Agregar grupo muscular</a>
+					<a asp-action="Agregar" class="btn btn-sm btn-primary">Agregar</a>
 
 					<hr/>
 
@@ -38,6 +38,7 @@
 							<thead>
 							<tr>
 								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
+								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Estado)</th>
 								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Descripcion)</th>
 								<th class="text-right"></th>
 							</tr>
@@ -47,6 +48,7 @@
 							{
 								<tr>
 									<td>@GrupoMuscular.Nombre</td>
+									<td>@GrupoMuscular.Estado</td>
 									<td>@GrupoMuscular.Descripcion</td>
 
 									<td class="text-right">
@@ -58,9 +60,9 @@
 											<a class="btn btn-sm btn-light" asp-controller="GruposMusculares"
 											   asp-action="Editar"
 											   asp-route-id="@GrupoMuscular.IdGrupoMuscular">Modificar</a>
-											<a class="btn btn-sm btn-light text-danger"
-											   asp-controller="GruposMusculares" asp-action="Eliminar"
-											   asp-route-id="@GrupoMuscular.IdGrupoMuscular">Eliminar</a>
+											@* <a class="btn btn-sm btn-light text-danger" *@
+											@*    asp-controller="GruposMusculares" asp-action="Eliminar" *@
+											@*    asp-route-id="@GrupoMuscular.IdGrupoMuscular">Eliminar</a> *@
 										</div>
 									</td>
 								</tr>

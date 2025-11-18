@@ -370,7 +370,7 @@ public class CuentasController : BaseController
 		{
 			ApplicationRole rol = await _roleManager.FindByIdAsync(modelo.IdRol);
 
-			rol.ActualizarDatos(modelo.Nombre, modelo.Descripcion);
+			rol.ActualizarDatos(modelo.Nombre, modelo.Descripcion, modelo.Estado);
 
 			IdentityResult RolActualizado = await _roleManager.UpdateAsync(rol);
 
