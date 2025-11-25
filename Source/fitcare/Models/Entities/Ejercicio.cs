@@ -1,3 +1,4 @@
+using fitcare.Models.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,38 +9,6 @@ namespace fitcare.Models.Entities;
 [Table("Ejercicios", Schema = "fitcare")]
 public class Ejercicio : Base
 {
-	public Ejercicio() : base()
-	{
-		//DetalleRutina = new HashSet<DetalleRutina>();
-	}
-
-	public Ejercicio(Guid id, string codigo, string nombre, bool estado, TipoEjercicio tipoEjercicio)
-	{
-		Id = id;
-		Codigo = codigo;
-		Nombre = nombre;
-		Estado = estado;
-
-		TipoEjercicio = tipoEjercicio;
-		IdTipoEjercicio = tipoEjercicio.Id;
-
-		//DetalleRutina = new HashSet<DetalleRutina>();
-	}
-
-	public Ejercicio(Guid id, string codigo, string nombre, bool estado, Guid idTipoEjercicio)
-	{
-		Id = id;
-		Codigo = codigo;
-		Nombre = nombre;
-		Estado = estado;
-
-		IdTipoEjercicio = idTipoEjercicio;
-
-		//DetalleRutina = new HashSet<DetalleRutina>();
-	}
-
-	public Ejercicio(Guid id) => Id = id;
-
 	public Guid Id { get; set; }
 	public string Codigo { get; set; }
 	public string Nombre { get; set; }
@@ -50,7 +19,37 @@ public class Ejercicio : Base
 	public Guid IdTipoEjercicio { get; set; }
 	public TipoEjercicio TipoEjercicio { get; set; }
 
-	// public virtual ICollection<DetalleRutina> DetalleRutina { get; set; }
+	public virtual ICollection<GrupoMuscular> GruposMusculares { get; set; }// ⭐ RELACIÓN MUCHOS-A-MUCHOS
+
+	public Ejercicio() : base()
+	{
+
+		GruposMusculares = new HashSet<GrupoMuscular>();
+	}
+
+	public Ejercicio(Guid id, string codigo, string nombre, bool estado, TipoEjercicio tipoEjercicio)
+	{
+		Id = id;
+		Codigo = codigo;
+		Nombre = nombre;
+		Estado = estado;
+		TipoEjercicio = tipoEjercicio;
+		IdTipoEjercicio = tipoEjercicio.Id;
+		GruposMusculares = new HashSet<GrupoMuscular>();
+	}
+
+	public Ejercicio(Guid id, string codigo, string nombre, bool estado, Guid idTipoEjercicio)
+	{
+		Id = id;
+		Codigo = codigo;
+		Nombre = nombre;
+		Estado = estado;
+		IdTipoEjercicio = idTipoEjercicio;
+		GruposMusculares = new HashSet<GrupoMuscular>();
+	}
+
+	public Ejercicio(Guid id) => Id = id;
+
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }

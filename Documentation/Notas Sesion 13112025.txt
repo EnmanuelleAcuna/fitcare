@@ -1,0 +1,11 @@
+Jh54321?
+
+No se eliminan datos solo se inactivan, porque se pierden datos históricos
+
+Maquinas, usuarios, ejercicios, clientes
+instructores, rutinas, cuentas, inactivas
+
+Se pierden relaciones
+ 
+
+crear editar unicamente
