@@ -19,46 +19,38 @@ class Program
 	public static void Main(string[] args)
 	{
 		WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-		
-		builder.Services.AddLogging();
-		// builder.Services.AddApplicationInsightsTelemetry(options => options.ConnectionString = builderConfiguration["ApplicationInsights:ConnectionString"]);
-		
-		// ASP.Net Identity
+
+		//builder.Services.AddLogging(); // This is called automatically by WebApplication.CreateBuilder(args)
+
+		builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 		builder.Services.AddDbContext<IdentityDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-		
+
 		builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
-		{
-			options.User.RequireUniqueEmail = true;
-			options.SignIn.RequireConfirmedAccount = false;
-			options.Password.RequiredLength = 6;
-		})
-		.AddEntityFrameworkStores<IdentityDBContext>()
-		.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider)
-		.AddUserManager<ApplicationUserManager<ApplicationUser>>();
+			{
+				options.User.RequireUniqueEmail = true;
+				options.SignIn.RequireConfirmedAccount = false;
+				options.Password.RequiredLength = 6;
+			})
+			.AddEntityFrameworkStores<IdentityDBContext>()
+			.AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>(TokenOptions.DefaultProvider)
+			.AddUserManager<ApplicationUserManager<ApplicationUser>>();
 
 		builder.Services.Configure<CookiePolicyOptions>(options =>
 		{
-			// options.CheckConsentNeeded = _ => false; By default is false
-			options.MinimumSameSitePolicy = SameSiteMode.Lax;
-		});
-
-		builder.Services.Configure<CookieOptions>(options =>
-		{
-			options.Expires = DateTime.Now.AddMinutes(20);
-			options.SameSite = SameSiteMode.Strict;
-			options.Secure = true;
+			// options.CheckConsentNeeded = _ => false; // By default is false
+			options.MinimumSameSitePolicy = SameSiteMode.Strict;
 		});
 
 		builder.Services.ConfigureApplicationCookie(options =>
 		{
 			options.Cookie.Name = ".AspNetCore.Identity.Application";
+			options.Cookie.HttpOnly = true;
+			options.Cookie.SameSite = SameSiteMode.Strict;
+			options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
 			options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
 			options.SlidingExpiration = true;
 			options.LoginPath = "/Cuentas/IniciarSesion";
-			options.Cookie.SameSite = SameSiteMode.Strict;
 		});
-		
-		builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 		builder.Services.AddScoped<IBaseCore<Provincia>, Provincias>();
 		builder.Services.AddScoped<IBaseCore<Canton>, Cantones>();
@@ -77,7 +69,15 @@ class Program
 
 		WebApplication app = builder.Build();
 
-		app.UseExceptionHandler(app.Environment.IsDevelopment() ? "/Error/ErrorDevelopment" : "/Error/Error");
+		if (app.Environment.IsDevelopment())
+		{
+			app.UseDeveloperExceptionPage();
+		}
+		else
+		{
+			app.UseExceptionHandler("/Error/Error");
+		}
+
 		app.UseHsts(); // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 		app.UseHttpsRedirection();
 		app.UseStaticFiles();
