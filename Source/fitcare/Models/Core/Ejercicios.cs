@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,11 @@ public class Ejercicios : IBaseCore<Ejercicio>
 
 	public async Task<Ejercicio> ReadByIdAsync(Guid id)
 	{
-		var ejercicio = await _dbContext.Ejercicios.Include(z => z.TipoEjercicio).FirstOrDefaultAsync(z => z.Id == id);
+		var ejercicio = await _dbContext.Ejercicios
+			.Include(e => e.Maquinas)
+			.Include(e => e.GruposMusculares)
+			.Include(z => z.TipoEjercicio)
+			.FirstOrDefaultAsync(z => z.Id == id);
 		return ejercicio ?? throw new KeyNotFoundException($"No se encontró un ejercicio con el id {id}");
 	}
 
@@ -53,6 +58,26 @@ public class Ejercicios : IBaseCore<Ejercicio>
 		record.Nombre = ejercicio.Nombre;
 		record.Estado = ejercicio.Estado;
 		record.IdTipoEjercicio = ejercicio.IdTipoEjercicio;
+
+		// Actualizar grupos musculares
+		record.GruposMusculares.Clear();
+		if (ejercicio.GruposMusculares != null && ejercicio.GruposMusculares.Any())
+		{
+			foreach (var grupo in ejercicio.GruposMusculares)
+			{
+				record.GruposMusculares.Add(grupo);
+			}
+		}
+
+		// Actualizar máquinas
+		record.Maquinas.Clear();
+		if (ejercicio.Maquinas != null && ejercicio.Maquinas.Any())
+		{
+			foreach (var maquina in ejercicio.Maquinas)
+			{
+				record.Maquinas.Add(maquina);
+			}
+		}
 
 		record.UpdatedBy = user;
 		record.DateUpdated = DateTime.Now;

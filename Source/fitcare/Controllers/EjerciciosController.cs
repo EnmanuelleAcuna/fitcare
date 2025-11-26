@@ -22,10 +22,14 @@ public class EjerciciosController : BaseController
 {
 	private readonly IBaseCore<Ejercicio> _ejercicios;
 	private readonly IBaseCore<TipoEjercicio> _tiposEjercicio;
+	private readonly IBaseCore<GrupoMuscular> _gruposMusculares;
+	private readonly IBaseCore<Maquina> _maquinas;
 	private readonly ILogger<EjerciciosController> _logger;
 
 	public EjerciciosController(IBaseCore<Ejercicio> ejercicios,
 								IBaseCore<TipoEjercicio> tiposEjercicio,
+								IBaseCore<GrupoMuscular> gruposMusculares,
+								IBaseCore<Maquina> maquinas,
 								IDivisionTerritorial divisionTerritorial,
 								ApplicationUserManager<ApplicationUser> userManager,
 								RoleManager<ApplicationRole> roleManager,
@@ -37,6 +41,8 @@ public class EjerciciosController : BaseController
 	{
 		_ejercicios = ejercicios;
 		_tiposEjercicio = tiposEjercicio;
+		_gruposMusculares = gruposMusculares;
+		_maquinas = maquinas;
 		_logger = logger;
 	}
 
@@ -52,6 +58,8 @@ public class EjerciciosController : BaseController
 	public async Task<ActionResult> AgregarEjercicio()
 	{
 		ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicio.ReadAllAsync());
+		ViewBag.ListaGruposMusculares = await CargarListaGruposMusculares();
+		ViewBag.ListaMaquinas = await CargarListaMaquinas();
 		return View();
 	}
 
@@ -62,11 +70,37 @@ public class EjerciciosController : BaseController
 		if (!ModelState.IsValid)
 		{
 			ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicio.ReadAllAsync());
+			ViewBag.ListaGruposMusculares = await CargarListaGruposMusculares();
+			ViewBag.ListaMaquinas = await CargarListaMaquinas();
 			ModelState.AddModelError("", Messages.MensajeModeloInvalido);
 			return View(modelo);
 		}
 
-		await _ejercicios.CreateAsync(modelo.Entidad(), GetCurrentUser());
+		var ejercicio = modelo.Entidad();
+
+		// Agregar grupos musculares seleccionados
+		if (modelo.IdsGruposMusculares != null && modelo.IdsGruposMusculares.Any())
+		{
+			foreach (var idGrupo in modelo.IdsGruposMusculares)
+			{
+				var grupo = await _gruposMusculares.ReadByIdAsync(new Guid(idGrupo));
+				if (grupo != null)
+					ejercicio.GruposMusculares.Add(grupo);
+			}
+		}
+
+		// Agregar máquinas seleccionadas
+		if (modelo.IdsMaquinas != null && modelo.IdsMaquinas.Any())
+		{
+			foreach (var idMaquina in modelo.IdsMaquinas)
+			{
+				var maquina = await _maquinas.ReadByIdAsync(new Guid(idMaquina));
+				if (maquina != null)
+					ejercicio.Maquinas.Add(maquina);
+			}
+		}
+
+		await _ejercicios.CreateAsync(ejercicio, GetCurrentUser());
 		TempData["ToastMessage"] = "Ejercicio agregado exitosamente";
 		TempData["ToastType"] = "success";
 		return RedirectToAction(nameof(ListarEjercicios));
@@ -77,6 +111,8 @@ public class EjerciciosController : BaseController
 	{
 		var ejercicio = await _ejercicios.ReadByIdAsync(new Guid(id));
 		ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicio.ReadAllAsync());
+		ViewBag.ListaGruposMusculares = await CargarListaGruposMusculares();
+		ViewBag.ListaMaquinas = await CargarListaMaquinas();
 		var modelo = new EditarEjercicioViewModel(ejercicio);
 		return View(modelo);
 	}
@@ -88,11 +124,37 @@ public class EjerciciosController : BaseController
 		if (!ModelState.IsValid)
 		{
 			ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicio.ReadAllAsync());
+			ViewBag.ListaGruposMusculares = await CargarListaGruposMusculares();
+			ViewBag.ListaMaquinas = await CargarListaMaquinas();
 			ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Ejercicio)));
 			return View(modelo);
 		}
 
-		await _ejercicios.UpdateAsync(modelo.Entidad(), GetCurrentUser());
+		var ejercicio = modelo.Entidad();
+
+		// Agregar grupos musculares seleccionados
+		if (modelo.IdsGruposMusculares != null && modelo.IdsGruposMusculares.Any())
+		{
+			foreach (var idGrupo in modelo.IdsGruposMusculares)
+			{
+				var grupo = await _gruposMusculares.ReadByIdAsync(new Guid(idGrupo));
+				if (grupo != null)
+					ejercicio.GruposMusculares.Add(grupo);
+			}
+		}
+
+		// Agregar máquinas seleccionadas
+		if (modelo.IdsMaquinas != null && modelo.IdsMaquinas.Any())
+		{
+			foreach (var idMaquina in modelo.IdsMaquinas)
+			{
+				var maquina = await _maquinas.ReadByIdAsync(new Guid(idMaquina));
+				if (maquina != null)
+					ejercicio.Maquinas.Add(maquina);
+			}
+		}
+
+		await _ejercicios.UpdateAsync(ejercicio, GetCurrentUser());
 		TempData["ToastMessage"] = "Ejercicio actualizado exitosamente";
 		TempData["ToastType"] = "success";
 		return RedirectToAction(nameof(ListarEjercicios));
@@ -233,5 +295,32 @@ public class EjerciciosController : BaseController
 		TipoEjercicio tipoEjercicio = await _tiposEjercicio.ReadByIdAsync(new Guid(id));
 		var modelo = new TipoEjercicioViewModel(tipoEjercicio);
 		return Json(modelo);
+	}
+
+	// Métodos helper para cargar listas
+	private async Task<List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>> CargarListaGruposMusculares()
+	{
+		var grupos = await _gruposMusculares.ReadAllAsync();
+		return grupos
+			.Where(g => g.Estado)
+			.OrderBy(g => g.Nombre)
+			.Select(g => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+			{
+				Value = g.Id.ToString(),
+				Text = g.Nombre
+			}).ToList();
+	}
+
+	private async Task<List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>> CargarListaMaquinas()
+	{
+		var maquinas = await _maquinas.ReadAllAsync();
+		return maquinas
+			.Where(m => m.Estado)
+			.OrderBy(m => m.Nombre)
+			.Select(m => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+			{
+				Value = m.Id.ToString(),
+				Text = m.Nombre
+			}).ToList();
 	}
 }

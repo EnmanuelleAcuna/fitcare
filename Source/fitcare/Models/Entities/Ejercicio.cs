@@ -1,4 +1,3 @@
-using fitcare.Models.Core;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,14 +18,27 @@ public class Ejercicio : Base
 	public Guid IdTipoEjercicio { get; set; }
 	public TipoEjercicio TipoEjercicio { get; set; }
 
-	public virtual ICollection<GrupoMuscular> GruposMusculares { get; set; }// ⭐ RELACIÓN MUCHOS-A-MUCHOS
+	public ICollection<GrupoMuscular> GruposMusculares { get; set; } // ⭐ RELACIÓN MUCHOS-A-MUCHOS
+	public ICollection<Maquina> Maquinas { get; set; } // ⭐ RELACIÓN MUCHOS-A-MUCHOS
 
-	public Ejercicio() : base()
+	public Ejercicio()
 	{
+		GruposMusculares = new HashSet<GrupoMuscular>();
+		Maquinas = new HashSet<Maquina>();
+	}
+	
+	public Ejercicio(Guid id, string codigo, string nombre, bool estado, Guid idTipoEjercicio)
+	{
+		Id = id;
+		Codigo = codigo;
+		Nombre = nombre;
+		Estado = estado;
+		IdTipoEjercicio = idTipoEjercicio;
 
 		GruposMusculares = new HashSet<GrupoMuscular>();
+		Maquinas = new HashSet<Maquina>();
 	}
-
+	
 	public Ejercicio(Guid id, string codigo, string nombre, bool estado, TipoEjercicio tipoEjercicio)
 	{
 		Id = id;
@@ -35,22 +47,11 @@ public class Ejercicio : Base
 		Estado = estado;
 		TipoEjercicio = tipoEjercicio;
 		IdTipoEjercicio = tipoEjercicio.Id;
+
 		GruposMusculares = new HashSet<GrupoMuscular>();
+		Maquinas = new HashSet<Maquina>();
 	}
-
-	public Ejercicio(Guid id, string codigo, string nombre, bool estado, Guid idTipoEjercicio)
-	{
-		Id = id;
-		Codigo = codigo;
-		Nombre = nombre;
-		Estado = estado;
-		IdTipoEjercicio = idTipoEjercicio;
-		GruposMusculares = new HashSet<GrupoMuscular>();
-	}
-
-	public Ejercicio(Guid id) => Id = id;
-
-
+	
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
 

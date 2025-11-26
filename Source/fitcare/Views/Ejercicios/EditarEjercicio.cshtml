@@ -77,6 +77,48 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.IdsGruposMusculares)
+                                    <select id="IdsGruposMusculares" name="IdsGruposMusculares" class="form-control form-control-sm" multiple="multiple">
+                                        @foreach (var item in (List<SelectListItem>)ViewBag.ListaGruposMusculares)
+                                        {
+                                            if (Model.IdsGruposMusculares.Contains(item.Value))
+                                            {
+                                                <option value="@item.Value" selected>@item.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                    <small class="form-text text-muted">Seleccione uno o más grupos musculares</small>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.IdsMaquinas)
+                                    <select id="IdsMaquinas" name="IdsMaquinas" class="form-control form-control-sm" multiple="multiple">
+                                        @foreach (var item in (List<SelectListItem>)ViewBag.ListaMaquinas)
+                                        {
+                                            if (Model.IdsMaquinas.Contains(item.Value))
+                                            {
+                                                <option value="@item.Value" selected>@item.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                    <small class="form-text text-muted">Seleccione una o más máquinas (opcional)</small>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row mt-2">
                             <div class="col-12">
                                 <input value="Guardar" class="btn btn-sm btn-primary" type="submit" />
@@ -92,4 +134,44 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // Inicializar Select2 para Grupos Musculares
+            $('#IdsGruposMusculares').select2({
+                placeholder: 'Seleccione grupos musculares',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "No se encontraron resultados";
+                    },
+                    searching: function() {
+                        return "Buscando...";
+                    }
+                }
+            });
+
+            // Inicializar Select2 para Máquinas
+            $('#IdsMaquinas').select2({
+                placeholder: 'Seleccione máquinas (opcional)',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "No se encontraron resultados";
+                    },
+                    searching: function() {
+                        return "Buscando...";
+                    }
+                }
+            });
+        });
+    </script>
 }

@@ -1,4 +1,5 @@
-﻿using fitcare.Models.Identity;
+﻿using System;
+using fitcare.Models.Identity;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,10 +35,32 @@ public class ApplicationDbContext : DbContext
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
 		base.OnModelCreating(modelBuilder);
-		
+
 		modelBuilder.Entity<ApplicationUser>(b =>
 		{
 			b.ToTable("AspNetUsers", "dbo"); // Remap to table with different name
 		});
+
+		// Configuración de relación muchos-a-muchos entre Ejercicio y GrupoMuscular
+		modelBuilder.Entity<Ejercicio>()
+			.HasMany(e => e.GruposMusculares)
+			.WithMany(g => g.Ejercicios)
+			.UsingEntity(j =>
+			{
+				j.ToTable("GruposMuscularesEjercicio", "fitcare");
+				j.Property<Guid>("EjerciciosId").HasColumnName("IdEjercicio");
+				j.Property<Guid>("GruposMuscularesId").HasColumnName("IdGrupoMuscular");
+			});
+
+		// Configuración de relación muchos-a-muchos entre Ejercicio y Maquina
+		modelBuilder.Entity<Ejercicio>()
+			.HasMany(e => e.Maquinas)
+			.WithMany(m => m.Ejercicios)
+			.UsingEntity(j =>
+			{
+				j.ToTable("MaquinasEjercicio", "fitcare");
+				j.Property<Guid>("MaquinasId").HasColumnName("IdMaquina");
+				j.Property<Guid>("EjerciciosId").HasColumnName("IdEjercicio");
+			});
 	}
 }

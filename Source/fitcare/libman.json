@@ -59,6 +59,14 @@
 		  "images/sort_asc.png",
 		  "images/sort_desc.png"
       ]
+    },
+    {
+      "library": "select2@4.0.13",
+      "destination": "wwwroot/lib/select2/",
+      "files": [
+        "dist/css/select2.min.css",
+        "dist/js/select2.min.js"
+      ]
     }
   ]
 }

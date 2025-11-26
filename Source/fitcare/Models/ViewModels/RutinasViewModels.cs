@@ -164,7 +164,7 @@ public class EjercicioRutinaViewModel
 
 	public EjercicioRutina Entidad()
 	{
-		Ejercicio ejercicio = new Ejercicio(new Guid(IdEjercicio));
+		Ejercicio ejercicio = new Ejercicio(new Guid(IdEjercicio), string.Empty, string.Empty, false, Guid.Empty);
 		Maquina maquina = new Maquina(new Guid(IdMaquina));
 		EjercicioRutina ejercicioRutina = new(Guid.NewGuid(), Series, Repeticiones, MinutosDescanso, ejercicio, maquina);
 		return ejercicioRutina;

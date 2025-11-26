@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using fitcare.Models.Entities;
 
 namespace fitcare.Models.ViewModels;
@@ -13,6 +15,8 @@ public class EjercicioViewModel : BaseViewModel
 		Nombre = ejercicio.Nombre;
 		Estado = ejercicio.Estado ? "Activo" : "Inactivo";
 		TipoEjercicio = ejercicio.TipoEjercicio.Nombre;
+		GruposMusculares = ejercicio.GruposMusculares?.Select(g => g.Nombre).ToList() ?? new List<string>();
+		Maquinas = ejercicio.Maquinas?.Select(m => m.Nombre).ToList() ?? new List<string>();
 	}
 
 	public string Id { get; set; }
@@ -27,6 +31,12 @@ public class EjercicioViewModel : BaseViewModel
 	public string TipoEjercicio { get; set; }
 
 	public string Estado { get; set; }
+
+	[Display(Name = "Grupos musculares")]
+	public List<string> GruposMusculares { get; set; }
+
+	[Display(Name = "Máquinas")]
+	public List<string> Maquinas { get; set; }
 }
 
 public class AgregarEjercicioViewModel
@@ -47,6 +57,12 @@ public class AgregarEjercicioViewModel
 
 	public bool Activo { get; set; }
 
+	[Display(Name = "Grupos musculares")]
+	public List<string> IdsGruposMusculares { get; set; } = new();
+
+	[Display(Name = "Máquinas")]
+	public List<string> IdsMaquinas { get; set; } = new();
+
 	public Ejercicio Entidad() => new(Guid.NewGuid(), Codigo, Nombre, Activo, new Guid(IdTipoEjercicio));
 }
 
@@ -61,6 +77,8 @@ public class EditarEjercicioViewModel : BaseViewModel
 		Nombre = ejercicio.Nombre;
 		Activo = ejercicio.Estado;
 		IdTipoEjercicio = ejercicio.TipoEjercicio.Id.ToString();
+		IdsGruposMusculares = ejercicio.GruposMusculares?.Select(g => g.Id.ToString()).ToList() ?? new();
+		IdsMaquinas = ejercicio.Maquinas?.Select(m => m.Id.ToString()).ToList() ?? new();
 	}
 
 	[Required(ErrorMessage = "El id es requerido")]
@@ -81,6 +99,12 @@ public class EditarEjercicioViewModel : BaseViewModel
 	public string IdTipoEjercicio { get; set; }
 
 	public bool Activo { get; set; }
+
+	[Display(Name = "Grupos musculares")]
+	public List<string> IdsGruposMusculares { get; set; } = new();
+
+	[Display(Name = "Máquinas")]
+	public List<string> IdsMaquinas { get; set; } = new();
 
 	public Ejercicio Entidad() => new(new Guid(Id), Codigo, Nombre, Activo, new Guid(IdTipoEjercicio));
 }

@@ -10,7 +10,7 @@ public class Maquina : Base
 {
 	public Maquina() : base()
 	{
-		// DetalleRutina = new HashSet<DetalleRutina>();
+		Ejercicios = new HashSet<Ejercicio>();
 	}
 
 	public Maquina(Guid id, string codigo, string nombre, string codigoActivo, bool activo, DateTime fechaAdquisicion, TipoMaquina tipoMaquina)
@@ -25,7 +25,7 @@ public class Maquina : Base
 		IdTipoMaquina = tipoMaquina.Id;
 		TipoMaquina = tipoMaquina;
 
-		// DetalleRutina = new HashSet<DetalleRutina>();
+		Ejercicios = new HashSet<Ejercicio>();
 	}
 
 	public Maquina(Guid id, string codigo, string nombre, string codigoActivo, bool activo, DateTime fechaAdquisicion, Guid idTipoMaquina)
@@ -39,14 +39,14 @@ public class Maquina : Base
 
 		IdTipoMaquina = idTipoMaquina;
 
-		// DetalleRutina = new HashSet<DetalleRutina>();
+		Ejercicios = new HashSet<Ejercicio>();
 	}
 
 	public Maquina(Guid id)
 	{
 		Id = id;
 
-		// DetalleRutina = new HashSet<DetalleRutina>();
+		Ejercicios = new HashSet<Ejercicio>();
 	}
 
 	public Guid Id { get; private set; }
@@ -64,7 +64,7 @@ public class Maquina : Base
 	public Guid IdTipoMaquina { get; set; }
 	public TipoMaquina TipoMaquina { get; set; }
 
-	// public virtual ICollection<DetalleRutina> DetalleRutina { get; set; }
+	public ICollection<Ejercicio> Ejercicios { get; set; } // ⭐ RELACIÓN MUCHOS-A-MUCHOS
 
 	public override string ToString() => JsonSerializer.Serialize(this);
 }

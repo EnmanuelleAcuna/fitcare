@@ -109,6 +109,19 @@
 			modal.find('.modal-title .nombre').text(data.nombre);
 			modal.find('.modal-body .tipo-ejercicio').text(data.tipoEjercicio);
 			modal.find('.modal-body .estado').text(data.estado);
+
+			// Grupos musculares
+			var gruposText = data.gruposMusculares && data.gruposMusculares.length > 0
+				? data.gruposMusculares.join(', ')
+				: 'Ninguno';
+			modal.find('.modal-body .grupos-musculares').text(gruposText);
+
+			// Máquinas
+			var maquinasText = data.maquinas && data.maquinas.length > 0
+				? data.maquinas.join(', ')
+				: 'Ninguna';
+			modal.find('.modal-body .maquinas').text(maquinasText);
+
 			modal.find('.modal-body .creado-por').text(data.creadoPor);
 			modal.find('.modal-body .creado-el').text(data.creadoEl);
 			modal.find('.modal-body .modificado-por').text(data.editadoPor);
@@ -122,6 +135,8 @@
 			modal.find('.modal-title .nombre').text("Error al obtener la información");
 			modal.find('.modal-body .tipo-ejercicio').text('N/A');
 			modal.find('.modal-body .estado').text('N/A');
+			modal.find('.modal-body .grupos-musculares').text('N/A');
+			modal.find('.modal-body .maquinas').text('N/A');
 			modal.find('.modal-body .creado-por').text('N/A');
 			modal.find('.modal-body .creado-el').text('N/A');
 			modal.find('.modal-body .modificado-por').text('N/A');
