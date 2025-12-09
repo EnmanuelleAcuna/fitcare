@@ -121,13 +121,13 @@ public class AgregarRutinaViewModel
 	[Display(Name = "Objetivo")]
 	public string Objetivo { get; set; }
 
-	public List<EjercicioRutinaViewModel> DetalleEjercicios { get; set; }
-	public List<MedidaRutinaViewModel> DetalleMedidas { get; set; }
+	public List<EjercicioRutinaViewModel> DetalleEjercicios { get; set; } = new();
+	public List<MedidaRutinaViewModel> DetalleMedidas { get; set; } = new();
 
 	public Rutina Entidad(ApplicationUser instructor, ApplicationUser cliente)
 	{
-		IList<EjercicioRutina> ejercicios = DetalleEjercicios.Select(x => x.Entidad()).ToList();
-		IList<MedidaRutina> medidas = DetalleMedidas.Select(x => x.Entidad()).ToList();
+		IList<EjercicioRutina> ejercicios = DetalleEjercicios?.Select(x => x.Entidad()).ToList() ?? new List<EjercicioRutina>();
+		IList<MedidaRutina> medidas = DetalleMedidas?.Select(x => x.Entidad()).ToList() ?? new List<MedidaRutina>();
 
 		Rutina rutina = new(Guid.NewGuid(), FechaRealizacion, FechaInicio, FechaFin, Objetivo, instructor, cliente, ejercicios, medidas);
 		return rutina;
@@ -144,8 +144,6 @@ public class EjercicioRutinaViewModel
 		IdRutina = ejercicioRutina.IdRutina.ToString();
 		IdEjercicio = ejercicioRutina.Ejercicio.Id.ToString();
 		NombreEjercicio = ejercicioRutina.Ejercicio?.Nombre;
-		IdMaquina = ejercicioRutina.IdMaquina.ToString();
-		NombreMaquina = ejercicioRutina.Maquina?.Nombre;
 		Series = ejercicioRutina.Series;
 		Repeticiones = ejercicioRutina.Repeticiones;
 		MinutosDescanso = ejercicioRutina.MinutosDescanso;
@@ -155,18 +153,14 @@ public class EjercicioRutinaViewModel
 	public string IdRutina { get; set; }
 	public string IdEjercicio { get; set; }
 	public string NombreEjercicio { get; set; }
-	public string IdMaquina { get; set; }
-	public string NombreMaquina { get; set; }
 	public int Series { get; set; }
 	public int Repeticiones { get; set; }
 	public int MinutosDescanso { get; set; }
-	public string IdTipoMaquina { get; set; }
 
 	public EjercicioRutina Entidad()
 	{
 		Ejercicio ejercicio = new Ejercicio(new Guid(IdEjercicio), string.Empty, string.Empty, false, Guid.Empty);
-		Maquina maquina = new Maquina(new Guid(IdMaquina));
-		EjercicioRutina ejercicioRutina = new(Guid.NewGuid(), Series, Repeticiones, MinutosDescanso, ejercicio, maquina);
+		EjercicioRutina ejercicioRutina = new(Guid.NewGuid(), Series, Repeticiones, MinutosDescanso, ejercicio);
 		return ejercicioRutina;
 	}
 }
@@ -203,7 +197,7 @@ public class MedidaRutinaViewModel
 public class ReporteRutinaViewModel
 {
 	public ReporteRutinaViewModel() { }
-	
+
 	public ReporteRutinaViewModel(Rutina rutina)
 	{
 		if (rutina is null)
@@ -241,4 +235,100 @@ public class ReporteRutinaViewModel
 
 	[Display(Name = "Ejercicios registrados")]
 	public int CantidadEjerciciosRegistrados { get; init; }
+}
+
+public class AgregarEjercicioRutinaViewModel
+{
+	[Required(ErrorMessage = "La rutina es requerida.")]
+	public string IdRutina { get; set; }
+
+	[Required(ErrorMessage = "El ejercicio es requerido.")]
+	public string IdEjercicio { get; set; }
+
+	[Required(ErrorMessage = "Las series son requeridas.")]
+	[Range(1, 100, ErrorMessage = "Las series deben estar entre 1 y 100.")]
+	public int Series { get; set; }
+
+	[Required(ErrorMessage = "Las repeticiones son requeridas.")]
+	[Range(1, 500, ErrorMessage = "Las repeticiones deben estar entre 1 y 500.")]
+	public int Repeticiones { get; set; }
+
+	[Required(ErrorMessage = "Los minutos de descanso son requeridos.")]
+	[Range(0, 60, ErrorMessage = "Los minutos de descanso deben estar entre 0 y 60.")]
+	public int MinutosDescanso { get; set; }
+
+	public EjercicioRutina Entidad()
+	{
+		Ejercicio ejercicio = new Ejercicio(new Guid(IdEjercicio), string.Empty, string.Empty, false, Guid.Empty);
+		EjercicioRutina ejercicioRutina = new(Guid.NewGuid(), Series, Repeticiones, MinutosDescanso, ejercicio);
+		return ejercicioRutina;
+	}
+}
+
+public class EditarEjercicioRutinaViewModel
+{
+	[Required(ErrorMessage = "El ID del ejercicio en rutina es requerido.")]
+	public string IdEjercicioRutina { get; set; }
+
+	[Required(ErrorMessage = "El ejercicio es requerido.")]
+	public string IdEjercicio { get; set; }
+
+	[Required(ErrorMessage = "Las series son requeridas.")]
+	[Range(1, 100, ErrorMessage = "Las series deben estar entre 1 y 100.")]
+	public int Series { get; set; }
+
+	[Required(ErrorMessage = "Las repeticiones son requeridas.")]
+	[Range(1, 500, ErrorMessage = "Las repeticiones deben estar entre 1 y 500.")]
+	public int Repeticiones { get; set; }
+
+	[Required(ErrorMessage = "Los minutos de descanso son requeridos.")]
+	[Range(0, 60, ErrorMessage = "Los minutos de descanso deben estar entre 0 y 60.")]
+	public int MinutosDescanso { get; set; }
+}
+
+public class EliminarEjercicioRutinaViewModel
+{
+	[Required(ErrorMessage = "El ID del ejercicio es requerido.")]
+	public string IdEjercicioRutina { get; set; }
+}
+
+public class AgregarMedidaRutinaViewModel
+{
+	[Required(ErrorMessage = "La rutina es requerida.")]
+	public string IdRutina { get; set; }
+
+	[Required(ErrorMessage = "El tipo de medida es requerido.")]
+	public string IdTipoMedida { get; set; }
+
+	[Required(ErrorMessage = "El valor es requerido.")]
+	public string Valor { get; set; }
+
+	public string Comentario { get; set; }
+
+	public MedidaRutina Entidad()
+	{
+		TipoMedida tipoMedida = new TipoMedida(new Guid(IdTipoMedida));
+		MedidaRutina medidaRutina = new(Guid.NewGuid(), Valor, Comentario, tipoMedida);
+		return medidaRutina;
+	}
+}
+
+public class EditarMedidaRutinaViewModel
+{
+	[Required(ErrorMessage = "El ID de la medida en rutina es requerido.")]
+	public string IdMedidaRutina { get; set; }
+
+	[Required(ErrorMessage = "El tipo de medida es requerido.")]
+	public string IdTipoMedida { get; set; }
+
+	[Required(ErrorMessage = "El valor es requerido.")]
+	public string Valor { get; set; }
+
+	public string Comentario { get; set; }
+}
+
+public class EliminarMedidaRutinaViewModel
+{
+	[Required(ErrorMessage = "El ID de la medida es requerido.")]
+	public string IdMedidaRutina { get; set; }
 }

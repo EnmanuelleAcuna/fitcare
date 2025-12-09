@@ -34,6 +34,14 @@ public interface IRutinas<T>
 	Task<IList<T>> ReadAllAsync();
 	Task<T> ReadByIdAsync(Guid id);
 	Task CreateAsync(T model, string user);
-	
+
 	Task<IList<Rutina>> ObtenerReporteRutinas(string idInstructor, string idCliente);
+
+	Task AgregarEjercicioAsync(Guid idRutina, EjercicioRutina ejercicio, string user);
+	Task EditarEjercicioAsync(Guid idEjercicioRutina, Guid idEjercicio, int series, int repeticiones, int minutosDescanso, string user);
+	Task EliminarEjercicioAsync(Guid idEjercicioRutina);
+
+	Task AgregarMedidaAsync(Guid idRutina, MedidaRutina medida, string user);
+	Task EditarMedidaAsync(Guid idMedidaRutina, Guid idTipoMedida, string valor, string comentario, string user);
+	Task EliminarMedidaAsync(Guid idMedidaRutina);
 }

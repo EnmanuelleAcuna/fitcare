@@ -1,4 +1,4 @@
-﻿@model AgregarRutinaViewModel
+@model AgregarRutinaViewModel
 
 @{
 	ViewBag.Title = "Rutinas";
@@ -14,7 +14,7 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href='@Url.Action("Administracion", "Home")'>Administración</a>
+							<a href='@Url.Action("Admin", "Home")'>Administración</a>
 						</li>
 						<li class="breadcrumb-item">
 							<a href='@Url.Action("Listar")'>Rutinas</a>
@@ -27,9 +27,7 @@
 			</div>
 		</div>
 	</div>
-</div>
 
-<div class="container-fluid">
 	<div class="row">
 		<div class="col-12">
 			<div class="card shadow-sm">
@@ -43,128 +41,57 @@
 							</div>
 						</div>
 
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title text-info">Datos preliminares</h5>
+						<div class="row">
+							<div class="col-sm-12 col-md-6">
+								<div class="form-group">
+									@Html.LabelFor(model => model.IdInstructor)
+									@Html.DropDownListFor(model => model.IdInstructor, new List<SelectListItem>(ViewBag.ListaInstructores), "Seleccione un instructor", new { @class = "form-control form-control-sm" })
+									@Html.ValidationMessageFor(model => model.IdInstructor)
+								</div>
+							</div>
 
-								<div class="row">
-									<div class="col-sm-12 col-md-6">
-										<div class="form-group">
-											@Html.LabelFor(model => model.IdInstructor)
-											@Html.DropDownListFor(model => model.IdInstructor, new List<SelectListItem>(ViewBag.ListaInstructores), "Seleccione un instructor", new { @class = "form-control form-control-sm" })
-											@Html.ValidationMessageFor(model => model.IdInstructor)
-										</div>
-									</div>
-
-									<div class="col-sm-12 col-md-6">
-										<div class="form-group">
-											@Html.LabelFor(model => model.IdCliente)
-											@Html.DropDownListFor(model => model.IdCliente, new List<SelectListItem>(ViewBag.ListaClientes), "Seleccione un cliente", new { @class = "form-control form-control-sm" })
-											@Html.ValidationMessageFor(model => model.IdCliente)
-										</div>
-									</div>
-
-									<div class="col-sm-12 col-md-4">
-										<div class="form-group">
-											@Html.LabelFor(model => model.FechaInicio)
-											<br />
-											@Html.EditorFor(model => model.FechaInicio, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de inicio" })
-											@Html.ValidationMessageFor(model => model.FechaInicio, "", new { @class = "text-danger" })
-										</div>
-									</div>
-
-									<div class="col-sm-12 col-md-4">
-										<div class="form-group">
-											@Html.LabelFor(model => model.FechaFin)
-											<br />
-											@Html.EditorFor(model => model.FechaFin, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de finalización" })
-											@Html.ValidationMessageFor(model => model.FechaFin, "", new { @class = "text-danger" })
-										</div>
-									</div>
-
-									<div class="col-sm-12">
-										<div class="form-group">
-											@Html.LabelFor(model => model.Objetivo)
-											@Html.TextAreaFor(model => model.Objetivo, 4, 10, htmlAttributes: new { @class = "form-control form-control-sm", placeholder = "Digite el objetivo de la rutina"})
-											@Html.ValidationMessageFor(model => model.Objetivo, "", new { @class = "text-danger" })
-										</div>
-									</div>
+							<div class="col-sm-12 col-md-6">
+								<div class="form-group">
+									@Html.LabelFor(model => model.IdCliente)
+									@Html.DropDownListFor(model => model.IdCliente, new List<SelectListItem>(ViewBag.ListaClientes), "Seleccione un cliente", new { @class = "form-control form-control-sm" })
+									@Html.ValidationMessageFor(model => model.IdCliente)
 								</div>
 							</div>
 						</div>
 
-						<br />
-
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title text-success">Medidas</h5>
-
-								<div class="row">
-									<div class="col-sm-12 col-md-6">
-										<div class="form-group">
-											<label for="medidas">Seleccione una medida a agregar</label>
-											<select name="medidas" id="medidas" class="form-control form-control-sm w-50">
-											<option value="0">Por favor seleccione un tipo de medida</option>
-											@foreach (var medida in ViewBag.ListaTiposMedida) {
-												<option value="@medida.Value">@medida.Text</option>
-											}
-											</select>
-										</div>
-
-										<div class="form-group">
-											<button type="button" id="btn_registrar_medida" name="btn_registrar_medida" class="btn btn-sm btn-secondary">Agregar medida seleccionada</button>
-										</div>
-									</div>
+						<div class="row">
+							<div class="col-sm-12 col-md-6">
+								<div class="form-group">
+									@Html.LabelFor(model => model.FechaInicio)
+									@Html.EditorFor(model => model.FechaInicio, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+									@Html.ValidationMessageFor(model => model.FechaInicio, "", new { @class = "text-danger" })
 								</div>
+							</div>
 
-								<div class="row" id="contenedor_medidas_registradas">
+							<div class="col-sm-12 col-md-6">
+								<div class="form-group">
+									@Html.LabelFor(model => model.FechaFin)
+									@Html.EditorFor(model => model.FechaFin, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+									@Html.ValidationMessageFor(model => model.FechaFin, "", new { @class = "text-danger" })
 								</div>
 							</div>
 						</div>
 
-						<br />
-
-						<div class="card">
-							<div class="card-body">
-								<h5 class="card-title text-secondary">Ejercicios</h5>
-
-								<div class="row">
-									<div class="col-sm-12 col-md-6">
-										<div class="form-group">
-											<label for="ejercicios">Seleccione un ejercicio a agregar</label>
-											<select name="ejercicios" id="ejercicios" class="form-control form-control-sm w-50">
-												<option value="0">Por favor seleccione un ejercicio</option>
-												@foreach (var ejercicio in ViewBag.ListaEjercicios) {
-													<option value="@ejercicio.Value">@ejercicio.Text</option>
-												}
-											</select>
-										</div>
-										<div class="form-group">
-											<button type="button" id="btn_registrar_ejercicio" name="btn_registrar_ejercicio" class="btn btn-sm btn-secondary">Agregar ejercicio seleccionado</button>
-										</div>
-									</div>
-									<div class="col-sm-12 col-md-6">
-										<div class="form-group">
-											<label for="ejercicios">Seleccione una máqiuna para el ejercicio</label>
-											<select name="maquinas" id="maquinas" class="form-control form-control-sm w-50">
-												<option value="0">Por favor seleccione una maquina</option>
-												@foreach (var maquina in ViewBag.ListaMaquinas) {
-													<option value="@maquina.Value">@maquina.Text</option>
-												}
-											</select>
-										</div>
-									</div>
-								</div>
-
-								<div class="row" id="contenedor_ejercicios_registrados">
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group">
+									@Html.LabelFor(model => model.Objetivo)
+									@Html.TextAreaFor(model => model.Objetivo, 4, 10, new { @class = "form-control form-control-sm", placeholder = "Digite el objetivo de la rutina"})
+									@Html.ValidationMessageFor(model => model.Objetivo, "", new { @class = "text-danger" })
 								</div>
 							</div>
 						</div>
-						
-						<br />
-						
-						<div class="btn-group" role="group">
-							<button class="btn btn-sm btn-primary" type="submit">Guardar</button>
+
+						<div class="row mt-2">
+							<div class="col-12">
+								<button class="btn btn-sm btn-primary" type="submit">Guardar rutina</button>
+								@Html.ActionLink("Regresar", "Listar", null, new { @class = "btn btn-sm btn-secondary" })
+							</div>
 						</div>
 					}
 				</div>
@@ -175,176 +102,4 @@
 
 @section Scripts{
 	@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-
-	<script type="text/javascript">
-		let indiceMedidasRegistradas = 0;
-		let indiceEjerciciosRegistrados = 0;
-
-		$("#btn_registrar_medida").click(function (e) {
-			console.log("Registrando medida");
-
-			let idMedidaSeleccionada = $("#medidas").val();
-			console.log(idMedidaSeleccionada);
-			let nombreMedidaSeleccionada = $("#medidas option:selected").text();
-			console.log(nombreMedidaSeleccionada);
-
-			if (idMedidaSeleccionada != 0) {
-				let div = document.createElement('div');
-				div.setAttribute("class", "col-sm-12");
-
-				let inputHiddenId = document.createElement('input');
-				inputHiddenId.setAttribute("name", `DetalleMedidas[${indiceMedidasRegistradas}].IdTipoMedida`);
-				inputHiddenId.setAttribute("value", idMedidaSeleccionada);
-				inputHiddenId.setAttribute("type", "hidden");
-
-				let p = document.createElement('p');
-				p.setAttribute("class", "font-bold mb-0");
-				p.innerHTML = nombreMedidaSeleccionada;
-
-				let rowDiv = document.createElement("div");
-				rowDiv.setAttribute("class", "row");
-
-				// Valor
-				let divValor = document.createElement("div");
-				divValor.setAttribute("class", "col-sm-4 col-md-2");
-				let formDivValor = document.createElement('div');
-				formDivValor.setAttribute("class", "form-group");
-				let labelValor = document.createElement("label");
-				labelValor.innerHTML = "Valor";
-				let inputValor = document.createElement('input');
-				inputValor.setAttribute("name", `DetalleMedidas[${indiceMedidasRegistradas}].Valor`);
-				inputValor.setAttribute("class", "form-control form-control-sm");
-
-				// Comentario
-				let divComentario = document.createElement("div");
-				divComentario.setAttribute("class", "col-sm-8 col-md-10");
-				let formDivComentario = document.createElement('div');
-				formDivComentario.setAttribute("class", "form-group");
-				let labelComentario = document.createElement("label");
-				labelComentario.innerHTML = "Comentario";
-				let inputComentario = document.createElement('input');
-				inputComentario.setAttribute("name", `DetalleMedidas[${indiceMedidasRegistradas}].Comentario`);
-				inputComentario.setAttribute("class", "form-control form-control-sm");
-
-				$(p).appendTo(div);
-				$(inputHiddenId).appendTo(div);
-
-				$(divValor).appendTo(rowDiv);
-				$(formDivValor).appendTo(divValor);
-				$(labelValor).appendTo(formDivValor);
-				$(inputValor).appendTo(formDivValor);
-
-				$(divComentario).appendTo(rowDiv);
-				$(formDivComentario).appendTo(divComentario);
-				$(labelComentario).appendTo(formDivComentario);
-				$(inputComentario).appendTo(formDivComentario);
-
-				$(rowDiv).appendTo(div);
-				$(div).appendTo("#contenedor_medidas_registradas");
-
-				indiceMedidasRegistradas++;
-
-				$("#medidas option[value=" + idMedidaSeleccionada + "]").hide();
-				$("#medidas").val("0");
-
-				inputValor.focus();
-			}
-		});
-
-		$("#btn_registrar_ejercicio").click(function (e) {
-			let idEjercicioSeleccionado = $("#ejercicios").val();
-			console.log(idEjercicioSeleccionado);
-			let nombreEjercicioSeleccionado = $("#ejercicios option:selected").text();
-			console.log(nombreEjercicioSeleccionado);
-
-			let idMaquinaSeleccionada = $("#maquinas").val();
-			console.log(idMaquinaSeleccionada);
-			let nombreMaquinaSeleccionada = $("#maquinas option:selected").text();
-			console.log(nombreMaquinaSeleccionada);
-
-			if (idEjercicioSeleccionado != 0) {
-				let div = document.createElement('div');
-				div.setAttribute("class", "col-sm-12");
-
-				let inputHiddenId = document.createElement('input');
-				inputHiddenId.setAttribute("name", `DetalleEjercicios[${indiceEjerciciosRegistrados}].IdEjercicio`);
-				inputHiddenId.setAttribute("value", idEjercicioSeleccionado);
-				inputHiddenId.setAttribute("type", "hidden");
-
-				let inputHiddenMaquinaId = document.createElement('input');
-				inputHiddenMaquinaId.setAttribute("name", `DetalleEjercicios[${indiceEjerciciosRegistrados}].IdMaquina`);
-				inputHiddenMaquinaId.setAttribute("value", idMaquinaSeleccionada);
-				inputHiddenMaquinaId.setAttribute("type", "hidden");
-
-				let p = document.createElement('p');
-				p.setAttribute("class", "font-bold mb-0");
-				p.innerHTML = nombreEjercicioSeleccionado;
-
-				let rowDiv = document.createElement("div");
-				rowDiv.setAttribute("class", "row");
-
-				// Series
-				let divSeries = document.createElement("div");
-				divSeries.setAttribute("class", "col-sm-4 col-md-2");
-				let formDivSeries = document.createElement('div');
-				formDivSeries.setAttribute("class", "form-group");
-				let labelSeries = document.createElement("label");
-				labelSeries.innerHTML = "Series";
-				let inputSeries = document.createElement('input');
-				inputSeries.setAttribute("name", `DetalleEjercicios[${indiceEjerciciosRegistrados}].Series`);
-				inputSeries.setAttribute("class", "form-control form-control-sm");
-
-				// Repeticiones
-				let divRepeticiones = document.createElement("div");
-				divRepeticiones.setAttribute("class", "col-sm-4 col-md-2");
-				let formDivRepeticiones = document.createElement('div');
-				formDivRepeticiones.setAttribute("class", "form-group");
-				let labelRepeticiones = document.createElement("label");
-				labelRepeticiones.innerHTML = "Repeticiones";
-				let inputRepeticiones = document.createElement('input');
-				inputRepeticiones.setAttribute("name", `DetalleEjercicios[${indiceEjerciciosRegistrados}].Repeticiones`);
-				inputRepeticiones.setAttribute("class", "form-control form-control-sm");
-
-				// Minutos de descanso
-				let divMinutosDescanso = document.createElement("div");
-				divMinutosDescanso.setAttribute("class", "col-sm-6 col-md-4");
-				let formDivMinutosDescanso = document.createElement('div');
-				formDivMinutosDescanso.setAttribute("class", "form-group");
-				let labelMinutosDescanso = document.createElement("label");
-				labelMinutosDescanso.innerHTML = "Minutos de descanso";
-				let inputMinutosDescanso = document.createElement('input');
-				inputMinutosDescanso.setAttribute("name", `DetalleEjercicios[${indiceEjerciciosRegistrados}].MinutosDescanso`);
-				inputMinutosDescanso.setAttribute("class", "form-control form-control-sm");
-
-				$(p).appendTo(div);
-				$(inputHiddenId).appendTo(div);
-				$(inputHiddenMaquinaId).appendTo(div);
-
-				$(divSeries).appendTo(rowDiv);
-				$(formDivSeries).appendTo(divSeries);
-				$(labelSeries).appendTo(formDivSeries);
-				$(inputSeries).appendTo(formDivSeries);
-
-				$(divRepeticiones).appendTo(rowDiv);
-				$(formDivRepeticiones).appendTo(divRepeticiones);
-				$(labelRepeticiones).appendTo(formDivRepeticiones);
-				$(inputRepeticiones).appendTo(formDivRepeticiones);
-
-				$(divMinutosDescanso).appendTo(rowDiv);
-				$(formDivMinutosDescanso).appendTo(divMinutosDescanso);
-				$(labelMinutosDescanso).appendTo(formDivMinutosDescanso);
-				$(inputMinutosDescanso).appendTo(formDivMinutosDescanso);
-
-				$(rowDiv).appendTo(div);
-				$(div).appendTo("#contenedor_ejercicios_registrados");
-
-				indiceEjerciciosRegistrados++;
-
-				$("#ejercicios option[value=" + idEjercicioSeleccionado + "]").hide();
-				$("#ejercicios").val("0");
-
-				inputSeries.focus();
-			}
-		});
-	</script>
 }

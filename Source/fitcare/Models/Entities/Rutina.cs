@@ -7,7 +7,7 @@ using fitcare.Models.Identity;
 
 namespace fitcare.Models.Entities;
 
-[Table("RUTINAS", Schema = "fitcare")]
+[Table("Rutinas", Schema = "fitcare")]
 public class Rutina : Base
 {
 	public Rutina() : base()
@@ -90,12 +90,12 @@ public class Rutina : Base
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
 
-[Table("DETALLE_RUTINA", Schema = "fitcare")]
+[Table("EjerciciosRutina", Schema = "fitcare")]
 public class EjercicioRutina : Base
 {
 	public EjercicioRutina() : base() { }
 
-	public EjercicioRutina(Guid id, Guid idRutina, int series, int repeticiones, int minutosDescanso, Ejercicio ejercicio, Maquina maquina)
+	public EjercicioRutina(Guid id, Guid idRutina, int series, int repeticiones, int minutosDescanso, Ejercicio ejercicio)
 	{
 		Id = id;
 		IdRutina = idRutina;
@@ -104,11 +104,9 @@ public class EjercicioRutina : Base
 		MinutosDescanso = minutosDescanso;
 		IdEjercicio = ejercicio.Id;
 		Ejercicio = ejercicio;
-		IdMaquina = maquina.Id;
-		Maquina = maquina;
 	}
 
-	public EjercicioRutina(Guid id, int series, int repeticiones, int minutosDescanso, Ejercicio ejercicio, Maquina maquina)
+	public EjercicioRutina(Guid id, int series, int repeticiones, int minutosDescanso, Ejercicio ejercicio)
 	{
 		Id = id;
 		Series = series;
@@ -116,20 +114,15 @@ public class EjercicioRutina : Base
 		MinutosDescanso = minutosDescanso;
 		IdEjercicio = ejercicio.Id;
 		Ejercicio = ejercicio;
-		IdMaquina = maquina.Id;
-		Maquina = maquina;
 	}
 
 	[Key]
 	public Guid Id { get; set; }
 
-	[Column("Num_Series")]
 	public int Series { get; set; }
 
-	[Column("Num_Repeticiones")]
 	public int Repeticiones { get; set; }
 
-	[Column("Minutos_Descanso")]
 	public int MinutosDescanso { get; set; }
 
 	[ForeignKey(nameof(Rutina))]
@@ -142,15 +135,10 @@ public class EjercicioRutina : Base
 	public Guid IdEjercicio { get; set; }
 	public Ejercicio Ejercicio { get; set; }
 
-	[ForeignKey(nameof(Maquina))]
-	[Column("IdMaquina")]
-	public Guid? IdMaquina { get; set; }
-	public Maquina Maquina { get; set; }
-
 	public override string ToString() => JsonSerializer.Serialize(this);
 }
 
-[Table("DETALLE_MEDIDAS", Schema = "fitcare")]
+[Table("MedidasRutina", Schema = "fitcare")]
 public class MedidaRutina : Base
 {
 	public MedidaRutina() : base() { }
@@ -181,7 +169,6 @@ public class MedidaRutina : Base
 	public Guid IdRutina { get; set; }
 	public Rutina Rutina { get; set; }
 
-	[Column("ValorMedida")]
 	public string Valor { get; set; }
 
 	public string Comentario { get; set; }

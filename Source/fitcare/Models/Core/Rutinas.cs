@@ -25,7 +25,6 @@ public class Rutinas : IRutinas<Rutina>
 		var rutina = await _db.Rutinas.Include(i => i.Instructor)
 			.Include(c => c.Cliente)
 			.Include(r => r.Medidas).ThenInclude(m => m.TipoMedida)
-			.Include(r => r.Ejercicios).ThenInclude(e => e.Maquina).ThenInclude(e => e.TipoMaquina)
 			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.TipoEjercicio)
 			.FirstOrDefaultAsync(x => x.Id.ToString().Equals(id.ToString()));
 
@@ -55,7 +54,7 @@ public class Rutinas : IRutinas<Rutina>
 		else
 			rutina.Cliente = existingUsuarioCliente;
 
-		// Recorrer cada ejercicioRutina, medidaRutina y grupoMuscularRutina
+		// Recorrer cada ejercicioRutina y medidaRutina
 		// para establecer los valores de fecha y usuario de insercion
 		foreach (var ejercicioRutina in rutina.Ejercicios)
 		{
@@ -67,15 +66,6 @@ public class Rutinas : IRutinas<Rutina>
 					$"El ejercicio {ejercicioRutina.IdEjercicio} para la rutina no se ha encontrado en la BD.");
 			else
 				ejercicioRutina.Ejercicio = existingEjercicio;
-
-			var existingMaquina = await _db.Maquinas.Include(m => m.TipoMaquina)
-				.Where(m => m.Id == ejercicioRutina.IdMaquina).FirstOrDefaultAsync();
-
-			if (existingMaquina == null)
-				throw new Exception(
-					$"La máquina {ejercicioRutina.IdMaquina} para la rutina no se ha encontrado en la BD.");
-			else
-				ejercicioRutina.Maquina = existingMaquina;
 
 			ejercicioRutina.CreatedBy = user;
 			ejercicioRutina.DateCreated = DateTime.UtcNow;
@@ -108,4 +98,113 @@ public class Rutinas : IRutinas<Rutina>
 				(idInstructor == null || r.IdInstructor == idInstructor) &&
 				(idCliente == null || r.IdCliente == idCliente))
 			.ToListAsync();
+
+	public async Task AgregarEjercicioAsync(Guid idRutina, EjercicioRutina ejercicio, string user)
+	{
+		// Verificar que la rutina existe
+		var rutinaExists = await _db.Rutinas.AnyAsync(r => r.Id == idRutina);
+		if (!rutinaExists)
+			throw new KeyNotFoundException($"No se encontró una rutina con el id {idRutina}");
+
+		// Verificar que el ejercicio existe sin rastrearlo
+		var ejercicioExists = await _db.Ejercicios.AnyAsync(e => e.Id == ejercicio.IdEjercicio);
+		if (!ejercicioExists)
+			throw new Exception($"El ejercicio {ejercicio.IdEjercicio} no se ha encontrado en la BD.");
+
+		// Limpiar la navegación para evitar conflictos de tracking
+		ejercicio.Ejercicio = null;
+		ejercicio.Rutina = null;
+		ejercicio.IdRutina = idRutina;
+		ejercicio.CreatedBy = user;
+		ejercicio.DateCreated = DateTime.UtcNow;
+
+		// Agregar directamente sin cargar la rutina completa
+		await _db.Set<EjercicioRutina>().AddAsync(ejercicio);
+		await _db.SaveChangesAsync();
+	}
+
+	public async Task EditarEjercicioAsync(Guid idEjercicioRutina, Guid idEjercicio, int series, int repeticiones, int minutosDescanso, string user)
+	{
+		var ejercicioRutina = await _db.Set<EjercicioRutina>().FindAsync(idEjercicioRutina);
+		if (ejercicioRutina == null)
+			throw new KeyNotFoundException($"No se encontró el ejercicio con id {idEjercicioRutina}");
+
+		// Verificar que el nuevo ejercicio existe
+		var ejercicioExists = await _db.Ejercicios.AnyAsync(e => e.Id == idEjercicio);
+		if (!ejercicioExists)
+			throw new Exception($"El ejercicio {idEjercicio} no se ha encontrado en la BD.");
+
+		ejercicioRutina.IdEjercicio = idEjercicio;
+		ejercicioRutina.Series = series;
+		ejercicioRutina.Repeticiones = repeticiones;
+		ejercicioRutina.MinutosDescanso = minutosDescanso;
+		ejercicioRutina.DateUpdated = DateTime.UtcNow;
+		ejercicioRutina.UpdatedBy = user;
+
+		await _db.SaveChangesAsync();
+	}
+
+	public async Task EliminarEjercicioAsync(Guid idEjercicioRutina)
+	{
+		var ejercicioRutina = await _db.Set<EjercicioRutina>().FindAsync(idEjercicioRutina);
+		if (ejercicioRutina == null)
+			throw new KeyNotFoundException($"No se encontró el ejercicio con id {idEjercicioRutina}");
+
+		_db.Set<EjercicioRutina>().Remove(ejercicioRutina);
+		await _db.SaveChangesAsync();
+	}
+
+	public async Task AgregarMedidaAsync(Guid idRutina, MedidaRutina medida, string user)
+	{
+		// Verificar que la rutina existe
+		var rutinaExists = await _db.Rutinas.AnyAsync(r => r.Id == idRutina);
+		if (!rutinaExists)
+			throw new KeyNotFoundException($"No se encontró una rutina con el id {idRutina}");
+
+		// Verificar que el tipo de medida existe sin rastrearlo
+		var tipoMedidaExists = await _db.TiposMedida.AnyAsync(tm => tm.Id == medida.IdTipoMedida);
+		if (!tipoMedidaExists)
+			throw new Exception($"El tipo de medida {medida.IdTipoMedida} no se ha encontrado en la BD.");
+
+		// Limpiar la navegación para evitar conflictos de tracking
+		medida.TipoMedida = null;
+		medida.Rutina = null;
+		medida.IdRutina = idRutina;
+		medida.CreatedBy = user;
+		medida.DateCreated = DateTime.UtcNow;
+
+		// Agregar directamente sin cargar la rutina completa
+		await _db.Set<MedidaRutina>().AddAsync(medida);
+		await _db.SaveChangesAsync();
+	}
+
+	public async Task EditarMedidaAsync(Guid idMedidaRutina, Guid idTipoMedida, string valor, string comentario, string user)
+	{
+		var medidaRutina = await _db.Set<MedidaRutina>().FindAsync(idMedidaRutina);
+		if (medidaRutina == null)
+			throw new KeyNotFoundException($"No se encontró la medida con id {idMedidaRutina}");
+
+		// Verificar que el nuevo tipo de medida existe
+		var tipoMedidaExists = await _db.TiposMedida.AnyAsync(tm => tm.Id == idTipoMedida);
+		if (!tipoMedidaExists)
+			throw new Exception($"El tipo de medida {idTipoMedida} no se ha encontrado en la BD.");
+
+		medidaRutina.IdTipoMedida = idTipoMedida;
+		medidaRutina.Valor = valor;
+		medidaRutina.Comentario = comentario;
+		medidaRutina.DateUpdated = DateTime.UtcNow;
+		medidaRutina.UpdatedBy = user;
+
+		await _db.SaveChangesAsync();
+	}
+
+	public async Task EliminarMedidaAsync(Guid idMedidaRutina)
+	{
+		var medidaRutina = await _db.Set<MedidaRutina>().FindAsync(idMedidaRutina);
+		if (medidaRutina == null)
+			throw new KeyNotFoundException($"No se encontró la medida con id {idMedidaRutina}");
+
+		_db.Set<MedidaRutina>().Remove(medidaRutina);
+		await _db.SaveChangesAsync();
+	}
 }

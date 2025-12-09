@@ -76,8 +76,6 @@ public class RutinasController : BaseController
 		ViewBag.ListaInstructores = CargarListaSeleccionUsuarios(listaInstructores);
 		ViewBag.ListaClientes = CargarListaSeleccionUsuarios(listaClientes);
 
-		await CargarViewBags();
-
 		return View();
 	}
 
@@ -110,7 +108,12 @@ public class RutinasController : BaseController
 			return RedirectToAction(nameof(Listar));
 		}
 
-		await CargarViewBags();
+		var listaInstructores = await _userManager.GetUsersInRoleAsync("Instructor");
+		var listaClientes = await _userManager.GetUsersInRoleAsync("Cliente");
+
+		ViewBag.ListaInstructores = CargarListaSeleccionUsuarios(listaInstructores);
+		ViewBag.ListaClientes = CargarListaSeleccionUsuarios(listaClientes);
+
 		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Rutina)));
 		return View(modelo);
 	}
@@ -120,6 +123,15 @@ public class RutinasController : BaseController
 	{
 		var rutina = await _rutinas.ReadByIdAsync(new Guid(id));
 		if (rutina == null) return NotFound();
+
+		// Cargar listas para los modales
+		ViewBag.ListaEjercicios = CargarListaSeleccionEjercicios(await _ejercicios.ReadAllAsync());
+		ViewBag.ListaTiposMedida = CargarListaSeleccionTiposMedida(await _tiposMedida.ReadAllAsync());
+
+		// Pasar IDs de ejercicios y tipos de medida ya agregados para filtrarlos
+		ViewBag.EjerciciosAgregados = rutina.Ejercicios.Select(e => e.IdEjercicio.ToString()).ToList();
+		ViewBag.TiposMedidaAgregados = rutina.Medidas.Select(m => m.IdTipoMedida.ToString()).ToList();
+
 		var modelo = new DetalleRutinaViewModel(rutina);
 		return View(modelo);
 	}
@@ -143,13 +155,154 @@ public class RutinasController : BaseController
 		return View(viewModel);
 	}
 
+	[HttpPost]
+	public async Task<JsonResult> AgregarEjercicioAjax([FromBody] AgregarEjercicioRutinaViewModel modelo)
+	{
+		try
+		{
+			if (ModelState.IsValid)
+			{
+				EjercicioRutina ejercicio = modelo.Entidad();
+				await _rutinas.AgregarEjercicioAsync(new Guid(modelo.IdRutina), ejercicio, CurrentUser);
+				return Json(new { success = true, message = "Ejercicio agregado correctamente." });
+			}
+
+			var errors = ModelState.Where(x => x.Value.Errors.Count > 0)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault());
+			return Json(new { success = false, errors = errors });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al agregar ejercicio a rutina");
+			return Json(new { success = false, message = "Error al agregar el ejercicio. Por favor intente nuevamente." });
+		}
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> EditarEjercicioAjax([FromBody] EditarEjercicioRutinaViewModel modelo)
+	{
+		try
+		{
+			if (ModelState.IsValid)
+			{
+				await _rutinas.EditarEjercicioAsync(
+					new Guid(modelo.IdEjercicioRutina),
+					new Guid(modelo.IdEjercicio),
+					modelo.Series,
+					modelo.Repeticiones,
+					modelo.MinutosDescanso,
+					CurrentUser);
+				return Json(new { success = true, message = "Ejercicio actualizado correctamente." });
+			}
+
+			var errors = ModelState.Where(x => x.Value.Errors.Count > 0)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault());
+			return Json(new { success = false, errors = errors });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al editar ejercicio de rutina");
+			return Json(new { success = false, message = "Error al editar el ejercicio. Por favor intente nuevamente." });
+		}
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> EliminarEjercicioAjax([FromBody] EliminarEjercicioRutinaViewModel modelo)
+	{
+		try
+		{
+			if (string.IsNullOrEmpty(modelo.IdEjercicioRutina))
+			{
+				return Json(new { success = false, message = "ID no válido" });
+			}
+
+			await _rutinas.EliminarEjercicioAsync(new Guid(modelo.IdEjercicioRutina));
+			return Json(new { success = true, message = "Ejercicio eliminado correctamente." });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al eliminar ejercicio de rutina");
+			return Json(new { success = false, message = "Error al eliminar el ejercicio." });
+		}
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> AgregarMedidaAjax([FromBody] AgregarMedidaRutinaViewModel modelo)
+	{
+		try
+		{
+			if (ModelState.IsValid)
+			{
+				MedidaRutina medida = modelo.Entidad();
+				await _rutinas.AgregarMedidaAsync(new Guid(modelo.IdRutina), medida, CurrentUser);
+				return Json(new { success = true, message = "Medida agregada correctamente." });
+			}
+
+			var errors = ModelState.Where(x => x.Value.Errors.Count > 0)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault());
+			return Json(new { success = false, errors = errors });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al agregar medida a rutina");
+			return Json(new { success = false, message = "Error al agregar la medida. Por favor intente nuevamente." });
+		}
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> EditarMedidaAjax([FromBody] EditarMedidaRutinaViewModel modelo)
+	{
+		try
+		{
+			if (ModelState.IsValid)
+			{
+				await _rutinas.EditarMedidaAsync(
+					new Guid(modelo.IdMedidaRutina),
+					new Guid(modelo.IdTipoMedida),
+					modelo.Valor,
+					modelo.Comentario,
+					CurrentUser);
+				return Json(new { success = true, message = "Medida actualizada correctamente." });
+			}
+
+			var errors = ModelState.Where(x => x.Value.Errors.Count > 0)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault());
+			return Json(new { success = false, errors = errors });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al editar medida de rutina");
+			return Json(new { success = false, message = "Error al editar la medida. Por favor intente nuevamente." });
+		}
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> EliminarMedidaAjax([FromBody] EliminarMedidaRutinaViewModel modelo)
+	{
+		try
+		{
+			if (string.IsNullOrEmpty(modelo.IdMedidaRutina))
+			{
+				return Json(new { success = false, message = "ID no válido" });
+			}
+
+			await _rutinas.EliminarMedidaAsync(new Guid(modelo.IdMedidaRutina));
+			return Json(new { success = true, message = "Medida eliminada correctamente." });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al eliminar medida de rutina");
+			return Json(new { success = false, message = "Error al eliminar la medida." });
+		}
+	}
+
 	private async Task CargarViewBags()
 	{
 		ViewBag.ListaTiposMedida = CargarListaSeleccionTiposMedida(await _tiposMedida.ReadAllAsync());
 		ViewBag.ListaEjercicios = CargarListaSeleccionEjercicios(await _ejercicios.ReadAllAsync());
 		ViewBag.ListaGruposMusculares = CargarListaSeleccionGruposMusculares(await _gruposMusculares.ReadAllAsync());
 		ViewBag.ListaMaquinas = CargarListaSeleccionMaquinas(await _maquinas.ReadAllAsync());
-		
+
 		ViewBag.ListaClientes = CargarListaSeleccionClientes(await _userManager.GetUsersInRoleAsync("Cliente"));
 		ViewBag.ListaInstructores = CargarListaSeleccionInstructores(await _userManager.GetUsersInRoleAsync("Instructor"));
 	}
