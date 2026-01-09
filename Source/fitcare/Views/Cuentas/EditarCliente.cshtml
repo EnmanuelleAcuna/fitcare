@@ -1,13 +1,13 @@
-@model AgregarInstructorViewModel
+@model AgregarClienteViewModel
 
 @{
-	ViewBag.Title = "Instructores";
+	ViewBag.Title = "Clientes";
 }
 
 <div class="container">
 	<div class="row">
 		<div class="col-5 align-self-center">
-			<h6 class="page-title">Registrar instructor</h6>
+			<h6 class="page-title">Editar cliente</h6>
 		</div>
 		<div class="col-7 align-self-center">
 			<div class="d-flex align-items-center justify-content-end">
@@ -16,8 +16,11 @@
 						<li class="breadcrumb-item">
 							<a asp-action="Admin" asp-controller="Home">Administración</a>
 						</li>
+						<li class="breadcrumb-item">
+							<a asp-action="Clientes" asp-controller="Cuentas">Clientes</a>
+						</li>
 						<li class="breadcrumb-item active" aria-current="page">
-							Registrar instructor
+							Editar cliente
 						</li>
 					</ol>
 				</nav>
@@ -29,7 +32,7 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<form asp-action="RegistrarInstructor" asp-controller="Cuentas" method="post" autocomplete="off" enctype="multipart/form-data">
+					<form asp-action="EditarCliente" asp-controller="Cuentas" method="post" autocomplete="off" enctype="multipart/form-data">
 						<input asp-for="IdUsuario" type="hidden" />
 
 						<div class="row">
@@ -40,7 +43,7 @@
 
 						<div class="row">
 							<div class="col-md-12">
-								<p>Registrar a <strong>@Model.Nombre</strong> (@Model.Correo) como instructor</p>
+								<p>Editar información de <strong>@Model.Nombre</strong> (@Model.Correo)</p>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
@@ -56,8 +59,8 @@
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
 									<label asp-for="IdCanton"></label>
-									<select asp-for="IdCanton" class="form-control form-control-sm" id="selectCanton" disabled>
-										<option value="">Seleccione primero una provincia</option>
+									<select asp-for="IdCanton" asp-items="@(new SelectList(ViewBag.Cantones, "Value", "Text"))" class="form-control form-control-sm" id="selectCanton">
+										<option value="">Seleccione un cantón</option>
 									</select>
 									<span asp-validation-for="IdCanton"></span>
 								</div>
@@ -66,8 +69,8 @@
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
 									<label asp-for="IdDistrito"></label>
-									<select asp-for="IdDistrito" class="form-control form-control-sm" id="selectDistrito" disabled>
-										<option value="">Seleccione primero un cantón</option>
+									<select asp-for="IdDistrito" asp-items="@(new SelectList(ViewBag.Distritos, "Value", "Text"))" class="form-control form-control-sm" id="selectDistrito">
+										<option value="">Seleccione un distrito</option>
 									</select>
 									<span asp-validation-for="IdDistrito"></span>
 								</div>
@@ -75,16 +78,25 @@
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									<label asp-for="FechaIngreso"></label>
+									<label asp-for="FechaInscripcion"></label>
 									<br />
-									<input asp-for="FechaIngreso" class="form-control form-control-sm" />
-									<span asp-validation-for="FechaIngreso" class="text-danger"></span>
+									<input asp-for="FechaInscripcion" class="form-control form-control-sm" />
+									<span asp-validation-for="FechaInscripcion" class="text-danger"></span>
+								</div>
+							</div>
+
+							<div class="col-sm-12 col-md-4">
+								<div class="form-group">
+									<label asp-for="FechaRenovacion"></label>
+									<br />
+									<input asp-for="FechaRenovacion" class="form-control form-control-sm" />
+									<span asp-validation-for="FechaRenovacion" class="text-danger"></span>
 								</div>
 							</div>
 
 							<div class="col-12">
 								<button type="submit" class="btn btn-sm btn-primary">Guardar</button>
-								<a asp-action="RegistrarNuevoInstructor" class="btn btn-sm btn-secondary">Regresar</a>
+								<a asp-action="Clientes" class="btn btn-sm btn-secondary">Regresar</a>
 							</div>
 						</div>
 					</form>

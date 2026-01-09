@@ -26,6 +26,8 @@ public class Rutinas : IRutinas<Rutina>
 			.Include(c => c.Cliente)
 			.Include(r => r.Medidas).ThenInclude(m => m.TipoMedida)
 			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.TipoEjercicio)
+			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.GruposMusculares)
+			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.Maquinas)
 			.FirstOrDefaultAsync(x => x.Id.ToString().Equals(id.ToString()));
 
 		if (rutina == null)

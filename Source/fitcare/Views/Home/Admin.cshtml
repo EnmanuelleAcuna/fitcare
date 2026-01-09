@@ -7,18 +7,110 @@
 		<div class="col-12">
 			<div class="card">
 				<div class="card-body">
-					<h6 class="mb-0"><i class="fa fa-house-user text-primary">&nbsp;</i>Bienvenido <b>@ViewBag.NombreUsuario</b></h6>
+					<h6 class="mb-0"><i class="fa fa-house-user text-primary">&nbsp;</i>Bienvenido
+						<b>@ViewBag.NombreUsuario</b></h6>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	@if (User.IsInRole("Administrador"))
-	{
-		<div class="row mb-4">
-			<div class="col-12">
-				<div class="card-deck">
-					@* Menú de máquinas*@
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="card-deck">
+				@* Rutinas *@
+				<div class="card col-lg-4 col-md-6 px-0">
+					<img src="~/images/routine.svg" alt="Rutinas"
+					     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+					<div class="card-body">
+						<h5 class="card-title text-center font-weight-bold">Rutinas</h5>
+						@if (User.IsInRole("Cliente"))
+						{
+							<p class="card-text text-center">Acceda a sus rutinas.</p>
+						}
+						else if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+						{
+							<p class="card-text text-center">Gestione las rutinas de sus clientes.</p>
+						}
+						else
+						{
+							<p class="card-text text-center">Gestión de rutinas.</p>
+						}
+
+						@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+						{
+							<a href='@Url.Action("Agregar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Registrar
+								rutina</a>
+						}
+
+						<a href='@Url.Action("Rutinas", "Rutinas")' class="btn btn-sm btn-block btn-dark">
+							Rutinas
+						</a>
+					</div>
+				</div>
+
+				@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+				{
+					@* Clientes *@
+					<div class="card">
+						<img src="~/images/gym-player.svg" alt="Clientes"
+						     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+						<div class="card-body">
+							<h5 class="card-title text-center font-weight-bold">Clientes</h5>
+							<p class="card-text text-center">Gestione sus clientes.</p>
+							<a href='@Url.Action("RegistrarNuevoCliente", "Cuentas")'
+							   class="btn btn-sm btn-block btn-dark">Registrar cliente</a>
+							<a href='@Url.Action("Clientes", "Cuentas")'
+							   class="btn btn-sm btn-block btn-dark">Clientes</a>
+						</div>
+					</div>
+				}
+
+				@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+				{
+					@* Instructores *@
+					<div class="card">
+						<img src="~/images/instructor.svg" alt="Instructores"
+						     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+						<div class="card-body">
+							<h5 class="card-title text-center font-weight-bold">Instructores</h5>
+							<p class="card-text text-center">Gestione sus instructores.</p>
+							<a href='@Url.Action("RegistrarNuevoInstructor", "Cuentas")'
+							   class="btn btn-sm btn-block btn-dark">Registrar instructor</a>
+							<a href='@Url.Action("Instructores", "Cuentas")'
+							   class="btn btn-sm btn-block btn-dark">Instructores</a>
+						</div>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="card-deck">
+				@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+				{
+					@* Cuentas *@
+					<div class="card">
+						<img src="~/images/users.svg" alt="Cuentas"
+						     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
+
+						<div class="card-body">
+							<h5 class="card-title text-center font-weight-bold">Cuentas</h5>
+							<p class="card-text text-center">Gestión de usuarios y roles.</p>
+							<a href='@Url.Action("Roles", "Cuentas")' class="btn btn-sm btn-block btn-dark">Roles</a>
+							<a href='@Url.Action("Usuarios", "Cuentas")'
+							   class="btn btn-sm btn-block btn-dark">Usuarios</a>
+						</div>
+					</div>
+				}
+
+				@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+				{
+					@* Menú de máquinas *@
 					<div class="card">
 						<img src="~/images/sports-and-competition.svg" alt="Máquinas"
 						     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
@@ -26,12 +118,16 @@
 						<div class="card-body">
 							<h5 class="card-title text-center font-weight-bold">Máquinas</h5>
 							<p class="card-text text-center">Gestión de máquinas.</p>
-							<a href='@Url.Action("ListarTiposMaquina", "Maquinas")'
+							<a href='@Url.Action("TiposMaquina", "Maquinas")'
 							   class="btn btn-sm btn-block btn-dark">Tipos de máquina</a>
-							<a href='@Url.Action("ListarMaquinas", "Maquinas")' class="btn btn-sm btn-block btn-dark">Máquinas</a>
+							<a href='@Url.Action("Maquinas", "Maquinas")'
+							   class="btn btn-sm btn-block btn-dark">Máquinas</a>
 						</div>
 					</div>
+				}
 
+				@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
+				{
 					@* Menú de ejercicios *@
 					<div class="card">
 						<img src="~/images/man_excercising.svg" alt="Ejercicios"
@@ -44,103 +140,13 @@
 								musculares</a>
 							<a href='@Url.Action("Listar", "TiposMedida")' class="btn btn-sm btn-block btn-dark">Tipos
 								de medida</a>
-							<a href='@Url.Action("ListarTiposEjercicio", "Ejercicios")'
+							<a href='@Url.Action("TiposEjercicio", "Ejercicios")'
 							   class="btn btn-sm btn-block btn-dark">Tipos de ejercicio</a>
-							<a href='@Url.Action("ListarEjercicios", "Ejercicios")'
+							<a href='@Url.Action("Ejercicios", "Ejercicios")'
 							   class="btn btn-sm btn-block btn-dark">Ejercicios</a>
 						</div>
 					</div>
-
-					@* Rutinas *@
-					<div class="card">
-						<img src="~/images/routine.svg" alt="Rutinas"
-						     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
-
-						<div class="card-body">
-							<h5 class="card-title text-center font-weight-bold">Rutinas</h5>
-							@if (User.IsInRole("Cliente"))
-							{
-								<p class="card-text text-center">Gestione sus rutinas.</p>
-							}
-							else
-							{
-								<p class="card-text text-center">Gestione las rutinas de sus clientes.</p>
-							}
-
-							@if (User.IsInRole("Cliente") || User.IsInRole("Administrador"))
-							{
-								<a href='@Url.Action("Listar", "Rutinas")' class="btn btn-sm btn-block btn-dark">
-									Mis rutinas
-								</a>
-							}
-
-							@if (User.IsInRole("Instructor") || User.IsInRole("Administrador"))
-							{
-								<a href='@Url.Action("Agregar", "Rutinas")' class="btn btn-sm btn-block btn-dark">Registrar
-									rutina</a>
-								<a href='@Url.Action("Reporte", "Rutinas")' class="btn btn-sm btn-block btn-dark">
-									Reporte de rutinas
-								</a>
-							}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	}
-
-	<div class="row mb-4">
-		<div class="col s12">
-			<div class="card-deck">
-				@if (User.IsInRole("Administrador"))
-				{
-					<div class="card">
-						<img src="~/images/gym-player.svg" alt="Clientes"
-						     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
-
-						<div class="card-body">
-							<h5 class="card-title text-center font-weight-bold">Clientes</h5>
-							<p class="card-text text-center">Gestione sus clientes.</p>
-							@* <a href='@Url.Action("ListarClientes", "Cuentas")' class="btn btn-sm btn-block btn-dark">Clientes</a> *@
-							<a href='@Url.Action("RegistrarNuevoCliente", "Cuentas")'
-							   class="btn btn-sm btn-block btn-dark">Registrar cliente</a>
-							<a href='@Url.Action("ReporteClientes", "Cuentas")' class="btn btn-sm btn-block btn-dark">Reporte
-								de clientes</a>
-						</div>
-					</div>
 				}
-
-				@if (User.IsInRole("Administrador"))
-				{
-					<div class="card">
-						<img src="~/images/instructor.svg" alt="Instructores"
-						     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
-
-						<div class="card-body">
-							<h5 class="card-title text-center font-weight-bold">Instructores</h5>
-							<p class="card-text text-center">Gestione sus instructores.</p>
-							@* <a href='@Url.Action("ListarInstructores", "Cuentas")' *@
-							@*    class="btn btn-sm btn-block btn-dark">Instructores</a> *@
-							<a href='@Url.Action("RegistrarNuevoInstructor", "Cuentas")'
-							   class="btn btn-sm btn-block btn-dark">Registrar instructor</a>
-							<a href='@Url.Action("ReporteInstructores", "Cuentas")'
-							   class="btn btn-sm btn-block btn-dark">Reporte de instructores</a>
-						</div>
-					</div>
-				}
-
-				@* Menú de roles y usuarios*@
-				<div class="card">
-					<img src="~/images/users.svg" alt="Cuentas"
-					     class="card-img-top img-fluid img-thumbnail img-thumbnail-sm bg-light">
-
-					<div class="card-body">
-						<h5 class="card-title text-center font-weight-bold">Cuentas</h5>
-						<p class="card-text text-center">Gestión de usuarios y roles.</p>
-						<a href='@Url.Action("ListarRoles", "Cuentas")' class="btn btn-sm btn-block btn-dark">Roles</a>
-						<a href='@Url.Action("ListarUsuarios", "Cuentas")' class="btn btn-sm btn-block btn-dark">Usuarios</a>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -162,11 +168,11 @@
 	@* 					<div class="card-body"> *@
 	@* 						<h5 class="card-title text-center font-weight-bold">Opciones</h5> *@
 	@* 						<p class="card-text text-center">Más opciones</p> *@
-	@* 						<a href='@Url.Action("ListarProvincias", "DivisionTerritorial")' *@
+	@* 						<a href='@Url.Action("Provincias", "DivisionTerritorial")' *@
 	@* 						   class="btn btn-sm btn-block btn-dark">Provincias</a> *@
-	@* 						<a href='@Url.Action("ListarCantones", "DivisionTerritorial")' *@
+	@* 						<a href='@Url.Action("Cantones", "DivisionTerritorial")' *@
 	@* 						   class="btn btn-sm btn-block btn-dark">Cantones</a> *@
-	@* 						<a href='@Url.Action("ListarDistritos", "DivisionTerritorial")' *@
+	@* 						<a href='@Url.Action("Distritos", "DivisionTerritorial")' *@
 	@* 						   class="btn btn-sm btn-block btn-dark">Distritos</a> *@
 	@* 					</div> *@
 	@* 				</div> *@

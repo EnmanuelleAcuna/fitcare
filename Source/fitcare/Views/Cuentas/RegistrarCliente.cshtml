@@ -14,7 +14,7 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="@Url.Action("Admin", "Home")">Administración</a>
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
 							Registrar cliente
@@ -29,13 +29,12 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					@using (Html.BeginForm("RegistrarCliente", "Cuentas", FormMethod.Post, new { autocomplete = "off", enctype = "multipart/form-data" })) {
-						@Html.AntiForgeryToken()
-						@Html.HiddenFor(model => model.IdUsuario);
+					<form asp-action="RegistrarCliente" asp-controller="Cuentas" method="post" autocomplete="off" enctype="multipart/form-data">
+						<input asp-for="IdUsuario" type="hidden" />
 
 						<div class="row">
 							<div class="col-md-12">
-								@Html.ValidationSummary(true, "")
+								<div asp-validation-summary="ModelOnly"></div>
 							</div>
 						</div>
 
@@ -46,60 +45,58 @@
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.IdProvincia)
-									@Html.DropDownListFor(model => model.IdProvincia, new List<SelectListItem>(ViewBag.Provincias), "Seleccione una provincia", new { @class = "form-control form-control-sm", id = "selectProvincia" })
-									@Html.ValidationMessageFor(model => model.IdProvincia)
+									<label asp-for="IdProvincia"></label>
+									<select asp-for="IdProvincia" asp-items="@(new SelectList(ViewBag.Provincias, "Value", "Text"))" class="form-control form-control-sm" id="selectProvincia">
+										<option value="">Seleccione una provincia</option>
+									</select>
+									<span asp-validation-for="IdProvincia"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.IdCanton)
-									@Html.DropDownListFor(model => model.IdCanton, new List<SelectListItem>(), "Seleccione primero una provincia", new { @class = "form-control form-control-sm", id = "selectCanton", disabled = "disabled" })
-									@Html.ValidationMessageFor(model => model.IdCanton)
+									<label asp-for="IdCanton"></label>
+									<select asp-for="IdCanton" class="form-control form-control-sm" id="selectCanton" disabled>
+										<option value="">Seleccione primero una provincia</option>
+									</select>
+									<span asp-validation-for="IdCanton"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.IdDistrito)
-									@Html.DropDownListFor(model => model.IdDistrito, new List<SelectListItem>(), "Seleccione primero un cantón", new { @class = "form-control form-control-sm", id = "selectDistrito", disabled = "disabled" })
-									@Html.ValidationMessageFor(model => model.IdDistrito)
+									<label asp-for="IdDistrito"></label>
+									<select asp-for="IdDistrito" class="form-control form-control-sm" id="selectDistrito" disabled>
+										<option value="">Seleccione primero un cantón</option>
+									</select>
+									<span asp-validation-for="IdDistrito"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.FechaInscripcion)
+									<label asp-for="FechaInscripcion"></label>
 									<br />
-									@Html.EditorFor(model => model.FechaInscripcion, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de ingreso" })
-									@Html.ValidationMessageFor(model => model.FechaInscripcion, "", new { @class = "text-danger" })
+									<input asp-for="FechaInscripcion" class="form-control form-control-sm" />
+									<span asp-validation-for="FechaInscripcion" class="text-danger"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.FechaRenovacion)
+									<label asp-for="FechaRenovacion"></label>
 									<br />
-									@Html.EditorFor(model => model.FechaRenovacion, "", null, new { @class = "form-control form-control-sm", placeholder = "Digite la fecha de ingreso" })
-									@Html.ValidationMessageFor(model => model.FechaRenovacion, "", new { @class = "text-danger" })
+									<input asp-for="FechaRenovacion" class="form-control form-control-sm" />
+									<span asp-validation-for="FechaRenovacion" class="text-danger"></span>
 								</div>
 							</div>
-
-							@* <div class="col-sm-12 col-md-4"> *@
-							@* 	<div class="form-group"> *@
-							@* 		@Html.LabelFor(model => model.ProfilePicture) *@
-							@* 		@Html.TextBoxFor(model => model.ProfilePicture, new { @class = "form-control form-control-sm", type = "file" }) *@
-							@* 		@Html.ValidationMessageFor(model => model.ProfilePicture, "", new { @class = "text-danger d-block" }) *@
-							@* 	</div> *@
-							@* </div> *@
 
 							<div class="col-12">
-								<input value="Guardar" class="btn btn-sm btn-primary" type="submit" />
-								@Html.ActionLink("Regresar", "RegistrarNuevoCliente", null, null, new { @class = "btn btn-sm btn-secondary" })
+								<button type="submit" class="btn btn-sm btn-primary">Guardar</button>
+								<a asp-action="RegistrarNuevoCliente" class="btn btn-sm btn-secondary">Regresar</a>
 							</div>
 						</div>
-					}
+					</form>
 				</div>
 			</div>
 		</div>
@@ -107,80 +104,16 @@
 </div>
 
 @section Scripts{
-	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	<partial name="_ValidationScriptsPartial" />
 
 	<script type="text/javascript">
 		$(document).ready(function () {
-			// Evento cuando cambia la provincia
-			$('#selectProvincia').on('change', function () {
-				var idProvincia = $(this).val();
-				var $selectCanton = $('#selectCanton');
-				var $selectDistrito = $('#selectDistrito');
-
-				// Limpiar y deshabilitar cantones y distritos
-				$selectCanton.empty().append('<option value="">Cargando...</option>').prop('disabled', true);
-				$selectDistrito.empty().append('<option value="">Seleccione primero un cantón</option>').prop('disabled', true);
-
-				if (idProvincia) {
-					// Cargar cantones de la provincia seleccionada
-					$.ajax({
-						url: '@Url.Action("ObtenerCantonesPorProvincia", "Cuentas")',
-						type: 'GET',
-						data: { idProvincia: idProvincia },
-						success: function (data) {
-							$selectCanton.empty().append('<option value="">Seleccione un cantón</option>');
-
-							if (data && data.length > 0) {
-								$.each(data, function (index, canton) {
-									$selectCanton.append($('<option></option>').val(canton.value).text(canton.text));
-								});
-								$selectCanton.prop('disabled', false);
-							} else {
-								$selectCanton.append('<option value="">No hay cantones disponibles</option>');
-							}
-						},
-						error: function () {
-							$selectCanton.empty().append('<option value="">Error al cargar cantones</option>');
-						}
-					});
-				} else {
-					$selectCanton.empty().append('<option value="">Seleccione primero una provincia</option>');
-				}
-			});
-
-			// Evento cuando cambia el cantón
-			$('#selectCanton').on('change', function () {
-				var idCanton = $(this).val();
-				var $selectDistrito = $('#selectDistrito');
-
-				// Limpiar y deshabilitar distritos
-				$selectDistrito.empty().append('<option value="">Cargando...</option>').prop('disabled', true);
-
-				if (idCanton) {
-					// Cargar distritos del cantón seleccionado
-					$.ajax({
-						url: '@Url.Action("ObtenerDistritosPorCanton", "Cuentas")',
-						type: 'GET',
-						data: { idCanton: idCanton },
-						success: function (data) {
-							$selectDistrito.empty().append('<option value="">Seleccione un distrito</option>');
-
-							if (data && data.length > 0) {
-								$.each(data, function (index, distrito) {
-									$selectDistrito.append($('<option></option>').val(distrito.value).text(distrito.text));
-								});
-								$selectDistrito.prop('disabled', false);
-							} else {
-								$selectDistrito.append('<option value="">No hay distritos disponibles</option>');
-							}
-						},
-						error: function () {
-							$selectDistrito.empty().append('<option value="">Error al cargar distritos</option>');
-						}
-					});
-				} else {
-					$selectDistrito.empty().append('<option value="">Seleccione primero un cantón</option>');
-				}
+			initCascadingDropdowns({
+				provinciaSelector: '#selectProvincia',
+				cantonSelector: '#selectCanton',
+				distritoSelector: '#selectDistrito',
+				cantonesUrl: '@Url.Action("ObtenerCantonesPorProvincia", "Cuentas")',
+				distritosUrl: '@Url.Action("ObtenerDistritosPorCanton", "Cuentas")'
 			});
 		});
 	</script>

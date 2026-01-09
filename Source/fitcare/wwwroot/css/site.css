@@ -150,3 +150,16 @@ input[type="checkbox"].input-validation-error {
 .breadcrumb {
 	font-size: 0.8rem !important;
 }
+
+/* Toast notification container */
+.toast-container {
+	position: fixed;
+	top: 70px;
+	right: 20px;
+	z-index: 9999;
+}
+
+/* Full width table (DataTables) */
+.table-full-width {
+	width: 100%;
+}

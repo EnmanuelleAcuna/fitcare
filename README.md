@@ -97,3 +97,12 @@ TODO: Add your code references.
 - Mostrar en los resultados solo el encabezado de la rutina (Incluyendo la cantidad de ejercicios)
 - Por cada rutina colocar el boton ver detalle de rutina.
 - Este detalle debe abrirse en una nueva pestaña del navegador.
+
+## Trabajo de hoy
+- Reordenar opciones de catalogo en un solo grupo.
+- Definir un enumerable de las acciones que se pueden hacer en el sistema y registrar algunas acciones iniciales.
+- Trabajar mantenimiento de roles para que se pueda usar el enumerable de acciones.
+- Trabajar en autorización de los mantenimientos de los catálogos para validar contra el rol y sus acciones permitidas/registradas.
+
+
+- Actualizar para establecer los grupos musculares y maquinas en el viewmodel en vez de hacerlo en el controller

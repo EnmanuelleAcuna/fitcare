@@ -31,12 +31,6 @@ public class HomeController : BaseController
 	}
 
 	[HttpGet]
-	public IActionResult AcercaDe()
-	{
-		return View();
-	}
-
-	[HttpGet]
 	[Authorize]
 	public async Task<ActionResult> Admin()
 	{

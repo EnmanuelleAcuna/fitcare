@@ -47,7 +47,7 @@ public class EjerciciosController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> ListarEjercicios()
+	public async Task<ActionResult> Ejercicios()
 	{
 		var ejercicios = await _ejercicios.ReadAllAsync();
 		var modelo = ejercicios.Select(x => new EjercicioViewModel(x)).ToList();
@@ -103,7 +103,7 @@ public class EjerciciosController : BaseController
 		await _ejercicios.CreateAsync(ejercicio, GetCurrentUser());
 		TempData["ToastMessage"] = "Ejercicio agregado exitosamente";
 		TempData["ToastType"] = "success";
-		return RedirectToAction(nameof(ListarEjercicios));
+		return RedirectToAction(nameof(Ejercicios));
 	}
 
 	[HttpGet]
@@ -157,7 +157,7 @@ public class EjerciciosController : BaseController
 		await _ejercicios.UpdateAsync(ejercicio, GetCurrentUser());
 		TempData["ToastMessage"] = "Ejercicio actualizado exitosamente";
 		TempData["ToastType"] = "success";
-		return RedirectToAction(nameof(ListarEjercicios));
+		return RedirectToAction(nameof(Ejercicios));
 	}
 
 	[HttpGet]
@@ -182,7 +182,7 @@ public class EjerciciosController : BaseController
 			await _ejercicios.DeleteAsync(new Guid(modelo.Id));
 			TempData["ToastMessage"] = "Ejercicio eliminado exitosamente";
 			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(ListarEjercicios));
+			return RedirectToAction(nameof(Ejercicios));
 		}
 		catch (Exception ex)
 		{
@@ -201,7 +201,7 @@ public class EjerciciosController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> ListarTiposEjercicio()
+	public async Task<ActionResult> TiposEjercicio()
 	{
 		IEnumerable<TipoEjercicio> listaTiposEjercicio = await _tiposEjercicio.ReadAllAsync();
 		IEnumerable<TipoEjercicioViewModel> modelo = listaTiposEjercicio.Select(x => new TipoEjercicioViewModel(x)).ToList();
@@ -223,7 +223,7 @@ public class EjerciciosController : BaseController
 			await _tiposEjercicio.CreateAsync(modelo.Entidad(), GetCurrentUser());
 			TempData["ToastMessage"] = "Tipo de ejercicio agregado exitosamente";
 			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(ListarTiposEjercicio));
+			return RedirectToAction(nameof(TiposEjercicio));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(TipoEjercicio)));
@@ -249,7 +249,7 @@ public class EjerciciosController : BaseController
 			await _tiposEjercicio.UpdateAsync(tipoEjercicio, GetCurrentUser());
 			TempData["ToastMessage"] = "Tipo de ejercicio actualizado exitosamente";
 			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(ListarTiposEjercicio));
+			return RedirectToAction(nameof(TiposEjercicio));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoEjercicio)));
@@ -275,7 +275,7 @@ public class EjerciciosController : BaseController
 				await _tiposEjercicio.DeleteAsync(new Guid(modelo.IdTipoEjercicio));
 				TempData["ToastMessage"] = "Tipo de ejercicio eliminado exitosamente";
 				TempData["ToastType"] = "success";
-				return RedirectToAction(nameof(ListarTiposEjercicio));
+				return RedirectToAction(nameof(TiposEjercicio));
 			}
 			catch (Exception ex)
 			{

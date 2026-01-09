@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using fitcare.Models;
 using fitcare.Models.Extras;
 using fitcare.Models.Identity;
@@ -197,7 +200,7 @@ public class CuentasController : BaseController
 	public ActionResult RestablecerContrasenaConfirmada() => View();
 
 	[HttpGet]
-	public ActionResult ListarUsuarios()
+	public ActionResult Usuarios()
 	{
 		var listaUsuarios = _userManager.Users.ToList();
 		var modelo = listaUsuarios.Select(u => new UsuarioViewModel(u)).ToList();
@@ -226,7 +229,7 @@ public class CuentasController : BaseController
 				? await _userManager.AddToRolesAsync(usuario, rolesSeleccionados)
 				: IdentityResult.Failed();
 
-			if (usuarioCreado.Succeeded && rolesAsignados.Succeeded) return RedirectToAction(nameof(ListarUsuarios));
+			if (usuarioCreado.Succeeded && rolesAsignados.Succeeded) return RedirectToAction(nameof(Usuarios));
 
 			AddErrors(usuarioCreado);
 			AddErrors(rolesAsignados);
@@ -270,7 +273,7 @@ public class CuentasController : BaseController
 
 			if (usuarioActualizado.Succeeded && rolesActualizados.Succeeded)
 			{
-				return RedirectToAction(nameof(ListarUsuarios));
+				return RedirectToAction(nameof(Usuarios));
 			}
 			else
 			{
@@ -309,7 +312,7 @@ public class CuentasController : BaseController
 
 		IdentityResult usuarioEliminado = await _userManager.DeleteAsync(usuario);
 
-		if (usuarioEliminado.Succeeded) return RedirectToAction(nameof(ListarUsuarios));
+		if (usuarioEliminado.Succeeded) return RedirectToAction(nameof(Usuarios));
 
 		// Si se llega a este punto, hubo un error
 		AddErrors(usuarioEliminado);
@@ -320,7 +323,7 @@ public class CuentasController : BaseController
 	}
 
 	[HttpGet]
-	public IActionResult ListarRoles()
+	public IActionResult Roles()
 	{
 		IList<ApplicationRole> listaRoles = _roleManager.Roles.ToList();
 		IList<InicioRolesViewModel> modelo = listaRoles.Select(x => new InicioRolesViewModel(x)).ToList();
@@ -339,7 +342,7 @@ public class CuentasController : BaseController
 			ApplicationRole rol = modelo.Entidad();
 			IdentityResult rolCreado = await _roleManager.CreateAsync(rol);
 
-			if (rolCreado.Succeeded) return RedirectToAction(nameof(ListarRoles));
+			if (rolCreado.Succeeded) return RedirectToAction(nameof(Roles));
 
 			AddErrors(rolCreado);
 		}
@@ -374,7 +377,7 @@ public class CuentasController : BaseController
 
 			IdentityResult RolActualizado = await _roleManager.UpdateAsync(rol);
 
-			if (RolActualizado.Succeeded) return RedirectToAction(nameof(ListarRoles));
+			if (RolActualizado.Succeeded) return RedirectToAction(nameof(Roles));
 
 			AddErrors(RolActualizado);
 		}
@@ -406,7 +409,7 @@ public class CuentasController : BaseController
 
 		IdentityResult rolEliminado = await _roleManager.DeleteAsync(rol);
 
-		if (rolEliminado.Succeeded) return RedirectToAction(nameof(ListarRoles));
+		if (rolEliminado.Succeeded) return RedirectToAction(nameof(Roles));
 
 		// Si se llega a este punto, hubo un error
 		AddErrors(rolEliminado);
@@ -453,7 +456,7 @@ public class CuentasController : BaseController
 			var usuarioRegistradoComoInstructor =
 				await _userManager.RegistrarUsuarioComoInstructor(modelo.Entidad(), string.Empty);
 
-			if (usuarioRegistradoComoInstructor.Succeeded) return RedirectToAction(nameof(ListarInstructores));
+			if (usuarioRegistradoComoInstructor.Succeeded) return RedirectToAction(nameof(Instructores));
 
 			AddErrors(usuarioRegistradoComoInstructor);
 		}
@@ -504,7 +507,7 @@ public class CuentasController : BaseController
 			var usuarioRegistradoComoCliente =
 				await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), string.Empty);
 
-			if (usuarioRegistradoComoCliente.Succeeded) return RedirectToAction(nameof(ListarClientes));
+			if (usuarioRegistradoComoCliente.Succeeded) return RedirectToAction(nameof(Clientes));
 
 			AddErrors(usuarioRegistradoComoCliente);
 		}
@@ -518,18 +521,263 @@ public class CuentasController : BaseController
 		return View(modelo);
 	}
 
-	public async Task<ActionResult> ReporteInstructores()
+	public async Task<ActionResult> Instructores()
 	{
 		var usuariosInstructor = await _userManager.GetUsersInRoleWithDivisionTerritorialInfoAsync("Instructor");
-		var modelo = usuariosInstructor.Select(x => new ReporteInstructorViewModel(x));
+		var modelo = usuariosInstructor.Select(x => new InstructorListViewModel(x));
 		return View(modelo);
 	}
 
-	public async Task<ActionResult> ReporteClientes()
+	[HttpGet]
+	public async Task<IActionResult> EditarInstructor(string id)
+	{
+		var usuario = await _userManager.FindByIdAsync(id);
+
+		if (usuario == null) return NotFound();
+
+		var modelo = new AgregarInstructorViewModel(usuario)
+		{
+			IdProvincia = usuario.IdProvincia?.ToString(),
+			IdCanton = usuario.IdCanton?.ToString(),
+			IdDistrito = usuario.IdDistrito?.ToString(),
+			FechaIngreso = usuario.FechaIngresoInscripcion ?? DateTime.Now
+		};
+
+		ViewBag.Provincias = await CargarListaSeleccionProvincias();
+		ViewBag.Cantones = await CargarListaSeleccionCantones();
+		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+
+		return View(modelo);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> EditarInstructor(AgregarInstructorViewModel modelo)
+	{
+		if (ModelState.IsValid)
+		{
+			var resultado = await _userManager.ActualizarDatosInstructor(modelo.Entidad());
+
+			if (resultado.Succeeded) return RedirectToAction(nameof(Instructores));
+
+			AddErrors(resultado);
+		}
+
+		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(ApplicationUser)));
+
+		ViewBag.Provincias = await CargarListaSeleccionProvincias();
+		ViewBag.Cantones = await CargarListaSeleccionCantones();
+		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+
+		return View(modelo);
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> DesafiliarInstructor([FromBody] DesafiliarUsuarioRequest request)
+	{
+		if (string.IsNullOrEmpty(request?.Id))
+		{
+			return Json(new { success = false, message = "ID de usuario no válido" });
+		}
+
+		var resultado = await _userManager.DesafiliarUsuarioComoInstructor(request.Id);
+
+		if (resultado.Succeeded)
+		{
+			return Json(new { success = true, message = "Instructor desafiliado exitosamente" });
+		}
+
+		var errores = string.Join(", ", resultado.Errors.Select(e => e.Description));
+		return Json(new { success = false, message = errores });
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> ExportarInstructores()
+	{
+		var usuariosInstructor = await _userManager.GetUsersInRoleWithDivisionTerritorialInfoAsync("Instructor");
+		var instructores = usuariosInstructor.Select(x => new InstructorExportViewModel(x)).ToList();
+
+		using var workbook = new XLWorkbook();
+		var worksheet = workbook.Worksheets.Add("Instructores");
+
+		// Headers
+		worksheet.Cell(1, 1).Value = "Número de identificación";
+		worksheet.Cell(1, 2).Value = "Nombre";
+		worksheet.Cell(1, 3).Value = "Primer apellido";
+		worksheet.Cell(1, 4).Value = "Segundo apellido";
+		worksheet.Cell(1, 5).Value = "Nombre completo";
+		worksheet.Cell(1, 6).Value = "Correo electrónico";
+		worksheet.Cell(1, 7).Value = "Provincia";
+		worksheet.Cell(1, 8).Value = "Cantón";
+		worksheet.Cell(1, 9).Value = "Distrito";
+		worksheet.Cell(1, 10).Value = "Dirección completa";
+		worksheet.Cell(1, 11).Value = "Fecha de ingreso";
+		worksheet.Cell(1, 12).Value = "Estado";
+
+		// Style headers
+		var headerRange = worksheet.Range(1, 1, 1, 12);
+		headerRange.Style.Font.Bold = true;
+		headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#198754");
+		headerRange.Style.Font.FontColor = XLColor.White;
+
+		// Data
+		int row = 2;
+		foreach (var instructor in instructores)
+		{
+			worksheet.Cell(row, 1).Value = instructor.NumeroIdentificacion;
+			worksheet.Cell(row, 2).Value = instructor.Nombre;
+			worksheet.Cell(row, 3).Value = instructor.PrimerApellido;
+			worksheet.Cell(row, 4).Value = instructor.SegundoApellido;
+			worksheet.Cell(row, 5).Value = instructor.NombreCompleto;
+			worksheet.Cell(row, 6).Value = instructor.Correo;
+			worksheet.Cell(row, 7).Value = instructor.Provincia;
+			worksheet.Cell(row, 8).Value = instructor.Canton;
+			worksheet.Cell(row, 9).Value = instructor.Distrito;
+			worksheet.Cell(row, 10).Value = instructor.DireccionCompleta;
+			worksheet.Cell(row, 11).Value = instructor.FechaIngreso?.ToString("dd/MM/yyyy");
+			worksheet.Cell(row, 12).Value = instructor.Estado;
+			row++;
+		}
+
+		worksheet.Columns().AdjustToContents();
+
+		using var stream = new MemoryStream();
+		workbook.SaveAs(stream);
+		var content = stream.ToArray();
+		var fileName = $"Instructores_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+
+		return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+	}
+
+	public async Task<ActionResult> Clientes()
 	{
 		var usuariosCliente = await _userManager.GetUsersInRoleWithDivisionTerritorialInfoAsync("Cliente");
-		var modelo = usuariosCliente.Select(x => new ReporteClienteViewModel(x));
+		var modelo = usuariosCliente.Select(x => new ClienteListViewModel(x));
 		return View(modelo);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> EditarCliente(string id)
+	{
+		var usuario = await _userManager.FindByIdAsync(id);
+
+		if (usuario == null) return NotFound();
+
+		var modelo = new AgregarClienteViewModel(usuario)
+		{
+			IdProvincia = usuario.IdProvincia?.ToString(),
+			IdCanton = usuario.IdCanton?.ToString(),
+			IdDistrito = usuario.IdDistrito?.ToString(),
+			FechaInscripcion = usuario.FechaIngresoInscripcion ?? DateTime.Now,
+			FechaRenovacion = usuario.FechaRenovacion ?? DateTime.Now.AddDays(30)
+		};
+
+		ViewBag.Provincias = await CargarListaSeleccionProvincias();
+		ViewBag.Cantones = await CargarListaSeleccionCantones();
+		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+
+		return View(modelo);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> EditarCliente(AgregarClienteViewModel modelo)
+	{
+		if (ModelState.IsValid)
+		{
+			var resultado = await _userManager.ActualizarDatosCliente(modelo.Entidad());
+
+			if (resultado.Succeeded) return RedirectToAction(nameof(Clientes));
+
+			AddErrors(resultado);
+		}
+
+		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(ApplicationUser)));
+
+		ViewBag.Provincias = await CargarListaSeleccionProvincias();
+		ViewBag.Cantones = await CargarListaSeleccionCantones();
+		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+
+		return View(modelo);
+	}
+
+	[HttpPost]
+	public async Task<JsonResult> DesafiliarCliente([FromBody] DesafiliarUsuarioRequest request)
+	{
+		if (string.IsNullOrEmpty(request?.Id))
+		{
+			return Json(new { success = false, message = "ID de usuario no válido" });
+		}
+
+		var resultado = await _userManager.DesafiliarUsuarioComoCliente(request.Id);
+
+		if (resultado.Succeeded)
+		{
+			return Json(new { success = true, message = "Cliente desafiliado exitosamente" });
+		}
+
+		var errores = string.Join(", ", resultado.Errors.Select(e => e.Description));
+		return Json(new { success = false, message = errores });
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> ExportarClientes()
+	{
+		var usuariosCliente = await _userManager.GetUsersInRoleWithDivisionTerritorialInfoAsync("Cliente");
+		var clientes = usuariosCliente.Select(x => new ClienteExportViewModel(x)).ToList();
+
+		using var workbook = new XLWorkbook();
+		var worksheet = workbook.Worksheets.Add("Clientes");
+
+		// Headers
+		worksheet.Cell(1, 1).Value = "Número de identificación";
+		worksheet.Cell(1, 2).Value = "Nombre";
+		worksheet.Cell(1, 3).Value = "Primer apellido";
+		worksheet.Cell(1, 4).Value = "Segundo apellido";
+		worksheet.Cell(1, 5).Value = "Nombre completo";
+		worksheet.Cell(1, 6).Value = "Correo electrónico";
+		worksheet.Cell(1, 7).Value = "Provincia";
+		worksheet.Cell(1, 8).Value = "Cantón";
+		worksheet.Cell(1, 9).Value = "Distrito";
+		worksheet.Cell(1, 10).Value = "Dirección completa";
+		worksheet.Cell(1, 11).Value = "Fecha de inscripción";
+		worksheet.Cell(1, 12).Value = "Fecha de renovación";
+		worksheet.Cell(1, 13).Value = "Estado";
+
+		// Style headers
+		var headerRange = worksheet.Range(1, 1, 1, 13);
+		headerRange.Style.Font.Bold = true;
+		headerRange.Style.Fill.BackgroundColor = XLColor.FromHtml("#198754");
+		headerRange.Style.Font.FontColor = XLColor.White;
+
+		// Data
+		int row = 2;
+		foreach (var cliente in clientes)
+		{
+			worksheet.Cell(row, 1).Value = cliente.NumeroIdentificacion;
+			worksheet.Cell(row, 2).Value = cliente.Nombre;
+			worksheet.Cell(row, 3).Value = cliente.PrimerApellido;
+			worksheet.Cell(row, 4).Value = cliente.SegundoApellido;
+			worksheet.Cell(row, 5).Value = cliente.NombreCompleto;
+			worksheet.Cell(row, 6).Value = cliente.Correo;
+			worksheet.Cell(row, 7).Value = cliente.Provincia;
+			worksheet.Cell(row, 8).Value = cliente.Canton;
+			worksheet.Cell(row, 9).Value = cliente.Distrito;
+			worksheet.Cell(row, 10).Value = cliente.DireccionCompleta;
+			worksheet.Cell(row, 11).Value = cliente.FechaInscripcion?.ToString("dd/MM/yyyy");
+			worksheet.Cell(row, 12).Value = cliente.FechaRenovacion?.ToString("dd/MM/yyyy");
+			worksheet.Cell(row, 13).Value = cliente.Estado;
+			row++;
+		}
+
+		worksheet.Columns().AdjustToContents();
+
+		using var stream = new MemoryStream();
+		workbook.SaveAs(stream);
+		var content = stream.ToArray();
+		var fileName = $"Clientes_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+
+		return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
 	}
 
 	[HttpGet]

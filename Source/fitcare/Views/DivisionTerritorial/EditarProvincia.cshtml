@@ -14,10 +14,10 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="@Url.Action("Administracion", "Home")">Administración</a>
+							<a asp-action="Administracion" asp-controller="Home">Administración</a>
 						</li>
 						<li class="breadcrumb-item">
-							<a href="@Url.Action("ListarProvincias")">Provincias</a>
+							<a asp-action="Provincias">Provincias</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
 							Modificar
@@ -34,48 +34,44 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					@using (Html.BeginForm("EditarProvincia", "DivisionTerritorial", FormMethod.Post, new { autocomplete = "off" }))
-					{
-						@Html.AntiForgeryToken()
-						@Html.HiddenFor(model => model.Id)
+					<form asp-action="EditarProvincia" asp-controller="DivisionTerritorial" method="post" autocomplete="off">
+						<input asp-for="Id" type="hidden" />
 
 						<div class="row">
 							<div class="col-md-12">
-								@Html.ValidationSummary(true, "")
+								<div asp-validation-summary="ModelOnly"></div>
 							</div>
 						</div>
 
 						<div class="row">
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.Nombre)
-									@Html.TextBoxFor(model => model.Nombre, "", new { @class = "form-control form-control-sm" })
-									@Html.ValidationMessageFor(Model => Model.Nombre)
+									<label asp-for="Nombre"></label>
+									<input asp-for="Nombre" class="form-control form-control-sm" />
+									<span asp-validation-for="Nombre"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.Activo)
+									<label asp-for="Activo"></label>
 									<br />
-									@Html.EditorFor(model => model.Activo, "", new { @class = "form-control" })
+									<input asp-for="Activo" type="checkbox" />
 								</div>
 							</div>
 
 							<div class="col-12">
-								<input value="Guardar" class="btn btn-sm btn-default" type="submit" />
-								@Html.ActionLink("Regresar", "ListarProvincias", null, null, new { @class = "btn btn-sm btn-secondary" })
+								<button type="submit" class="btn btn-sm btn-default">Guardar</button>
+								<a asp-action="Provincias" class="btn btn-sm btn-secondary">Regresar</a>
 							</div>
 						</div>
-					}
+					</form>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-@section Scripts{
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
 }

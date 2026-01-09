@@ -15,9 +15,9 @@
 		<UserSecretsId>aspnet-fitcare-3ABE0FEB-41D4-41EE-8A2F-6F7B06BEA1D2</UserSecretsId>
 		<AssemblyName>fitcare</AssemblyName>
 		<RootNamespace>fitcare</RootNamespace>
-		<Description></Description>
-		<Copyright></Copyright>
-		<PackageProjectUrl></PackageProjectUrl>
+		<Description>fitcare gym administration platform</Description>
+		<Copyright>Arenal Dev Studio</Copyright>
+		<PackageProjectUrl>https://gimnasios.azurewebsites.net</PackageProjectUrl>
 		<RepositoryUrl>https://dev.azure.com/josealexander/_git/fitcare</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<StartupObject>fitcare.Program</StartupObject>
@@ -43,19 +43,13 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.66.2" />
+		<PackageReference Include="ClosedXML" Version="0.102.2" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Folder Include="wwwroot\images\Instructores\" />
 		<Folder Include="wwwroot\images\Clientes\" />
 		<Folder Include="wwwroot\images\Maquinas\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <_ContentIncludedByDefault Remove="Views\Contactos\ConfirmacionContacto.cshtml" />
-	  <_ContentIncludedByDefault Remove="Views\Contactos\Eliminar.cshtml" />
-	  <_ContentIncludedByDefault Remove="Views\Contactos\Index.cshtml" />
-	  <_ContentIncludedByDefault Remove="Views\Contactos\_Detalle.cshtml" />
 	</ItemGroup>
 
 </Project>

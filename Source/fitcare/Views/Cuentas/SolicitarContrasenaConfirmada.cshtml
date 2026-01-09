@@ -17,11 +17,9 @@
 					</div>
 
 					<div class="w-100 text-center">
-						@Html.ActionLink("Iniciar sesión", "IniciarSesion", "Cuentas", null, new
-						{
-							@class = "btn btn-sm btn-primary btn-block font-bold",
-							title = "Iniciar sesión"
-						})
+						<a asp-action="IniciarSesion" asp-controller="Cuentas" class="btn btn-sm btn-primary btn-block font-bold" title="Iniciar sesión">
+							Iniciar sesión
+						</a>
 					</div>
 				</div>
 			</div>

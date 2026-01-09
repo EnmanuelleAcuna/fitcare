@@ -1,0 +1,723 @@
+@model DetalleRutinaViewModel
+
+@{
+	ViewBag.Title = "Rutinas";
+}
+
+<div class="container">
+	<div class="row">
+		<div class="col-5 align-self-center">
+			<h6 class="page-title">Editar rutina</h6>
+		</div>
+		<div class="col-7 align-self-center">
+			<div class="d-flex align-items-center justify-content-end">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
+						</li>
+
+						<li class="breadcrumb-item">
+							<a asp-action="Rutinas">Rutinas</a>
+						</li>
+						<li class="breadcrumb-item active" aria-current="page">
+							Editar
+						</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-hover table-sm text-nowrap">
+							<thead>
+								<tr>
+									<th>@Html.DisplayNameFor(m => m.Instructor)</th>
+									<th>@Html.DisplayNameFor(m => m.Cliente)</th>
+									<th>@Html.DisplayNameFor(m => m.FechaRealizacion)</th>
+									<th>@Html.DisplayNameFor(m => m.FechaInicio)</th>
+									<th>@Html.DisplayNameFor(m => m.FechaFin)</th>
+									<th>@Html.DisplayNameFor(m => m.CantidadEjercicios)</th>
+									<th>@Html.DisplayNameFor(m => m.Objetivos)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>@Model.Instructor</td>
+									<td>@Model.Cliente</td>
+									<td>@Model.FechaRealizacion.ToString("dd/MM/yyyy")</td>
+									<td>@Model.FechaInicio.ToString("dd/MM/yyyy")</td>
+									<td>@Model.FechaFin.ToString("dd/MM/yyyy")	</td>
+									<td>@Model.CantidadEjercicios</td>
+									<td>@Model.Objetivos</td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="d-flex justify-content-between align-items-center mb-2">
+							<h6 class="mb-0">Ejercicios</h6>
+							<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ModalAgregarEjercicio">
+								Agregar ejercicio
+							</button>
+						</div>
+
+						<table class="table table-hover table-sm" id="tablaEjercicios">
+							<thead>
+								<tr>
+									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().NombreEjercicio)</th>
+									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().GruposMusculares)</th>
+									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Maquinas)</th>
+									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Series)</th>
+									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Repeticiones)</th>
+									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().MinutosDescanso)</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var ejercicio in Model.Ejercicios)
+								{
+									<tr>
+										<td>@ejercicio.NombreEjercicio</td>
+										<td>@ejercicio.GruposMusculares</td>
+										<td>@ejercicio.Maquinas</td>
+										<td>@ejercicio.Series</td>
+										<td>@ejercicio.Repeticiones</td>
+										<td>@ejercicio.MinutosDescanso</td>
+										<td class="text-right text-nowrap">
+											<button class="btn btn-sm btn-light btn-editar-ejercicio"
+													data-id="@ejercicio.Id"
+													data-idejercicio="@ejercicio.IdEjercicio"
+													data-series="@ejercicio.Series"
+													data-repeticiones="@ejercicio.Repeticiones"
+													data-minutos="@ejercicio.MinutosDescanso">
+												Editar
+											</button>
+											<button class="btn btn-sm btn-danger btn-eliminar-ejercicio" data-id="@ejercicio.Id">
+												Eliminar
+											</button>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+
+						<div class="d-flex justify-content-between align-items-center mb-2 mt-4">
+							<h6 class="mb-0">Medidas</h6>
+							<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ModalAgregarMedida">
+								Agregar medida
+							</button>
+						</div>
+
+						<table class="table table-hover table-sm text-nowrap" id="tablaMedidas">
+							<thead>
+								<tr>
+									<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().NombreTipoMedida)</th>
+									<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Valor)</th>
+									<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Comentario)</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var medida in Model.Medidas)
+								{
+									<tr>
+										<td>@medida.NombreTipoMedida</td>
+										<td>@medida.Valor</td>
+										<td>@medida.Comentario</td>
+										<td class="text-right">
+											<button class="btn btn-sm btn-light btn-editar-medida"
+													data-id="@medida.Id"
+													data-idtipomedida="@medida.IdTipoMedida"
+													data-valor="@medida.Valor"
+													data-comentario="@medida.Comentario">
+												Editar
+											</button>
+											<button class="btn btn-sm btn-danger btn-eliminar-medida" data-id="@medida.Id">
+												Eliminar
+											</button>
+										</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@* Modal Agregar Ejercicio *@
+<div class="modal fade" id="ModalAgregarEjercicio" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Agregar ejercicio</h5>
+				<button type="button" class="close" data-dismiss="modal">
+					<span>&times;</span>
+				</button>
+			</div>
+			<form id="formAgregarEjercicio">
+				<div class="modal-body">
+					<div class="alert alert-danger d-none" id="errorAgregarEjercicio"></div>
+
+					<input type="hidden" id="IdRutinaEjercicio" value="@Model.Id" />
+
+					<div class="form-group">
+						<label for="IdEjercicioAgregar">Ejercicio</label>
+						<select id="IdEjercicioAgregar" name="IdEjercicio" class="form-control form-control-sm select2" required>
+							<option value="">Seleccione un ejercicio</option>
+							@foreach (var ejercicio in (List<SelectListItem>)ViewBag.ListaEjercicios)
+							{
+								<option value="@ejercicio.Value">@ejercicio.Text</option>
+							}
+						</select>
+						<small class="text-danger d-none" id="errorIdEjercicio"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="SeriesAgregar">Series</label>
+						<input type="number" id="SeriesAgregar" name="Series" class="form-control form-control-sm" min="1" max="100" required />
+						<small class="text-danger d-none" id="errorSeries"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="RepeticionesAgregar">Repeticiones</label>
+						<input type="number" id="RepeticionesAgregar" name="Repeticiones" class="form-control form-control-sm" min="1" max="500" required />
+						<small class="text-danger d-none" id="errorRepeticiones"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="MinutosDescansoAgregar">Minutos de descanso</label>
+						<input type="number" id="MinutosDescansoAgregar" name="MinutosDescanso" class="form-control form-control-sm" min="0" max="60" required />
+						<small class="text-danger d-none" id="errorMinutosDescanso"></small>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary btn-sm" id="btnGuardarEjercicio">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@* Modal Agregar Medida *@
+<div class="modal fade" id="ModalAgregarMedida" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Agregar medida</h5>
+				<button type="button" class="close" data-dismiss="modal">
+					<span>&times;</span>
+				</button>
+			</div>
+			<form id="formAgregarMedida">
+				<div class="modal-body">
+					<div class="alert alert-danger d-none" id="errorAgregarMedida"></div>
+
+					<input type="hidden" id="IdRutinaMedida" value="@Model.Id" />
+
+					<div class="form-group">
+						<label for="IdTipoMedidaAgregar">Tipo de medida</label>
+						<select id="IdTipoMedidaAgregar" name="IdTipoMedida" class="form-control form-control-sm" required>
+							<option value="">Seleccione un tipo de medida</option>
+							@foreach (var tipoMedida in (List<SelectListItem>)ViewBag.ListaTiposMedida)
+							{
+								<option value="@tipoMedida.Value">@tipoMedida.Text</option>
+							}
+						</select>
+						<small class="text-danger d-none" id="errorIdTipoMedida"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="ValorAgregar">Valor</label>
+						<input type="text" id="ValorAgregar" name="Valor" class="form-control form-control-sm" required />
+						<small class="text-danger d-none" id="errorValor"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="ComentarioAgregar">Comentario</label>
+						<textarea id="ComentarioAgregar" name="Comentario" class="form-control form-control-sm" rows="3"></textarea>
+						<small class="text-danger d-none" id="errorComentario"></small>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary btn-sm" id="btnGuardarMedida">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@* Modal Editar Ejercicio *@
+<div class="modal fade" id="ModalEditarEjercicio" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Editar ejercicio</h5>
+				<button type="button" class="close" data-dismiss="modal">
+					<span>&times;</span>
+				</button>
+			</div>
+			<form id="formEditarEjercicio">
+				<div class="modal-body">
+					<div class="alert alert-danger d-none" id="errorEditarEjercicio"></div>
+
+					<input type="hidden" id="IdEjercicioRutinaEditar" />
+
+					<div class="form-group">
+						<label for="IdEjercicioEditar">Ejercicio</label>
+						<select id="IdEjercicioEditar" name="IdEjercicio" class="form-control form-control-sm select2-editar" required>
+							<option value="">Seleccione un ejercicio</option>
+							@foreach (var ejercicio in (List<SelectListItem>)ViewBag.ListaEjercicios)
+							{
+								<option value="@ejercicio.Value">@ejercicio.Text</option>
+							}
+						</select>
+						<small class="text-danger d-none" id="errorIdEjercicioEditar"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="SeriesEditar">Series</label>
+						<input type="number" id="SeriesEditar" name="Series" class="form-control form-control-sm" min="1" max="100" required />
+						<small class="text-danger d-none" id="errorSeriesEditar"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="RepeticionesEditar">Repeticiones</label>
+						<input type="number" id="RepeticionesEditar" name="Repeticiones" class="form-control form-control-sm" min="1" max="500" required />
+						<small class="text-danger d-none" id="errorRepeticionesEditar"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="MinutosDescansoEditar">Minutos de descanso</label>
+						<input type="number" id="MinutosDescansoEditar" name="MinutosDescanso" class="form-control form-control-sm" min="0" max="60" required />
+						<small class="text-danger d-none" id="errorMinutosDescansoEditar"></small>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary btn-sm" id="btnActualizarEjercicio">Actualizar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@* Modal Editar Medida *@
+<div class="modal fade" id="ModalEditarMedida" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Editar medida</h5>
+				<button type="button" class="close" data-dismiss="modal">
+					<span>&times;</span>
+				</button>
+			</div>
+			<form id="formEditarMedida">
+				<div class="modal-body">
+					<div class="alert alert-danger d-none" id="errorEditarMedida"></div>
+
+					<input type="hidden" id="IdMedidaRutinaEditar" />
+
+					<div class="form-group">
+						<label for="IdTipoMedidaEditar">Tipo de medida</label>
+						<select id="IdTipoMedidaEditar" name="IdTipoMedida" class="form-control form-control-sm" required>
+							<option value="">Seleccione un tipo de medida</option>
+							@foreach (var tipoMedida in (List<SelectListItem>)ViewBag.ListaTiposMedida)
+							{
+								<option value="@tipoMedida.Value">@tipoMedida.Text</option>
+							}
+						</select>
+						<small class="text-danger d-none" id="errorIdTipoMedidaEditar"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="ValorEditar">Valor</label>
+						<input type="text" id="ValorEditar" name="Valor" class="form-control form-control-sm" required />
+						<small class="text-danger d-none" id="errorValorEditar"></small>
+					</div>
+
+					<div class="form-group">
+						<label for="ComentarioEditar">Comentario</label>
+						<textarea id="ComentarioEditar" name="Comentario" class="form-control form-control-sm" rows="3"></textarea>
+						<small class="text-danger d-none" id="errorComentarioEditar"></small>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-primary btn-sm" id="btnActualizarMedida">Actualizar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		// Arrays de IDs ya agregados (desde el servidor)
+		var ejerciciosAgregados = @Html.Raw(Json.Serialize(ViewBag.EjerciciosAgregados));
+		var tiposMedidaAgregados = @Html.Raw(Json.Serialize(ViewBag.TiposMedidaAgregados));
+
+		// Función para filtrar opciones del select
+		function filtrarOpcionesEjercicios() {
+			$('#IdEjercicioAgregar option').each(function() {
+				var optionValue = $(this).val();
+				if (optionValue && ejerciciosAgregados.includes(optionValue)) {
+					$(this).prop('disabled', true).hide();
+				} else {
+					$(this).prop('disabled', false).show();
+				}
+			});
+		}
+
+		function filtrarOpcionesTiposMedida() {
+			$('#IdTipoMedidaAgregar option').each(function() {
+				var optionValue = $(this).val();
+				if (optionValue && tiposMedidaAgregados.includes(optionValue)) {
+					$(this).prop('disabled', true).hide();
+				} else {
+					$(this).prop('disabled', false).show();
+				}
+			});
+		}
+
+		// Inicializar Select2 para ejercicios
+		$(document).ready(function () {
+			// Filtrar opciones antes de inicializar Select2
+			filtrarOpcionesEjercicios();
+			filtrarOpcionesTiposMedida();
+
+			$('#IdEjercicioAgregar').select2({
+				dropdownParent: $('#ModalAgregarEjercicio'),
+				width: '100%'
+			});
+
+			$('#IdEjercicioEditar').select2({
+				dropdownParent: $('#ModalEditarEjercicio'),
+				width: '100%'
+			});
+		});
+
+		// Limpiar errores al cerrar modales
+		$('#ModalAgregarEjercicio').on('hidden.bs.modal', function () {
+			$('#formAgregarEjercicio')[0].reset();
+			$('#IdEjercicioAgregar').val(null).trigger('change');
+			$('#errorAgregarEjercicio').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+		});
+
+		$('#ModalAgregarMedida').on('hidden.bs.modal', function () {
+			$('#formAgregarMedida')[0].reset();
+			$('#errorAgregarMedida').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+		});
+
+		$('#ModalEditarEjercicio').on('hidden.bs.modal', function () {
+			$('#formEditarEjercicio')[0].reset();
+			$('#IdEjercicioEditar').val(null).trigger('change');
+			$('#errorEditarEjercicio').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+		});
+
+		$('#ModalEditarMedida').on('hidden.bs.modal', function () {
+			$('#formEditarMedida')[0].reset();
+			$('#errorEditarMedida').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+		});
+
+		// Abrir modal de editar ejercicio
+		$(document).on('click', '.btn-editar-ejercicio', function () {
+			var btn = $(this);
+			var ejercicioActual = btn.data('idejercicio').toString();
+
+			// Filtrar ejercicios pero permitir el que estamos editando
+			$('#IdEjercicioEditar option').each(function() {
+				var optionValue = $(this).val();
+				if (optionValue && ejerciciosAgregados.includes(optionValue) && optionValue !== ejercicioActual) {
+					$(this).prop('disabled', true).hide();
+				} else {
+					$(this).prop('disabled', false).show();
+				}
+			});
+
+			$('#IdEjercicioRutinaEditar').val(btn.data('id'));
+			$('#IdEjercicioEditar').val(ejercicioActual).trigger('change');
+			$('#SeriesEditar').val(btn.data('series'));
+			$('#RepeticionesEditar').val(btn.data('repeticiones'));
+			$('#MinutosDescansoEditar').val(btn.data('minutos'));
+			$('#ModalEditarEjercicio').modal('show');
+		});
+
+		// Abrir modal de editar medida
+		$(document).on('click', '.btn-editar-medida', function () {
+			var btn = $(this);
+			var tipoMedidaActual = btn.data('idtipomedida').toString();
+
+			// Filtrar tipos de medida pero permitir el que estamos editando
+			$('#IdTipoMedidaEditar option').each(function() {
+				var optionValue = $(this).val();
+				if (optionValue && tiposMedidaAgregados.includes(optionValue) && optionValue !== tipoMedidaActual) {
+					$(this).prop('disabled', true).hide();
+				} else {
+					$(this).prop('disabled', false).show();
+				}
+			});
+
+			$('#IdMedidaRutinaEditar').val(btn.data('id'));
+			$('#IdTipoMedidaEditar').val(tipoMedidaActual);
+			$('#ValorEditar').val(btn.data('valor'));
+			$('#ComentarioEditar').val(btn.data('comentario'));
+			$('#ModalEditarMedida').modal('show');
+		});
+
+		// Enviar formulario de agregar ejercicio
+		$('#formAgregarEjercicio').on('submit', function (e) {
+			e.preventDefault();
+			$('#btnGuardarEjercicio').prop('disabled', true).text('Guardando...');
+
+			// Limpiar errores previos
+			$('#errorAgregarEjercicio').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+
+			var formData = {
+				IdRutina: $('#IdRutinaEjercicio').val(),
+				IdEjercicio: $('#IdEjercicioAgregar').val(),
+				Series: parseInt($('#SeriesAgregar').val()),
+				Repeticiones: parseInt($('#RepeticionesAgregar').val()),
+				MinutosDescanso: parseInt($('#MinutosDescansoAgregar').val())
+			};
+
+			$.ajax({
+				url: '@Url.Action("AgregarEjercicioAjax")',
+				type: 'POST',
+				data: JSON.stringify(formData),
+				contentType: 'application/json',
+				success: function (response) {
+					if (response.success) {
+						$('#ModalAgregarEjercicio').modal('hide');
+						mostrarToast(response.message, 'success');
+						setTimeout(function() {
+							location.reload();
+						}, 1000);
+					} else if (response.errors) {
+						// Mostrar errores de validación
+						for (var key in response.errors) {
+							$('#error' + key).removeClass('d-none').text(response.errors[key]);
+						}
+					} else {
+						$('#errorAgregarEjercicio').removeClass('d-none').text(response.message);
+					}
+				},
+				error: function () {
+					$('#errorAgregarEjercicio').removeClass('d-none').text('Error al comunicarse con el servidor.');
+				},
+				complete: function () {
+					$('#btnGuardarEjercicio').prop('disabled', false).text('Guardar');
+				}
+			});
+		});
+
+		// Enviar formulario de agregar medida
+		$('#formAgregarMedida').on('submit', function (e) {
+			e.preventDefault();
+			$('#btnGuardarMedida').prop('disabled', true).text('Guardando...');
+
+			// Limpiar errores previos
+			$('#errorAgregarMedida').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+
+			var formData = {
+				IdRutina: $('#IdRutinaMedida').val(),
+				IdTipoMedida: $('#IdTipoMedidaAgregar').val(),
+				Valor: $('#ValorAgregar').val(),
+				Comentario: $('#ComentarioAgregar').val()
+			};
+
+			$.ajax({
+				url: '@Url.Action("AgregarMedidaAjax")',
+				type: 'POST',
+				data: JSON.stringify(formData),
+				contentType: 'application/json',
+				success: function (response) {
+					if (response.success) {
+						$('#ModalAgregarMedida').modal('hide');
+						mostrarToast(response.message, 'success');
+						setTimeout(function() {
+							location.reload();
+						}, 1000);
+					} else if (response.errors) {
+						// Mostrar errores de validación
+						for (var key in response.errors) {
+							$('#error' + key).removeClass('d-none').text(response.errors[key]);
+						}
+					} else {
+						$('#errorAgregarMedida').removeClass('d-none').text(response.message);
+					}
+				},
+				error: function () {
+					$('#errorAgregarMedida').removeClass('d-none').text('Error al comunicarse con el servidor.');
+				},
+				complete: function () {
+					$('#btnGuardarMedida').prop('disabled', false).text('Guardar');
+				}
+			});
+		});
+
+		// Enviar formulario de editar ejercicio
+		$('#formEditarEjercicio').on('submit', function (e) {
+			e.preventDefault();
+			$('#btnActualizarEjercicio').prop('disabled', true).text('Actualizando...');
+
+			// Limpiar errores previos
+			$('#errorEditarEjercicio').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+
+			var formData = {
+				IdEjercicioRutina: $('#IdEjercicioRutinaEditar').val(),
+				IdEjercicio: $('#IdEjercicioEditar').val(),
+				Series: parseInt($('#SeriesEditar').val()),
+				Repeticiones: parseInt($('#RepeticionesEditar').val()),
+				MinutosDescanso: parseInt($('#MinutosDescansoEditar').val())
+			};
+
+			$.ajax({
+				url: '@Url.Action("EditarEjercicioAjax")',
+				type: 'POST',
+				data: JSON.stringify(formData),
+				contentType: 'application/json',
+				success: function (response) {
+					if (response.success) {
+						$('#ModalEditarEjercicio').modal('hide');
+						mostrarToast(response.message, 'success');
+						setTimeout(function() {
+							location.reload();
+						}, 1000);
+					} else if (response.errors) {
+						// Mostrar errores de validación
+						for (var key in response.errors) {
+							$('#error' + key + 'Editar').removeClass('d-none').text(response.errors[key]);
+						}
+					} else {
+						$('#errorEditarEjercicio').removeClass('d-none').text(response.message);
+					}
+				},
+				error: function () {
+					$('#errorEditarEjercicio').removeClass('d-none').text('Error al comunicarse con el servidor.');
+				},
+				complete: function () {
+					$('#btnActualizarEjercicio').prop('disabled', false).text('Actualizar');
+				}
+			});
+		});
+
+		// Enviar formulario de editar medida
+		$('#formEditarMedida').on('submit', function (e) {
+			e.preventDefault();
+			$('#btnActualizarMedida').prop('disabled', true).text('Actualizando...');
+
+			// Limpiar errores previos
+			$('#errorEditarMedida').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+
+			var formData = {
+				IdMedidaRutina: $('#IdMedidaRutinaEditar').val(),
+				IdTipoMedida: $('#IdTipoMedidaEditar').val(),
+				Valor: $('#ValorEditar').val(),
+				Comentario: $('#ComentarioEditar').val()
+			};
+
+			$.ajax({
+				url: '@Url.Action("EditarMedidaAjax")',
+				type: 'POST',
+				data: JSON.stringify(formData),
+				contentType: 'application/json',
+				success: function (response) {
+					if (response.success) {
+						$('#ModalEditarMedida').modal('hide');
+						mostrarToast(response.message, 'success');
+						setTimeout(function() {
+							location.reload();
+						}, 1000);
+					} else if (response.errors) {
+						// Mostrar errores de validación
+						for (var key in response.errors) {
+							$('#error' + key + 'Editar').removeClass('d-none').text(response.errors[key]);
+						}
+					} else {
+						$('#errorEditarMedida').removeClass('d-none').text(response.message);
+					}
+				},
+				error: function () {
+					$('#errorEditarMedida').removeClass('d-none').text('Error al comunicarse con el servidor.');
+				},
+				complete: function () {
+					$('#btnActualizarMedida').prop('disabled', false).text('Actualizar');
+				}
+			});
+		});
+
+		// Eliminar ejercicio
+		$(document).on('click', '.btn-eliminar-ejercicio', function () {
+			if (!confirm('¿Está seguro de eliminar este ejercicio?')) return;
+
+			var idEjercicio = $(this).data('id');
+			var btn = $(this);
+			btn.prop('disabled', true).text('Eliminando...');
+
+			$.ajax({
+				url: '@Url.Action("EliminarEjercicioAjax")',
+				type: 'POST',
+				data: JSON.stringify({ IdEjercicioRutina: idEjercicio }),
+				contentType: 'application/json',
+				success: function (response) {
+					if (response.success) {
+						location.reload();
+					} else {
+						alert(response.message);
+						btn.prop('disabled', false).text('Eliminar');
+					}
+				},
+				error: function () {
+					alert('Error al eliminar el ejercicio.');
+					btn.prop('disabled', false).text('Eliminar');
+				}
+			});
+		});
+
+		// Eliminar medida
+		$(document).on('click', '.btn-eliminar-medida', function () {
+			if (!confirm('¿Está seguro de eliminar esta medida?')) return;
+
+			var idMedida = $(this).data('id');
+			var btn = $(this);
+			btn.prop('disabled', true).text('Eliminando...');
+
+			$.ajax({
+				url: '@Url.Action("EliminarMedidaAjax")',
+				type: 'POST',
+				data: JSON.stringify({ IdMedidaRutina: idMedida }),
+				contentType: 'application/json',
+				success: function (response) {
+					if (response.success) {
+						location.reload();
+					} else {
+						alert(response.message);
+						btn.prop('disabled', false).text('Eliminar');
+					}
+				},
+				error: function () {
+					alert('Error al eliminar la medida.');
+					btn.prop('disabled', false).text('Eliminar');
+				}
+			});
+		});
+	</script>
+}

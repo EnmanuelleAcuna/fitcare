@@ -13,38 +13,35 @@
                     <span aria-hidden="true"><i class="fa fa-fw fa-window-close"></i></span>
                 </button>
             </div>
-            @using (Html.BeginForm("EditarAjax", "TiposMedida", FormMethod.Post, new { id = "formEditar" }))
-            {
-                @Html.AntiForgeryToken()
-
+            <form asp-action="EditarAjax" asp-controller="TiposMedida" method="post" id="formEditar">
                 <div class="modal-body">
-                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
 
-                    @Html.HiddenFor(m => m.Id, new { id = "IdEditar" })
+                    <input asp-for="Id" type="hidden" id="IdEditar" />
 
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Codigo, new { @for = "CodigoEditar" })
-                        @Html.TextBoxFor(m => m.Codigo, new { @class = "form-control form-control-sm", id = "CodigoEditar" })
-                        @Html.ValidationMessageFor(m => m.Codigo, "", new { @class = "text-danger" })
+                        <label asp-for="Codigo" for="CodigoEditar"></label>
+                        <input asp-for="Codigo" class="form-control form-control-sm" id="CodigoEditar" />
+                        <span asp-validation-for="Codigo" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Nombre, new { @for = "NombreEditar" })
-                        @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-sm", id = "NombreEditar" })
-                        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                        <label asp-for="Nombre" for="NombreEditar"></label>
+                        <input asp-for="Nombre" class="form-control form-control-sm" id="NombreEditar" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Estado)
+                        <label asp-for="Estado"></label>
                         <br/>
-                        @Html.CheckBoxFor(m => m.Estado, new { id = "EstadoEditar" })
+                        <input asp-for="Estado" type="checkbox" id="EstadoEditar" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-sm btn-primary" id="btnGuardarEditar">Guardar</button>
                 </div>
-            }
+            </form>
         </div>
     </div>
 </div>

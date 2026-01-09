@@ -13,36 +13,33 @@
                     <span aria-hidden="true"><i class="fa fa-fw fa-window-close"></i></span>
                 </button>
             </div>
-            @using (Html.BeginForm("AgregarAjax", "TiposMedida", FormMethod.Post, new { id = "formAgregar" }))
-            {
-                @Html.AntiForgeryToken()
-
+            <form asp-action="AgregarAjax" asp-controller="TiposMedida" method="post" id="formAgregar">
                 <div class="modal-body">
-                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
 
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Codigo, new { @for = "CodigoAgregar" })
-                        @Html.TextBoxFor(m => m.Codigo, new { @class = "form-control form-control-sm", placeholder = "Digite el código del nuevo tipo de medida", id = "CodigoAgregar" })
-                        @Html.ValidationMessageFor(m => m.Codigo, "", new { @class = "text-danger" })
+                        <label asp-for="Codigo" for="CodigoAgregar"></label>
+                        <input asp-for="Codigo" class="form-control form-control-sm" placeholder="Digite el código del nuevo tipo de medida" id="CodigoAgregar" />
+                        <span asp-validation-for="Codigo" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Nombre, new { @for = "NombreAgregar" })
-                        @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control form-control-sm", placeholder = "Digite el nombre del nuevo tipo de medida", id = "NombreAgregar" })
-                        @Html.ValidationMessageFor(m => m.Nombre, "", new { @class = "text-danger" })
+                        <label asp-for="Nombre" for="NombreAgregar"></label>
+                        <input asp-for="Nombre" class="form-control form-control-sm" placeholder="Digite el nombre del nuevo tipo de medida" id="NombreAgregar" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Estado)
+                        <label asp-for="Estado"></label>
                         <br/>
-                        @Html.CheckBoxFor(m => m.Estado, new { id = "EstadoAgregar" })
+                        <input asp-for="Estado" type="checkbox" id="EstadoAgregar" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-sm btn-primary" id="btnGuardarAgregar">Guardar</button>
                 </div>
-            }
+            </form>
         </div>
     </div>
 </div>

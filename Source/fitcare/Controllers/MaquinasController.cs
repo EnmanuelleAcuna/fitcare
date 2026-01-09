@@ -41,7 +41,7 @@ public class MaquinasController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> ListarMaquinas()
+	public async Task<IActionResult> Maquinas()
 	{
 		var maquinas = await _maquinas.ReadAllAsync();
 		var modeloVista = maquinas.Select(x => new MaquinaViewModel(x)).ToList();
@@ -69,7 +69,7 @@ public class MaquinasController : BaseController
 		await _maquinas.CreateAsync(modeloVista.Entidad(), CurrentUser);
 		TempData["ToastMessage"] = "Máquina agregada exitosamente";
 		TempData["ToastType"] = "success";
-		return RedirectToAction(nameof(ListarMaquinas));
+		return RedirectToAction(nameof(Maquinas));
 	}
 
 	[HttpGet]
@@ -96,7 +96,7 @@ public class MaquinasController : BaseController
 		await _maquinas.UpdateAsync(modeloVista.Entidad(), CurrentUser);
 		TempData["ToastMessage"] = "Máquina actualizada exitosamente";
 		TempData["ToastType"] = "success";
-		return RedirectToAction(nameof(ListarMaquinas));
+		return RedirectToAction(nameof(Maquinas));
 	}
 
 	[HttpGet]
@@ -122,7 +122,7 @@ public class MaquinasController : BaseController
 			await _maquinas.DeleteAsync(new Guid(modelo.Id));
 			TempData["ToastMessage"] = "Máquina eliminada exitosamente";
 			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(ListarMaquinas));
+			return RedirectToAction(nameof(Maquinas));
 		}
 		catch (Exception ex)
 		{
@@ -141,7 +141,7 @@ public class MaquinasController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> ListarTiposMaquina()
+	public async Task<ActionResult> TiposMaquina()
 	{
 		IEnumerable<TipoMaquina> listaTiposMaquina = await _tiposMaquina.ReadAllAsync();
 		IEnumerable<TipoMaquinaViewModel> modelo = listaTiposMaquina.Select(x => new TipoMaquinaViewModel(x)).ToList();
@@ -163,7 +163,7 @@ public class MaquinasController : BaseController
 			await _tiposMaquina.CreateAsync(modelo.Entidad(), GetCurrentUser());
 			TempData["ToastMessage"] = "Tipo de máquina agregado exitosamente";
 			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(ListarTiposMaquina));
+			return RedirectToAction(nameof(TiposMaquina));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(TipoMaquina)));
@@ -189,7 +189,7 @@ public class MaquinasController : BaseController
 			await _tiposMaquina.UpdateAsync(tipoMaquina, GetCurrentUser());
 			TempData["ToastMessage"] = "Tipo de máquina actualizado exitosamente";
 			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(ListarTiposMaquina));
+			return RedirectToAction(nameof(TiposMaquina));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoMaquina)));
@@ -215,7 +215,7 @@ public class MaquinasController : BaseController
 				await _tiposMaquina.DeleteAsync(new Guid(modelo.Id));
 				TempData["ToastMessage"] = "Tipo de máquina eliminado exitosamente";
 				TempData["ToastType"] = "success";
-				return RedirectToAction(nameof(ListarTiposMaquina));
+				return RedirectToAction(nameof(TiposMaquina));
 			}
 			catch (Exception ex)
 			{

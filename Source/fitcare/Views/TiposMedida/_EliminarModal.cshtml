@@ -13,14 +13,11 @@
                     <span aria-hidden="true"><i class="fa fa-fw fa-window-close"></i></span>
                 </button>
             </div>
-            @using (Html.BeginForm("EliminarAjax", "TiposMedida", FormMethod.Post, new { id = "formEliminar" }))
-            {
-                @Html.AntiForgeryToken()
-
+            <form asp-action="EliminarAjax" asp-controller="TiposMedida" method="post" id="formEliminar">
                 <div class="modal-body">
-                    @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
 
-                    @Html.HiddenFor(m => m.IdTipoMedida, new { id = "IdEliminar" })
+                    <input asp-for="IdTipoMedida" type="hidden" id="IdEliminar" />
 
                     <h6>¿Está seguro que desea eliminar el tipo de medida <strong><span id="NombreEliminar"></span></strong>?</h6>
 
@@ -33,7 +30,7 @@
                     <button type="button" class="btn btn-sm btn-light" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-sm btn-danger" id="btnConfirmarEliminar">Eliminar</button>
                 </div>
-            }
+            </form>
         </div>
     </div>
 </div>

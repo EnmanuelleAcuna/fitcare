@@ -14,10 +14,10 @@
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
-                            <a href="@Url.Action("Admin", "Home")">Administración</a>
+                            <a asp-action="Admin" asp-controller="Home">Administración</a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="@Url.Action("ListarMaquinas")">Máquinas</a>
+                            <a asp-action="Maquinas">Máquinas</a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">
                             Agregar
@@ -32,80 +32,79 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    @using (Html.BeginForm("AgregarMaquina", "Maquinas", FormMethod.Post, new { autocomplete = "off", enctype = "multipart/form-data" }))
-                    {
-                        @Html.AntiForgeryToken()
-
+                    <form asp-action="AgregarMaquina" asp-controller="Maquinas" method="post" autocomplete="off" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-12">
-                                @Html.ValidationSummary(true, "")
+                                <div asp-validation-summary="ModelOnly"></div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-sm-12 col-md-4">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.Codigo)
-                                    @Html.TextBoxFor(model => model.Codigo, "", new { @class = "form-control form-control-sm", placeholder = "Digite el código de la máquina" })
-                                    @Html.ValidationMessageFor(model => model.Codigo, "", new { @class = "text-danger" })
+                                    <label asp-for="Codigo"></label>
+                                    <input asp-for="Codigo" class="form-control form-control-sm" placeholder="Digite el código de la máquina" />
+                                    <span asp-validation-for="Codigo" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <div class="col-sm-12 col-md-4">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.Nombre)
-                                    @Html.TextBoxFor(model => model.Nombre, "", new { @class = "form-control form-control-sm", placeholder = "Digite el nombre de la máquina" })
-                                    @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+                                    <label asp-for="Nombre"></label>
+                                    <input asp-for="Nombre" class="form-control form-control-sm" placeholder="Digite el nombre de la máquina" />
+                                    <span asp-validation-for="Nombre" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <div class="col-sm-12 col-md-4">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.CodigoActivo)
-                                    @Html.TextBoxFor(model => model.CodigoActivo, "", new { @class = "form-control form-control-sm", placeholder = "Digite el número de activo de la máquina" })
-                                    @Html.ValidationMessageFor(model => model.CodigoActivo, "", new { @class = "text-danger" })
+                                    <label asp-for="CodigoActivo"></label>
+                                    <input asp-for="CodigoActivo" class="form-control form-control-sm" placeholder="Digite el número de activo de la máquina" />
+                                    <span asp-validation-for="CodigoActivo" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <div class="col-sm-12 col-md-4">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.IdTipoMaquina)
-                                    @Html.DropDownListFor(model => model.IdTipoMaquina, new List<SelectListItem>(ViewBag.ListaTiposMaquina), "Seleccione el tipo de máquina", new { @class = "form-control form-control-sm" })
-                                    @Html.ValidationMessageFor(model => model.IdTipoMaquina)
+                                    <label asp-for="IdTipoMaquina"></label>
+                                    <select asp-for="IdTipoMaquina" asp-items="@(new List<SelectListItem>(ViewBag.ListaTiposMaquina))" class="form-control form-control-sm">
+                                        <option value="">Seleccione el tipo de máquina</option>
+                                    </select>
+                                    <span asp-validation-for="IdTipoMaquina"></span>
                                 </div>
                             </div>
 
                             <div class="col-sm-12 col-md-4">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.FechaAdquisicion)
+                                    <label asp-for="FechaAdquisicion"></label>
                                     <br />
-                                    @Html.EditorFor(model => model.FechaAdquisicion, "MM/dd/yyyy", null, new { @class = "form-control form-control-sm" })
-                                    @Html.ValidationMessageFor(model => model.FechaAdquisicion, "", new { @class = "text-danger" })
+                                    <input asp-for="FechaAdquisicion" class="form-control form-control-sm" />
+                                    <span asp-validation-for="FechaAdquisicion" class="text-danger"></span>
                                 </div>
                             </div>
 
                             <div class="col-sm-12 col-md-4">
                                 <div class="form-group">
-                                    @Html.LabelFor(model => model.Activo)
+                                    <label asp-for="Activo"></label>
                                     <br />
-                                    @Html.EditorFor(model => model.Activo, "", new { @class = "form-control" })
+                                    <input asp-for="Activo" type="checkbox" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="row mt-2">
                             <div class="col-12">
-                                <input value="Guardar" class="btn btn-sm btn-primary" type="submit" />
-                                @Html.ActionLink("Regresar", "ListarMaquinas", null, null, new { @class = "btn btn-sm btn-secondary" })
+                                <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
+                                <a asp-action="Maquinas" class="btn btn-sm btn-secondary">Regresar</a>
                             </div>
                         </div>
-                    }
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

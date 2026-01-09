@@ -147,6 +147,12 @@ public class EjercicioRutinaViewModel
 		Series = ejercicioRutina.Series;
 		Repeticiones = ejercicioRutina.Repeticiones;
 		MinutosDescanso = ejercicioRutina.MinutosDescanso;
+		GruposMusculares = ejercicioRutina.Ejercicio?.GruposMusculares != null
+			? string.Join(", ", ejercicioRutina.Ejercicio.GruposMusculares.Select(g => g.Nombre))
+			: string.Empty;
+		Maquinas = ejercicioRutina.Ejercicio?.Maquinas != null
+			? string.Join(", ", ejercicioRutina.Ejercicio.Maquinas.Select(m => m.Nombre))
+			: string.Empty;
 	}
 
 	public string Id { get; set; }
@@ -156,6 +162,12 @@ public class EjercicioRutinaViewModel
 	public int Series { get; set; }
 	public int Repeticiones { get; set; }
 	public int MinutosDescanso { get; set; }
+
+	[Display(Name = "Grupos musculares")]
+	public string GruposMusculares { get; set; }
+
+	[Display(Name = "Maquinas")]
+	public string Maquinas { get; set; }
 
 	public EjercicioRutina Entidad()
 	{
@@ -194,15 +206,16 @@ public class MedidaRutinaViewModel
 	}
 }
 
-public class ReporteRutinaViewModel
+public class RutinaListaViewModel
 {
-	public ReporteRutinaViewModel() { }
+	public RutinaListaViewModel() { }
 
-	public ReporteRutinaViewModel(Rutina rutina)
+	public RutinaListaViewModel(Rutina rutina)
 	{
 		if (rutina is null)
 			throw new ArgumentNullException(paramName: nameof(rutina), message: Extras.Messages.MensajeModeloNulo);
 
+		Id = rutina.Id.ToString();
 		NombreInstructor = rutina.Instructor?.FullName;
 		NombreCliente = rutina.Cliente?.FullName;
 		FechaRegistro = rutina.FechaRealizacion.ToString("dd/MM/yyyy");
@@ -212,6 +225,8 @@ public class ReporteRutinaViewModel
 		DiasRutina = (rutina.FechaFin - rutina.FechaInicio).Days;
 		CantidadEjerciciosRegistrados = rutina.Ejercicios?.Count ?? 0;
 	}
+
+	public string Id { get; init; }
 
 	[Display(Name = "Instructor")]
 	public string NombreInstructor { get; init; }

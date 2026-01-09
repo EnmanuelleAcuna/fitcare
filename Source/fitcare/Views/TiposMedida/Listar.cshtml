@@ -12,7 +12,7 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="@Url.Action("Admin", "Home")">Administración</a>
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
 							Tipos de medida
@@ -59,7 +59,7 @@
 <partial name="_EliminarModal"/>
 
 @section Scripts {
-	@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+	<partial name="_ValidationScriptsPartial" />
 
 	<link rel="stylesheet" href="~/lib/datatables/css/dataTables.bootstrap4.min.css"/>
 	<script type="text/javascript" src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
@@ -70,7 +70,7 @@
 			let tablaTiposMedida = $('#tablaTiposMedida');
 			let modalDetalle = $('#ModalDetalle');
 			
-			tablaTiposMedida.DataTable({ // Inicializar DataTable
+			tablaTiposMedida.DataTable($.extend({}, dataTablesSpanishConfig, {
 				"ajax": {
 					"url": "@Url.Action("ObtenerTiposMedida")",
 					"type": "GET",
@@ -106,14 +106,8 @@
 						"className": "text-right"
 					}
 				],
-				"language": {
-					"url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"
-				},
-				"processing": true,
-				"pageLength": 10,
-				"lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Todos"]],
 				"order": [[1, "asc"]]
-			});
+			}));
 
 			// Manejar el evento del modal de detalle con delegación de eventos
 			tablaTiposMedida.on('click', '.btn-detalle', function () {

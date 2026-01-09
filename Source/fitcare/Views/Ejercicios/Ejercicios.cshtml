@@ -14,7 +14,7 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="@Url.Action("Admin", "Home")">Administración</a>
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
 							Ejercicios
@@ -60,8 +60,6 @@
 												</button>
 												<a class="btn btn-sm btn-light" asp-controller="Ejercicios" asp-action="EditarEjercicio"
 													asp-route-id="@Ejercicio.Id">Modificar</a>
-												@* <a class="btn btn-sm btn-light text-danger" asp-controller="Ejercicios" asp-action="EliminarEjercicio" *@
-												@* 	asp-route-id="@Ejercicio.Id">Eliminar</a> *@
 											</div>
 										</td>
 									</tr>
@@ -79,19 +77,16 @@
 
 @section Scripts {
 	<script type="text/javascript">
-		// Mostrar notificación si existe TempData
 		$(document).ready(function () {
 			mostrarNotificacion('@TempData["ToastMessage"]', '@TempData["ToastType"]');
 		});
 
-		$('#ModalDetalle').on('show.bs.modal', function (event)
-		{
-			var button = $(event.relatedTarget); // Button that triggered the modal
-			var IdEjercicio = button.data('idejercicio'); // Extract info from data-* attributes
+		$('#ModalDetalle').on('show.bs.modal', function (event) {
+			var button = $(event.relatedTarget);
+			var IdEjercicio = button.data('idejercicio');
 
 			$("#ModalDetalle").find('.modal-title .nombre').text("Cargando...");
 
-			// Initiate an AJAX request here(and then do the updating in a callback).
 			$.ajax({
 				url: '@Url.Action("DetalleEjercicio")',
 				data: { Id: IdEjercicio },
@@ -102,21 +97,17 @@
 			});
 		});
 
-		function handleData(data)
-		{
-			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+		function handleData(data) {
 			var modal = $("#ModalDetalle");
 			modal.find('.modal-title .nombre').text(data.nombre);
 			modal.find('.modal-body .tipo-ejercicio').text(data.tipoEjercicio);
 			modal.find('.modal-body .estado').text(data.estado);
 
-			// Grupos musculares
 			var gruposText = data.gruposMusculares && data.gruposMusculares.length > 0
 				? data.gruposMusculares.join(', ')
 				: 'Ninguno';
 			modal.find('.modal-body .grupos-musculares').text(gruposText);
 
-			// Máquinas
 			var maquinasText = data.maquinas && data.maquinas.length > 0
 				? data.maquinas.join(', ')
 				: 'Ninguna';
@@ -128,9 +119,7 @@
 			modal.find('.modal-body .modificado-el').text(data.editadoEl);
 		}
 
-		function handleError()
-		{
-			// Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+		function handleError() {
 			var modal = $("#ModalDetalle");
 			modal.find('.modal-title .nombre').text("Error al obtener la información");
 			modal.find('.modal-body .tipo-ejercicio').text('N/A');

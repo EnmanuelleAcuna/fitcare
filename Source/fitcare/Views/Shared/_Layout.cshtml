@@ -15,9 +15,9 @@
 
 	<title>@ViewData["Title"] - fitcare</title>
 
-	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
-	<link rel="stylesheet" href="~/css/site.css"/>
-	<link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css"/>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true"/>
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+	<link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" asp-append-version="true"/>
 </head>
 
 <body>
@@ -36,20 +36,14 @@
 						</a>
 					</li>
 
-					<li class="nav-item pt-1">
-						<a class="nav-link font-weight-bold text-primary" href='@Url.Action("AcercaDe", "Home")'>
-							Acerca de
-						</a>
-					</li>
-				</ul>
+					</ul>
 
 				<ul class="navbar-nav">
 					@if (SignInManager.IsSignedIn(User))
 					{
 						<li class="nav-item pt-1">
 							<div>
-								<form class="form-inline" asp-controller="Cuentas" asp-action="CerrarSesion"
-								      asp-route-returnUrl="@Url.Action("IniciarSesion", "Cuentas")">
+								<form class="form-inline" method="post" asp-controller="Cuentas" asp-action="CerrarSesion">
 									<button type="submit" class="dropdown-item text-danger font-weight-bold">
 										Cerrar sesión
 									</button>
@@ -64,7 +58,7 @@
 </header>
 
 <!-- Toast Container -->
-<div aria-live="polite" aria-atomic="true" style="position: fixed; top: 70px; right: 20px; z-index: 9999;">
+<div aria-live="polite" aria-atomic="true" class="toast-container">
 	<div id="toastContainer"></div>
 </div>
 
@@ -78,8 +72,8 @@
 	</div>
 </footer>
 
-<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+<script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
 <script type="text/javascript" src="~/js/site.js" asp-append-version="true"></script>
 
 @await RenderSectionAsync("Scripts", required: false)

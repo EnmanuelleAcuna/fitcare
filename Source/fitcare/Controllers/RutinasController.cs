@@ -59,11 +59,34 @@ public class RutinasController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> Listar()
+	public async Task<ActionResult> Rutinas()
 	{
 		ApplicationUser user = await _userManager.GetUserAsync(User);
-		IEnumerable<Rutina> rutinas = await _rutinas.ObtenerReporteRutinas(null, user.Id);
-		IEnumerable<RutinaViewModel> modelo = rutinas.Select(x => new RutinaViewModel(x)).ToList();
+		bool esInstructor = await _userManager.IsInRoleAsync(user, "Instructor");
+		bool esCliente = await _userManager.IsInRoleAsync(user, "Cliente");
+		bool esAdmin = await _userManager.IsInRoleAsync(user, "Administrador");
+
+		string idInstructor = null;
+		string idCliente = null;
+
+		// Filtrar según el rol del usuario
+		if (esCliente && !esAdmin)
+		{
+			idCliente = user.Id;
+		}
+		else if (esInstructor && !esAdmin)
+		{
+			idInstructor = user.Id;
+		}
+		// Si es Admin, no filtra (muestra todas)
+
+		ViewBag.EsAdmin = esAdmin;
+		ViewBag.EsInstructor = esInstructor;
+		ViewBag.EsCliente = esCliente;
+
+		IEnumerable<Rutina> rutinas = await _rutinas.ObtenerReporteRutinas(idInstructor, idCliente);
+		IEnumerable<RutinaListaViewModel> modelo = rutinas.Select(r => new RutinaListaViewModel(r)).ToList();
+
 		return View(modelo);
 	}
 
@@ -105,7 +128,7 @@ public class RutinasController : BaseController
 			string mensajeDeCorreo = string.Format(new CultureInfo("es-CR"), "Hola {0} <br /> Se ha registrado su rutina en fitcare. <br /> Para verla o darle seguimiento puede ir al siguiente <a href=\"{1}\">enlace</a>", "", urlVisualizacionRutina);
 			await _emailSender.SendEmailAsync(usuarioCliente.Email, "fitcare: Registro de rutina", mensajeDeCorreo);
 
-			return RedirectToAction(nameof(Listar));
+			return RedirectToAction(nameof(Rutinas));
 		}
 
 		var listaInstructores = await _userManager.GetUsersInRoleAsync("Instructor");
@@ -124,6 +147,16 @@ public class RutinasController : BaseController
 		var rutina = await _rutinas.ReadByIdAsync(new Guid(id));
 		if (rutina == null) return NotFound();
 
+		var modelo = new DetalleRutinaViewModel(rutina);
+		return View(modelo);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> Editar(string id)
+	{
+		var rutina = await _rutinas.ReadByIdAsync(new Guid(id));
+		if (rutina == null) return NotFound();
+
 		// Cargar listas para los modales
 		ViewBag.ListaEjercicios = CargarListaSeleccionEjercicios(await _ejercicios.ReadAllAsync());
 		ViewBag.ListaTiposMedida = CargarListaSeleccionTiposMedida(await _tiposMedida.ReadAllAsync());
@@ -136,24 +169,6 @@ public class RutinasController : BaseController
 		return View(modelo);
 	}
 
-	[HttpGet]
-	public async Task<ActionResult> Reporte()
-	{
-		await CargarViewBags();
-		var viewModel = new List<ReporteRutinaViewModel>();
-		return View(viewModel);
-	}
-
-	[HttpPost]
-	public async Task<ActionResult> Reporte(string idInstructor, string idCliente)
-	{
-		await CargarViewBags();
-
-		IEnumerable<Rutina> rutinas = await _rutinas.ObtenerReporteRutinas(idInstructor, idCliente);
-		IEnumerable<ReporteRutinaViewModel> viewModel = rutinas.Select(r => new ReporteRutinaViewModel(r)).ToList();
-
-		return View(viewModel);
-	}
 
 	[HttpPost]
 	public async Task<JsonResult> AgregarEjercicioAjax([FromBody] AgregarEjercicioRutinaViewModel modelo)

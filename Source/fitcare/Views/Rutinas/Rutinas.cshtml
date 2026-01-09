@@ -1,0 +1,108 @@
+@model IEnumerable<RutinaListaViewModel>
+
+@{
+	ViewBag.Title = "Rutinas";
+	bool esAdmin = ViewBag.EsAdmin ?? false;
+	bool esInstructor = ViewBag.EsInstructor ?? false;
+	bool esCliente = ViewBag.EsCliente ?? false;
+}
+
+<div class="container">
+	<div class="row">
+		<div class="col-5 align-self-center">
+			<h6 class="page-title">Rutinas</h6>
+		</div>
+		<div class="col-7 align-self-center">
+			<div class="d-flex align-items-center justify-content-end">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
+						</li>
+						<li class="breadcrumb-item active" aria-current="page">
+							Rutinas
+						</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<div class="table table-responsive table-sm text-nowrap">
+						<table id="tablaRutinas" class="display table-full-width">
+							<thead>
+							<tr>
+								@if (!esCliente || esAdmin)
+								{
+									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().NombreInstructor)</th>
+								}
+								@if (!esInstructor || esAdmin)
+								{
+									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().NombreCliente)</th>
+								}
+								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaInicio)</th>
+								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaFin)</th>
+								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Objetivo)</th>
+								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().DiasRutina)</th>
+								<th>@Html.DisplayNameFor(m => m.FirstOrDefault().CantidadEjerciciosRegistrados)</th>
+								<th></th>
+							</tr>
+							</thead>
+							<tbody>
+							@foreach (var rutina in Model)
+							{
+								<tr>
+									@if (!esCliente || esAdmin)
+									{
+										<td>@rutina.NombreInstructor</td>
+									}
+									@if (!esInstructor || esAdmin)
+									{
+										<td>@rutina.NombreCliente</td>
+									}
+									<td>@rutina.FechaInicio</td>
+									<td>@rutina.FechaFin</td>
+									<td>@rutina.Objetivo</td>
+									<td class="text-right">@rutina.DiasRutina</td>
+									<td class="text-right">@rutina.CantidadEjerciciosRegistrados</td>
+									<td class="text-right">
+										<a class="btn btn-sm btn-light text-primary" asp-controller="Rutinas" asp-action="Detalle"
+										   asp-route-id="@rutina.Id">Detalle</a>
+										@if (esInstructor || esAdmin)
+										{
+											<a class="btn btn-sm btn-light text-primary" asp-controller="Rutinas" asp-action="Editar"
+											   asp-route-id="@rutina.Id">Editar</a>
+										}
+									</td>
+								</tr>
+							}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script src="~/lib/datatables/js/dataTables.dataTables.min.js"></script>
+	<script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+	<script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function ()
+	{
+		$('#tablaRutinas').DataTable($.extend({}, dataTablesSpanishConfig, {
+			paging: true,
+			ordering: false,
+			info: false,
+			searching: false,
+			bLengthChange: false
+		}));
+	});
+</script>
+}

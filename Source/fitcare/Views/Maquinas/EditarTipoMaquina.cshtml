@@ -1,4 +1,4 @@
-﻿@model EditarTipoMaquinaViewModel
+@model EditarTipoMaquinaViewModel
 
 @{
 	ViewBag.Title = "Tipos de máquina";
@@ -14,10 +14,10 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a href="@Url.Action("Admin", "Home")">Administración</a>
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
 						</li>
 						<li class="breadcrumb-item">
-							<a href="@Url.Action("ListarTiposMaquina")">Tipos de máquina</a>
+							<a asp-action="TiposMaquina">Tipos de máquina</a>
 						</li>
 						<li class="breadcrumb-item active" aria-current="page">
 							Modificar
@@ -32,48 +32,46 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					@using (Html.BeginForm("EditarTipoMaquina", "Maquinas", FormMethod.Post, new { autocomplete = "off" }))
-					{
-						@Html.AntiForgeryToken()
-						@Html.HiddenFor(model => model.Id)
+					<form asp-action="EditarTipoMaquina" asp-controller="Maquinas" method="post" autocomplete="off">
+						<input asp-for="Id" type="hidden" />
 
 						<div class="row">
 							<div class="col-md-12">
-								@Html.ValidationSummary(true, "")
+								<div asp-validation-summary="ModelOnly"></div>
 							</div>
 						</div>
 
 						<div class="row">
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.Nombre)
-									@Html.TextBoxFor(model => model.Nombre, "", new { @class = "form-control form-control-sm", placeholder = "Digite el tipo de máquina" })
-									@Html.ValidationMessageFor(Model => Model.Nombre)
+									<label asp-for="Nombre"></label>
+									<input asp-for="Nombre" class="form-control form-control-sm" placeholder="Digite el tipo de máquina" />
+									<span asp-validation-for="Nombre"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.Codigo)
-									@Html.TextBoxFor(model => model.Codigo, "", new { @class = "form-control form-control-sm", placeholder = "Digite el código del tipo de máquina" })
-									@Html.ValidationMessageFor(Model => Model.Codigo)
+									<label asp-for="Codigo"></label>
+									<input asp-for="Codigo" class="form-control form-control-sm" placeholder="Digite el código del tipo de máquina" />
+									<span asp-validation-for="Codigo"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									@Html.LabelFor(model => model.Estado)
+									<label asp-for="Estado"></label>
 									<br />
-									@Html.EditorFor(model => model.Estado, "", new { @class = "form-control" })
+									<input asp-for="Estado" type="checkbox" />
 								</div>
 							</div>
 
 							<div class="col-12">
-								<input value="Guardar" class="btn btn-sm btn-primary" type="submit" />
-								@Html.ActionLink("Regresar", "ListarTiposMaquina", null, null, new { @class = "btn btn-sm btn-secondary" })
+								<button type="submit" class="btn btn-sm btn-primary">Guardar</button>
+								<a asp-action="TiposMaquina" class="btn btn-sm btn-secondary">Regresar</a>
 							</div>
 						</div>
-					}
+					</form>
 				</div>
 			</div>
 		</div>
@@ -81,7 +79,5 @@
 </div>
 
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+	<partial name="_ValidationScriptsPartial" />
 }

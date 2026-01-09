@@ -36,7 +36,7 @@ public class DivisionTerritorialController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<IActionResult> ListarProvincias()
+	public async Task<IActionResult> Provincias()
 	{
 		var provincias = await _divisionTerritorial.Provincias.ReadAllAsync();
 		var viewModel = provincias.Select(x => new ProvinciaViewModel(x));
@@ -56,7 +56,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Provincias.CreateAsync(viewModel.Entidad(), GetCurrentUser());
-			return RedirectToAction(nameof(ListarProvincias));
+			return RedirectToAction(nameof(Provincias));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(Provincia)));
@@ -79,7 +79,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Provincias.UpdateAsync(viewModel.Entidad(), GetCurrentUser());
-			return RedirectToAction(nameof(ListarProvincias));
+			return RedirectToAction(nameof(Provincias));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(Provincia)));
@@ -102,7 +102,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Provincias.DeleteAsync(new Guid(viewModel.Id));
-			return RedirectToAction(nameof(ListarProvincias));
+			return RedirectToAction(nameof(Provincias));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Provincia)));
@@ -110,7 +110,7 @@ public class DivisionTerritorialController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> ListarCantones()
+	public async Task<ActionResult> Cantones()
 	{
 		var cantones = await _divisionTerritorial.Cantones.ReadAllAsync();
 		var viewModel = cantones.Select(x => new CantonViewModel(x));
@@ -131,7 +131,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Cantones.CreateAsync(modelo.Entidad(), GetCurrentUser());
-			return RedirectToAction(nameof(ListarCantones));
+			return RedirectToAction(nameof(Cantones));
 		}
 
 		ViewBag.ListaProvincias = await CargarListaSeleccionProvincias();
@@ -157,7 +157,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Cantones.UpdateAsync(modelo.Entidad(), GetCurrentUser());
-			return RedirectToAction(nameof(ListarCantones));
+			return RedirectToAction(nameof(Cantones));
 		}
 
 		ViewBag.ListaProvincias = await CargarListaSeleccionProvincias();
@@ -182,7 +182,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Cantones.DeleteAsync(new Guid(viewModel.Id));
-			return RedirectToAction(nameof(ListarCantones));
+			return RedirectToAction(nameof(Cantones));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Canton)));
@@ -191,7 +191,7 @@ public class DivisionTerritorialController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> ListarDistritos()
+	public async Task<ActionResult> Distritos()
 	{
 		var distritos = await _divisionTerritorial.Distritos.ReadAllAsync();
 		var viewModel = distritos.Select(x => new DistritoViewModel(x));
@@ -212,7 +212,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Distritos.CreateAsync(modelo.Entidad(), GetCurrentUser());
-			return RedirectToAction(nameof(ListarDistritos));
+			return RedirectToAction(nameof(Distritos));
 		}
 
 		ViewBag.ListaCantones = CargarListaSeleccionCantones();
@@ -238,7 +238,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Distritos.UpdateAsync(modelo.Entidad(), GetCurrentUser());
-			return RedirectToAction(nameof(ListarDistritos));
+			return RedirectToAction(nameof(Distritos));
 		}
 
 		ViewBag.ListaCantones = await CargarListaSeleccionCantones();
@@ -262,7 +262,7 @@ public class DivisionTerritorialController : BaseController
 		if (ModelState.IsValid)
 		{
 			await _divisionTerritorial.Distritos.DeleteAsync(new Guid(viewModel.Id));
-			return RedirectToAction(nameof(ListarDistritos));
+			return RedirectToAction(nameof(Distritos));
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorEliminar(nameof(Distrito)));

@@ -183,4 +183,65 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 
 		return usersInRole;
 	}
+
+	public async Task<IdentityResult> DesafiliarUsuarioComoCliente(string userId)
+	{
+		var user = await FindByIdAsync(userId);
+
+		if (user == null)
+			return IdentityResult.Failed(new IdentityError { Description = "Usuario no encontrado" });
+
+		var isCliente = await IsInRoleAsync(user, "Cliente");
+
+		if (!isCliente)
+			return IdentityResult.Failed(new IdentityError { Description = "El usuario no está afiliado como cliente" });
+
+		return await RemoveFromRoleAsync(user, "Cliente");
+	}
+
+	public async Task<IdentityResult> DesafiliarUsuarioComoInstructor(string userId)
+	{
+		var user = await FindByIdAsync(userId);
+
+		if (user == null)
+			return IdentityResult.Failed(new IdentityError { Description = "Usuario no encontrado" });
+
+		var isInstructor = await IsInRoleAsync(user, "Instructor");
+
+		if (!isInstructor)
+			return IdentityResult.Failed(new IdentityError { Description = "El usuario no está afiliado como instructor" });
+
+		return await RemoveFromRoleAsync(user, "Instructor");
+	}
+
+	public async Task<IdentityResult> ActualizarDatosCliente(ApplicationUser user)
+	{
+		var userRecord = await FindByIdAsync(user.Id);
+
+		if (userRecord == null)
+			return IdentityResult.Failed(new IdentityError { Description = "Usuario no encontrado" });
+
+		userRecord.IdProvincia = user.IdProvincia;
+		userRecord.IdCanton = user.IdCanton;
+		userRecord.IdDistrito = user.IdDistrito;
+		userRecord.FechaIngresoInscripcion = user.FechaIngresoInscripcion;
+		userRecord.FechaRenovacion = user.FechaRenovacion;
+
+		return await UpdateAsync(userRecord);
+	}
+
+	public async Task<IdentityResult> ActualizarDatosInstructor(ApplicationUser user)
+	{
+		var userRecord = await FindByIdAsync(user.Id);
+
+		if (userRecord == null)
+			return IdentityResult.Failed(new IdentityError { Description = "Usuario no encontrado" });
+
+		userRecord.IdProvincia = user.IdProvincia;
+		userRecord.IdCanton = user.IdCanton;
+		userRecord.IdDistrito = user.IdDistrito;
+		userRecord.FechaIngresoInscripcion = user.FechaIngresoInscripcion;
+
+		return await UpdateAsync(userRecord);
+	}
 }

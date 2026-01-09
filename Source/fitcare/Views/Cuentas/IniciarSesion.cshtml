@@ -1,4 +1,4 @@
-﻿@model IniciarSesionViewModel
+@model IniciarSesionViewModel
 
 @{
 	ViewData["Title"] = "Iniciar sesión";
@@ -11,41 +11,35 @@
 
 			<div class="card shadow-sm">
 				<div class="card-body">
-					@using (Html.BeginForm("IniciarSesion", "Cuentas", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, true, new { autocomplete = "off" }))
-					{
-						@Html.AntiForgeryToken()
-
+					<form asp-action="IniciarSesion" asp-controller="Cuentas" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post" autocomplete="off">
 						<div class="form-group">
-							@Html.LabelFor(m => m.Correo, new { @class = "font-bold" })
-							@Html.EditorFor(m => m.Correo, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
-							@Html.ValidationMessageFor(m => m.Correo, "", new { @class = "text-danger" })
+							<label asp-for="Correo" class="font-bold"></label>
+							<input asp-for="Correo" class="form-control form-control-sm" />
+							<span asp-validation-for="Correo" class="text-danger"></span>
 						</div>
 
 						<div class="form-group">
-							@Html.LabelFor(m => m.Contrasena, new { @class = "font-bold" })
-							@Html.PasswordFor(m => m.Contrasena, new { @class = "form-control form-control-sm" })
-							@Html.ValidationMessageFor(m => m.Contrasena, "", new { @class = "text-danger" })
+							<label asp-for="Contrasena" class="font-bold"></label>
+							<input asp-for="Contrasena" class="form-control form-control-sm" />
+							<span asp-validation-for="Contrasena" class="text-danger"></span>
 						</div>
 
 						<div class="center red-text font-bold">
-							@Html.ValidationSummary(true, "", new { @class = "data-error" })
+							<div asp-validation-summary="ModelOnly" class="data-error"></div>
 						</div>
 
 						<div class="w-100 text-center">
-							<button type="submit" value="Iniciar sesión"
-							        class="btn btn-sm btn-primary btn-block font-bold mb-2">
+							<button type="submit" class="btn btn-sm btn-primary btn-block font-bold mb-2">
 								Iniciar sesión
 							</button>
 
 							<small>
-								@Html.ActionLink("¿Olvidó su contraseña?", "SolicitarContrasena", "Cuentas", null, new
-								{
-									@class = "text-secondary", title =
-										"¿Olvidó su contraseña?"
-								})
+								<a asp-action="SolicitarContrasena" asp-controller="Cuentas" class="text-secondary" title="¿Olvidó su contraseña?">
+									¿Olvidó su contraseña?
+								</a>
 							</small>
 						</div>
-					}
+					</form>
 				</div>
 			</div>
 		</div>
@@ -53,7 +47,5 @@
 </div>
 
 @section Scripts{
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+	<partial name="_ValidationScriptsPartial" />
 }
