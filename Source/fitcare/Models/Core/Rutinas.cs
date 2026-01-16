@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ClosedXML.Excel;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +29,7 @@ public class Rutinas : IRutinas<Rutina>
 			.Include(r => r.Medidas).ThenInclude(m => m.TipoMedida)
 			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.TipoEjercicio)
 			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.GruposMusculares)
-			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.Maquinas)
+			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.Maquinas).ThenInclude(m => m.TipoMaquina)
 			.FirstOrDefaultAsync(x => x.Id.ToString().Equals(id.ToString()));
 
 		if (rutina == null)
@@ -209,4 +211,138 @@ public class Rutinas : IRutinas<Rutina>
 		_db.Set<MedidaRutina>().Remove(medidaRutina);
 		await _db.SaveChangesAsync();
 	}
+
+	#region Exportación
+
+	/// <summary>
+	/// Obtiene rutinas con detalle completo para exportación
+	/// </summary>
+	public async Task<IList<Rutina>> ObtenerRutinasParaExportarAsync(string idInstructor, string idCliente) =>
+		await _db.Rutinas
+			.Include(r => r.Instructor)
+			.Include(r => r.Cliente)
+			.Include(r => r.Medidas).ThenInclude(m => m.TipoMedida)
+			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.GruposMusculares)
+			.Include(r => r.Ejercicios).ThenInclude(e => e.Ejercicio).ThenInclude(e => e.Maquinas).ThenInclude(m => m.TipoMaquina)
+			.Where(r =>
+				(idInstructor == null || r.IdInstructor == idInstructor) &&
+				(idCliente == null || r.IdCliente == idCliente))
+			.OrderByDescending(r => r.FechaRealizacion)
+			.ToListAsync();
+
+	/// <summary>
+	/// Genera archivo Excel con las rutinas y su detalle
+	/// </summary>
+	public byte[] ExportarRutinasExcel(IList<Rutina> rutinas)
+	{
+		using var workbook = new XLWorkbook();
+		var worksheet = workbook.Worksheets.Add("Rutinas");
+
+		int row = 1;
+
+		foreach (var rutina in rutinas)
+		{
+			// Encabezado de la rutina
+			worksheet.Cell(row, 1).Value = "RUTINA";
+			worksheet.Range(row, 1, row, 7).Merge();
+			worksheet.Range(row, 1, row, 7).Style.Font.Bold = true;
+			worksheet.Range(row, 1, row, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#1e3a5f");
+			worksheet.Range(row, 1, row, 7).Style.Font.FontColor = XLColor.White;
+			row++;
+
+			// Información general de la rutina
+			worksheet.Cell(row, 1).Value = "Instructor";
+			worksheet.Cell(row, 2).Value = "Cliente";
+			worksheet.Cell(row, 3).Value = "Fecha Inicio";
+			worksheet.Cell(row, 4).Value = "Fecha Fin";
+			worksheet.Cell(row, 5).Value = "Ejercicios";
+			worksheet.Cell(row, 6).Value = "Objetivo";
+			worksheet.Range(row, 1, row, 6).Style.Font.Bold = true;
+			worksheet.Range(row, 1, row, 6).Style.Fill.BackgroundColor = XLColor.FromHtml("#e9ecef");
+			row++;
+
+			worksheet.Cell(row, 1).Value = rutina.Instructor?.FullName;
+			worksheet.Cell(row, 2).Value = rutina.Cliente?.FullName;
+			worksheet.Cell(row, 3).Value = rutina.FechaInicio.ToString("dd/MM/yyyy");
+			worksheet.Cell(row, 4).Value = rutina.FechaFin.ToString("dd/MM/yyyy");
+			worksheet.Cell(row, 5).Value = rutina.Ejercicios?.Count ?? 0;
+			worksheet.Cell(row, 6).Value = rutina.Objetivo;
+			row++;
+
+			// Sección de ejercicios (indentada una columna)
+			if (rutina.Ejercicios != null && rutina.Ejercicios.Any())
+			{
+				row++;
+				worksheet.Cell(row, 2).Value = "EJERCICIOS";
+				worksheet.Range(row, 2, row, 7).Merge();
+				worksheet.Range(row, 2, row, 7).Style.Font.Bold = true;
+				worksheet.Range(row, 2, row, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#28a745");
+				worksheet.Range(row, 2, row, 7).Style.Font.FontColor = XLColor.White;
+				row++;
+
+				worksheet.Cell(row, 2).Value = "Ejercicio";
+				worksheet.Cell(row, 3).Value = "Grupos Musculares";
+				worksheet.Cell(row, 4).Value = "Máquinas";
+				worksheet.Cell(row, 5).Value = "Series";
+				worksheet.Cell(row, 6).Value = "Repeticiones";
+				worksheet.Cell(row, 7).Value = "Descanso";
+				worksheet.Range(row, 2, row, 7).Style.Font.Bold = true;
+				worksheet.Range(row, 2, row, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#d4edda");
+				row++;
+
+				foreach (var ejercicio in rutina.Ejercicios)
+				{
+					worksheet.Cell(row, 2).Value = ejercicio.Ejercicio?.Nombre;
+					worksheet.Cell(row, 3).Value = ejercicio.Ejercicio?.GruposMusculares != null
+						? string.Join(", ", ejercicio.Ejercicio.GruposMusculares.Select(g => g.Nombre))
+						: string.Empty;
+					worksheet.Cell(row, 4).Value = ejercicio.Ejercicio?.Maquinas != null
+						? string.Join(", ", ejercicio.Ejercicio.Maquinas.Select(m => $"{m.Nombre} ({m.TipoMaquina?.Nombre})"))
+						: string.Empty;
+					worksheet.Cell(row, 5).Value = ejercicio.Series;
+					worksheet.Cell(row, 6).Value = ejercicio.Repeticiones;
+					worksheet.Cell(row, 7).Value = $"{ejercicio.MinutosDescanso} {(ejercicio.MinutosDescanso == 1 ? "minuto" : "minutos")}";
+					row++;
+				}
+			}
+
+			// Sección de medidas (indentada una columna)
+			if (rutina.Medidas != null && rutina.Medidas.Any())
+			{
+				row++;
+				worksheet.Cell(row, 2).Value = "MEDIDAS";
+				worksheet.Range(row, 2, row, 7).Merge();
+				worksheet.Range(row, 2, row, 7).Style.Font.Bold = true;
+				worksheet.Range(row, 2, row, 7).Style.Fill.BackgroundColor = XLColor.FromHtml("#007bff");
+				worksheet.Range(row, 2, row, 7).Style.Font.FontColor = XLColor.White;
+				row++;
+
+				worksheet.Cell(row, 2).Value = "Tipo de Medida";
+				worksheet.Cell(row, 3).Value = "Valor";
+				worksheet.Cell(row, 4).Value = "Comentario";
+				worksheet.Range(row, 2, row, 4).Style.Font.Bold = true;
+				worksheet.Range(row, 2, row, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#cce5ff");
+				row++;
+
+				foreach (var medida in rutina.Medidas)
+				{
+					worksheet.Cell(row, 2).Value = medida.TipoMedida?.Nombre;
+					worksheet.Cell(row, 3).Value = medida.Valor;
+					worksheet.Cell(row, 4).Value = medida.Comentario;
+					row++;
+				}
+			}
+
+			// Espacio entre rutinas
+			row += 2;
+		}
+
+		worksheet.Columns().AdjustToContents();
+
+		using var stream = new MemoryStream();
+		workbook.SaveAs(stream);
+		return stream.ToArray();
+	}
+
+	#endregion
 }

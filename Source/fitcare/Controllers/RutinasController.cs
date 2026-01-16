@@ -91,6 +91,47 @@ public class RutinasController : BaseController
 	}
 
 	[HttpGet]
+	public async Task<IActionResult> ExportarRutina(string id)
+	{
+		var rutina = await _rutinas.ReadByIdAsync(new Guid(id));
+		if (rutina == null) return NotFound();
+
+		var content = _rutinas.ExportarRutinasExcel(new List<Rutina> { rutina });
+		var nombreCliente = rutina.Cliente?.FullName?.Replace(" ", "_") ?? "Cliente";
+		var fileName = $"Rutina_{nombreCliente}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+
+		return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> ExportarRutinas()
+	{
+		ApplicationUser user = await _userManager.GetUserAsync(User);
+		bool esInstructor = await _userManager.IsInRoleAsync(user, "Instructor");
+		bool esCliente = await _userManager.IsInRoleAsync(user, "Cliente");
+		bool esAdmin = await _userManager.IsInRoleAsync(user, "Administrador");
+
+		string idInstructor = null;
+		string idCliente = null;
+
+		// Filtrar según el rol del usuario (misma lógica que en Rutinas())
+		if (esCliente && !esAdmin)
+		{
+			idCliente = user.Id;
+		}
+		else if (esInstructor && !esAdmin)
+		{
+			idInstructor = user.Id;
+		}
+
+		var rutinas = await _rutinas.ObtenerRutinasParaExportarAsync(idInstructor, idCliente);
+		var content = _rutinas.ExportarRutinasExcel(rutinas);
+		var fileName = $"Rutinas_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+
+		return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+	}
+
+	[HttpGet]
 	public async Task<ActionResult> Agregar()
 	{
 		var listaInstructores = await _userManager.GetUsersInRoleAsync("Instructor");

@@ -151,7 +151,7 @@ public class EjercicioRutinaViewModel
 			? string.Join(", ", ejercicioRutina.Ejercicio.GruposMusculares.Select(g => g.Nombre))
 			: string.Empty;
 		Maquinas = ejercicioRutina.Ejercicio?.Maquinas != null
-			? string.Join(", ", ejercicioRutina.Ejercicio.Maquinas.Select(m => m.Nombre))
+			? string.Join(", ", ejercicioRutina.Ejercicio.Maquinas.Select(m => $"{m.Nombre} ({m.TipoMaquina?.Nombre})"))
 			: string.Empty;
 	}
 
