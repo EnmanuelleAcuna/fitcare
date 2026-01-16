@@ -128,7 +128,7 @@ public class RutinasController : BaseController
 			string mensajeDeCorreo = string.Format(new CultureInfo("es-CR"), "Hola {0} <br /> Se ha registrado su rutina en fitcare. <br /> Para verla o darle seguimiento puede ir al siguiente <a href=\"{1}\">enlace</a>", "", urlVisualizacionRutina);
 			await _emailSender.SendEmailAsync(usuarioCliente.Email, "fitcare: Registro de rutina", mensajeDeCorreo);
 
-			return RedirectToAction(nameof(Rutinas));
+			return RedirectToAction(nameof(Editar), new { id = rutina.Id });
 		}
 
 		var listaInstructores = await _userManager.GetUsersInRoleAsync("Instructor");

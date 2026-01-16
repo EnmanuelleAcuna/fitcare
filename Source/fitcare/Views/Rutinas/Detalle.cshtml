@@ -14,7 +14,7 @@
 				<nav aria-label="breadcrumb">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
-							<a asp-action="Admin" asp-controller="Home">Administracion</a>
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
 						</li>
 
 						<li class="breadcrumb-item">
@@ -39,10 +39,9 @@
 							<tr>
 								<th>@Html.DisplayNameFor(m => m.Instructor)</th>
 								<th>@Html.DisplayNameFor(m => m.Cliente)</th>
-								<th>@Html.DisplayNameFor(m => m.FechaRealizacion)</th>
 								<th>@Html.DisplayNameFor(m => m.FechaInicio)</th>
 								<th>@Html.DisplayNameFor(m => m.FechaFin)</th>
-								<th>@Html.DisplayNameFor(m => m.CantidadEjercicios)</th>
+								<th>Ejercicios</th>
 								<th>@Html.DisplayNameFor(m => m.Objetivos)</th>
 							</tr>
 							</thead>
@@ -50,7 +49,6 @@
 							<tr>
 								<td>@Model.Instructor</td>
 								<td>@Model.Cliente</td>
-								<td>@Model.FechaRealizacion.ToString("dd/MM/yyyy")</td>
 								<td>@Model.FechaInicio.ToString("dd/MM/yyyy")</td>
 								<td>@Model.FechaFin.ToString("dd/MM/yyyy")    </td>
 								<td>@Model.CantidadEjercicios</td>
@@ -59,19 +57,15 @@
 							</tbody>
 						</table>
 
-						<div class="d-flex justify-content-between align-items-center mb-2">
-							<h6 class="mb-0">Ejercicios</h6>
-						</div>
-
 						<table class="table table-hover table-sm" id="tablaEjercicios">
 							<thead>
 							<tr>
-								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().NombreEjercicio)</th>
-								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().GruposMusculares)</th>
+								<th>Ejercicios</th>
+								<th class="text-nowrap">@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().GruposMusculares)</th>
 								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Maquinas)</th>
 								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Series)</th>
 								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Repeticiones)</th>
-								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().MinutosDescanso)</th>
+								<th>Descanso</th>
 							</tr>
 							</thead>
 							<tbody>
@@ -83,20 +77,16 @@
 									<td>@ejercicio.Maquinas</td>
 									<td>@ejercicio.Series</td>
 									<td>@ejercicio.Repeticiones</td>
-									<td>@ejercicio.MinutosDescanso</td>
+									<td>@ejercicio.MinutosDescanso @(ejercicio.MinutosDescanso == 1 ? "minuto" : "minutos")</td>
 								</tr>
 							}
 							</tbody>
 						</table>
 
-						<div class="d-flex justify-content-between align-items-center mb-2 mt-4">
-							<h6 class="mb-0">Medidas</h6>
-						</div>
-
 						<table class="table table-hover table-sm text-nowrap" id="tablaMedidas">
 							<thead>
 							<tr>
-								<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().NombreTipoMedida)</th>
+								<th>Tipos de medida</th>
 								<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Valor)</th>
 								<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Comentario)</th>
 							</tr>

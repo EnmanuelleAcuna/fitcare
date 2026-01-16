@@ -39,10 +39,9 @@
 								<tr>
 									<th>@Html.DisplayNameFor(m => m.Instructor)</th>
 									<th>@Html.DisplayNameFor(m => m.Cliente)</th>
-									<th>@Html.DisplayNameFor(m => m.FechaRealizacion)</th>
 									<th>@Html.DisplayNameFor(m => m.FechaInicio)</th>
 									<th>@Html.DisplayNameFor(m => m.FechaFin)</th>
-									<th>@Html.DisplayNameFor(m => m.CantidadEjercicios)</th>
+									<th>Ejercicios</th>
 									<th>@Html.DisplayNameFor(m => m.Objetivos)</th>
 								</tr>
 							</thead>
@@ -50,7 +49,6 @@
 								<tr>
 									<td>@Model.Instructor</td>
 									<td>@Model.Cliente</td>
-									<td>@Model.FechaRealizacion.ToString("dd/MM/yyyy")</td>
 									<td>@Model.FechaInicio.ToString("dd/MM/yyyy")</td>
 									<td>@Model.FechaFin.ToString("dd/MM/yyyy")	</td>
 									<td>@Model.CantidadEjercicios</td>
@@ -69,12 +67,12 @@
 						<table class="table table-hover table-sm" id="tablaEjercicios">
 							<thead>
 								<tr>
-									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().NombreEjercicio)</th>
+									<th>Ejercicio</th>
 									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().GruposMusculares)</th>
 									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Maquinas)</th>
 									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Series)</th>
 									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Repeticiones)</th>
-									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().MinutosDescanso)</th>
+									<th>Descanso</th>
 									<th></th>
 								</tr>
 							</thead>
@@ -116,7 +114,7 @@
 						<table class="table table-hover table-sm text-nowrap" id="tablaMedidas">
 							<thead>
 								<tr>
-									<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().NombreTipoMedida)</th>
+									<th>Tipo de medida</th>
 									<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Valor)</th>
 									<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Comentario)</th>
 									<th></th>
