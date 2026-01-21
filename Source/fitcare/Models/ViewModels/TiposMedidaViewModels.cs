@@ -1,5 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using fitcare.Models;
 using fitcare.Models.Entities;
 
 namespace fitcare.Models.ViewModels;
@@ -41,6 +43,20 @@ public class AgregarTipoMedidaViewModel
 	public bool Estado { get; set; }
 
 	public TipoMedida Entidad() => new(Guid.NewGuid(), Codigo, Nombre, Estado);
+
+	public static async Task<AgregarTipoMedidaViewModel> CrearAsync(IGeneradorCodigo<TipoMedida> generadorCodigo)
+	{
+		return new AgregarTipoMedidaViewModel
+		{
+			Codigo = await generadorCodigo.GenerarCodigoAsync(),
+			Estado = true
+		};
+	}
+
+	public async Task RegenerarCodigoAsync(IGeneradorCodigo<TipoMedida> generadorCodigo)
+	{
+		Codigo = await generadorCodigo.GenerarCodigoAsync();
+	}
 }
 
 public class EditarTipoMedidaViewModel : BaseViewModel

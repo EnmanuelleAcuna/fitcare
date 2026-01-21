@@ -37,10 +37,10 @@
 						<table class="table table-hover table-sm text-nowrap">
 							<thead>
 								<tr>
+									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Codigo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Nombre)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().TipoMaquina.Nombre)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Estado)</th>
-									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().Codigo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().CodigoActivo)</th>
 									<th>@Html.DisplayNameFor(m => m.FirstOrDefault().FechaAdquisicion)</th>
 									<th class="text-right"></th>
@@ -50,10 +50,10 @@
 								@foreach (var Maquina in Model)
 								{
 									<tr>
+										<td>@Maquina.Codigo</td>
 										<td>@Maquina.Nombre</td>
 										<td>@Maquina.TipoMaquina.Nombre</td>
 										<td>@Maquina.Estado</td>
-										<td>@Maquina.Codigo</td>
 										<td>@Maquina.CodigoActivo</td>
 										<td>@Maquina.FechaAdquisicion</td>
 										<td class="text-right">

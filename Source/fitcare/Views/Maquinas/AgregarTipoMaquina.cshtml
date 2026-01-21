@@ -42,25 +42,25 @@
 						<div class="row">
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									<label asp-for="Nombre"></label>
-									<input asp-for="Nombre" class="form-control form-control-sm" placeholder="Nombre" />
-									<span asp-validation-for="Nombre"></span>
-								</div>
-							</div>
-
-							<div class="col-sm-12 col-md-4">
-								<div class="form-group">
 									<label asp-for="Codigo"></label>
-									<input asp-for="Codigo" class="form-control form-control-sm" placeholder="Código del tipo de maquina" />
+									<input asp-for="Codigo" class="form-control form-control-sm" readonly />
 									<span asp-validation-for="Codigo"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
+									<label asp-for="Nombre"></label>
+									<input asp-for="Nombre" class="form-control form-control-sm" placeholder="Nombre"/>
+									<span asp-validation-for="Nombre"></span>
+								</div>
+							</div>
+							
+							<div class="col-sm-12 col-md-4">
+								<div class="form-group">
 									<label asp-for="Estado"></label>
-									<br />
-									<input asp-for="Estado" type="checkbox" />
+									<br/>
+									<input asp-for="Estado" type="checkbox"/>
 								</div>
 							</div>
 
@@ -77,5 +77,5 @@
 </div>
 
 @section Scripts {
-	<partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial"/>
 }

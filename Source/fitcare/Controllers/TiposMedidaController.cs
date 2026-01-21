@@ -21,9 +21,11 @@ namespace fitcare.Controllers;
 public class TiposMedidaController : BaseController
 {
 	private readonly IBaseCore<TipoMedida> _tiposMedida;
+	private readonly IGeneradorCodigo<TipoMedida> _generadorCodigo;
 	private readonly ILogger<TiposMedidaController> _logger;
 
 	public TiposMedidaController(IBaseCore<TipoMedida> tiposMedida,
+								 IGeneradorCodigo<TipoMedida> generadorCodigo,
 								 IDivisionTerritorial divisionTerritorial,
 								 ApplicationUserManager<ApplicationUser> userManager,
 								 RoleManager<ApplicationRole> roleManager,
@@ -34,6 +36,7 @@ public class TiposMedidaController : BaseController
 	: base(divisionTerritorial, userManager, roleManager, configuration, contextAccesor, environment)
 	{
 		_tiposMedida = tiposMedida;
+		_generadorCodigo = generadorCodigo;
 		_logger = logger;
 	}
 
@@ -61,23 +64,18 @@ public class TiposMedidaController : BaseController
 	}
 
 	[HttpGet]
-	public ActionResult Agregar()
+	public async Task<JsonResult> Agregar()
 	{
-		return View();
-	}
-
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<ActionResult> Agregar(AgregarTipoMedidaViewModel modelo)
-	{
-		if (ModelState.IsValid)
+		try
 		{
-			await _tiposMedida.CreateAsync(modelo.Entidad(), GetCurrentUser());
-			return RedirectToAction(nameof(Listar));
+			var modelo = await AgregarTipoMedidaViewModel.CrearAsync(_generadorCodigo);
+			return Json(new { success = true, modelo = modelo });
 		}
-
-		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(TipoMedida)));
-		return View(modelo);
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al obtener modelo de agregar tipo de medida");
+			return Json(new { success = false, message = "Error al obtener el modelo" });
+		}
 	}
 
 	[HttpPost]
@@ -102,6 +100,17 @@ public class TiposMedidaController : BaseController
 
 			return Json(new { success = false, errors = errors });
 		}
+		catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) when (ex.InnerException?.Message.Contains("UNIQUE") == true)
+		{
+			await modelo.RegenerarCodigoAsync(_generadorCodigo);
+			return Json(new
+			{
+				success = false,
+				codigoColision = true,
+				modelo = modelo,
+				message = "El código fue asignado a otro registro. Se ha generado uno nuevo."
+			});
+		}
 		catch (Exception ex)
 		{
 			_logger.LogError(ex, "Error al agregar tipo de medida mediante AJAX");
@@ -110,26 +119,23 @@ public class TiposMedidaController : BaseController
 	}
 
 	[HttpGet]
-	public async Task<ActionResult> Editar(string id)
+	public async Task<JsonResult> Editar(string id)
 	{
-		TipoMedida tipoMedida = await _tiposMedida.ReadByIdAsync(new Guid(id));
-		if (tipoMedida == null) return NotFound();
-		EditarTipoMedidaViewModel Modelo = new(tipoMedida);
-		return View(Modelo);
-	}
-
-	[HttpPost]
-	[ValidateAntiForgeryToken]
-	public async Task<ActionResult> Editar(EditarTipoMedidaViewModel modelo)
-	{
-		if (ModelState.IsValid)
+		try
 		{
-			await _tiposMedida.UpdateAsync(modelo.Entidad(), GetCurrentUser());
-			return RedirectToAction(nameof(Listar));
+			TipoMedida tipoMedida = await _tiposMedida.ReadByIdAsync(new Guid(id));
+			var modelo = new EditarTipoMedidaViewModel(tipoMedida);
+			return Json(new { success = true, modelo = modelo });
 		}
-
-		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoMedida)));
-		return View(modelo);
+		catch (KeyNotFoundException)
+		{
+			return Json(new { success = false, message = "Tipo de medida no encontrado" });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al obtener tipo de medida para editar");
+			return Json(new { success = false, message = "Error al obtener el tipo de medida" });
+		}
 	}
 
 	[HttpPost]
@@ -159,28 +165,6 @@ public class TiposMedidaController : BaseController
 			_logger.LogError(ex, "Error al actualizar tipo de medida mediante AJAX");
 			return Json(new { success = false, message = "Error al actualizar el tipo de medida" });
 		}
-	}
-
-	[HttpGet]
-	public async Task<ActionResult> Eliminar(string id)
-	{
-		TipoMedida tipoMedida = await _tiposMedida.ReadByIdAsync(new Guid(id));
-		if (tipoMedida == null) return NotFound();
-		EliminarTipoMedidaViewModel modelo = new(tipoMedida);
-		return View(modelo);
-	}
-
-	[HttpPost]
-	public async Task<ActionResult> Eliminar(EliminarTipoMedidaViewModel modelo)
-	{
-		if (ModelState.IsValid)
-		{
-			await _tiposMedida.DeleteAsync(new Guid(modelo.IdTipoMedida));
-			return RedirectToAction(nameof(Listar));
-		}
-
-		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoEjercicio)));
-		return View(modelo);
 	}
 
 	[HttpPost]

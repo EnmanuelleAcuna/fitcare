@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace fitcare.Models.Core;
 
-public class TiposMedida : IBaseCore<TipoMedida>
+public class TiposMedida : IBaseCore<TipoMedida>, IGeneradorCodigo<TipoMedida>
 {
 	private readonly ApplicationDbContext _dbContext;
 
@@ -17,7 +18,10 @@ public class TiposMedida : IBaseCore<TipoMedida>
 
 	public async Task<IList<TipoMedida>> ReadAllAsync()
 	{
-		var tiposMedida = await _dbContext.TiposMedida.ToListAsync();
+		var tiposMedida = await _dbContext.TiposMedida
+			.OrderBy(t => t.Codigo.Length)
+			.ThenBy(t => t.Codigo)
+			.ToListAsync();
 		return tiposMedida ?? new List<TipoMedida>();
 	}
 
@@ -61,5 +65,30 @@ public class TiposMedida : IBaseCore<TipoMedida>
 
 		_dbContext.Remove(record);
 		await _dbContext.SaveChangesAsync();
+	}
+
+	public async Task<string> GenerarCodigoAsync()
+	{
+		const string prefijo = "TIPMED";
+
+		var ultimoTipo = await _dbContext.TiposMedida
+			.Where(t => t.Codigo.StartsWith(prefijo))
+			.OrderByDescending(t => t.Codigo.Length)
+			.ThenByDescending(t => t.Codigo)
+			.FirstOrDefaultAsync();
+
+		int siguienteNumero = 1;
+
+		if (ultimoTipo != null)
+		{
+			string numeroStr = ultimoTipo.Codigo.Substring(prefijo.Length);
+			if (int.TryParse(numeroStr, out int numeroActual))
+			{
+				siguienteNumero = numeroActual + 1;
+			}
+		}
+
+		string formato = siguienteNumero <= 999 ? "D3" : "D0";
+		return $"{prefijo}{siguienteNumero.ToString(formato)}";
 	}
 }

@@ -22,10 +22,14 @@ public class MaquinasController : BaseController
 {
 	private readonly IBaseCore<TipoMaquina> _tiposMaquina;
 	private readonly IBaseCore<Maquina> _maquinas;
+	private readonly IGeneradorCodigo<TipoMaquina> _generadorCodigo;
+	private readonly IGeneradorCodigo<Maquina> _generadorCodigoMaquina;
 	private readonly ILogger<MaquinasController> _logger;
 
 	public MaquinasController(IBaseCore<TipoMaquina> tiposMaquina,
 						  	  IBaseCore<Maquina> maquinas,
+						  	  IGeneradorCodigo<TipoMaquina> generadorCodigo,
+						  	  IGeneradorCodigo<Maquina> generadorCodigoMaquina,
 						  	  IDivisionTerritorial divisionTerritorial,
 						  	  ApplicationUserManager<ApplicationUser> userManager,
 						  	  RoleManager<ApplicationRole> roleManager,
@@ -37,6 +41,8 @@ public class MaquinasController : BaseController
 	{
 		_tiposMaquina = tiposMaquina;
 		_maquinas = maquinas;
+		_generadorCodigo = generadorCodigo;
+		_generadorCodigoMaquina = generadorCodigoMaquina;
 		_logger = logger;
 	}
 
@@ -52,7 +58,8 @@ public class MaquinasController : BaseController
 	public async Task<IActionResult> AgregarMaquina()
 	{
 		ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquina.ReadAllAsync());
-		return View();
+		var modelo = await AgregarMaquinaViewModel.CrearAsync(_generadorCodigoMaquina);
+		return View(modelo);
 	}
 
 	[HttpPost]
@@ -66,10 +73,20 @@ public class MaquinasController : BaseController
 			return View(modeloVista);
 		}
 
-		await _maquinas.CreateAsync(modeloVista.Entidad(), CurrentUser);
-		TempData["ToastMessage"] = "Máquina agregada exitosamente";
-		TempData["ToastType"] = "success";
-		return RedirectToAction(nameof(Maquinas));
+		try
+		{
+			await _maquinas.CreateAsync(modeloVista.Entidad(), CurrentUser);
+			TempData["ToastMessage"] = "Máquina agregada exitosamente";
+			TempData["ToastType"] = "success";
+			return RedirectToAction(nameof(Maquinas));
+		}
+		catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) when (ex.InnerException?.Message.Contains("UNIQUE") == true)
+		{
+			await modeloVista.RegenerarCodigoAsync(_generadorCodigoMaquina);
+			ViewBag.ListaTiposMaquina = CargarListaSeleccionTiposMaquina(await _tiposMaquina.ReadAllAsync());
+			ModelState.AddModelError("", "El código fue asignado a otro registro. Se ha generado uno nuevo, intente guardar nuevamente.");
+			return View(modeloVista);
+		}
 	}
 
 	[HttpGet]
@@ -149,9 +166,10 @@ public class MaquinasController : BaseController
 	}
 
 	[HttpGet]
-	public ActionResult AgregarTipoMaquina()
+	public async Task<ActionResult> AgregarTipoMaquina()
 	{
-		return View();
+		var modelo = await AgregarTipoMaquinaViewModel.CrearAsync(_generadorCodigo);
+		return View(modelo);
 	}
 
 	[HttpPost]
@@ -160,10 +178,19 @@ public class MaquinasController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _tiposMaquina.CreateAsync(modelo.Entidad(), GetCurrentUser());
-			TempData["ToastMessage"] = "Tipo de máquina agregado exitosamente";
-			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(TiposMaquina));
+			try
+			{
+				await _tiposMaquina.CreateAsync(modelo.Entidad(), GetCurrentUser());
+				TempData["ToastMessage"] = "Tipo de máquina agregado exitosamente";
+				TempData["ToastType"] = "success";
+				return RedirectToAction(nameof(TiposMaquina));
+			}
+			catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) when (ex.InnerException?.Message.Contains("UNIQUE") == true)
+			{
+				await modelo.RegenerarCodigoAsync(_generadorCodigo);
+				ModelState.AddModelError("", "El código fue asignado a otro registro. Se ha generado uno nuevo, intente guardar nuevamente.");
+				return View(modelo);
+			}
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(TipoMaquina)));
@@ -185,11 +212,19 @@ public class MaquinasController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			TipoMaquina tipoMaquina = modelo.Entidad();
-			await _tiposMaquina.UpdateAsync(tipoMaquina, GetCurrentUser());
-			TempData["ToastMessage"] = "Tipo de máquina actualizado exitosamente";
-			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(TiposMaquina));
+			try
+			{
+				TipoMaquina tipoMaquina = modelo.Entidad();
+				await _tiposMaquina.UpdateAsync(tipoMaquina, GetCurrentUser());
+				TempData["ToastMessage"] = "Tipo de máquina actualizado exitosamente";
+				TempData["ToastType"] = "success";
+				return RedirectToAction(nameof(TiposMaquina));
+			}
+			catch (InvalidOperationException ex)
+			{
+				ModelState.AddModelError("", ex.Message);
+				return View(modelo);
+			}
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoMaquina)));

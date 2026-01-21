@@ -91,22 +91,14 @@
 								<button class="btn btn-sm btn-light btn-editar"
 									data-toggle="modal"
 									data-target="#ModalEditar"
-									data-id="${data.id}"
-									data-codigo="${data.codigo}"
-									data-nombre="${data.nombre}"
-									data-estado="${data.estado}">Modificar</button>
-								@*<button class="btn btn-sm btn-light text-danger btn-eliminar"
-									data-toggle="modal"
-									data-target="#ModalEliminar"
-									data-id="${data.id}"
-									data-nombre="${data.nombre}">Eliminar</button>*@
+									data-id="${data.id}">Modificar</button>
 							</div>`;
 						},
 						"orderable": false,
 						"className": "text-right"
 					}
 				],
-				"order": [[1, "asc"]]
+				"order": [[0, "asc"]]
 			}));
 
 			// Manejar el evento del modal de detalle con delegación de eventos
@@ -127,8 +119,28 @@
 			let modalAgregar = $('#ModalAgregar');
 			// Inicializar el modal de agregar cuando se abre
 			modalAgregar.on('show.bs.modal', function () {
-				// Establecer Estado como checked por defecto
-				$('#EstadoAgregar').prop('checked', true);
+				$('#CodigoAgregar').val('Generando...');
+
+				// Obtener ViewModel completo via AJAX
+				$.ajax({
+					url: '@Url.Action("Agregar")',
+					type: 'GET',
+					dataType: 'json',
+					success: function (response) {
+						if (response.success) {
+							$('#CodigoAgregar').val(response.modelo.codigo);
+							$('#NombreAgregar').val(response.modelo.nombre || '');
+							$('#EstadoAgregar').prop('checked', response.modelo.estado);
+						} else {
+							$('#CodigoAgregar').val('Error');
+							mostrarNotificacion(response.message || 'Error al obtener modelo', 'danger');
+						}
+					},
+					error: function () {
+						$('#CodigoAgregar').val('Error');
+						mostrarNotificacion('Error al comunicarse con el servidor', 'danger');
+					}
+				});
 			});
 			
 			// Manejar el submit del formulario de agregar
@@ -166,7 +178,13 @@
 							tablaTiposMedida.DataTable().ajax.reload(); // Recargar la tabla
 							mostrarNotificacion('Tipo de medida agregado exitosamente', 'success'); // Mostrar mensaje de éxito
 						} else {
-							if (response.errors) { // Mostrar errores de validación del servidor
+							if (response.codigoColision) {
+								// Cargar el ViewModel completo con el nuevo código
+								$('#CodigoAgregar').val(response.modelo.codigo);
+								$('#NombreAgregar').val(response.modelo.nombre || '');
+								$('#EstadoAgregar').prop('checked', response.modelo.estado);
+								mostrarNotificacion(response.message, 'warning');
+							} else if (response.errors) { // Mostrar errores de validación del servidor
 								var validator = form.validate();
 								validator.showErrors(response.errors);
 							} else if (response.message) {
@@ -194,18 +212,35 @@
 			// Cargar datos en el modal de editar cuando se abre
 			modalEditar.on('show.bs.modal', function (event) {
 				let button = $(event.relatedTarget);
-				
-				// Cargar datos
 				let id = button.data('id');
-				let codigo = button.data('codigo');
-				let nombre = button.data('nombre');
-				let estado = button.data('estado');
 
-				// Llenar el formulario
-				$('#IdEditar').val(id);
-				$('#CodigoEditar').val(codigo);
-				$('#NombreEditar').val(nombre);
-				$('#EstadoEditar').prop('checked', estado === 'Activo' || estado === true);
+				// Mostrar estado de carga
+				$('#CodigoEditar').val('Cargando...');
+				$('#NombreEditar').val('');
+				$('#EstadoEditar').prop('checked', false);
+
+				// Obtener ViewModel via AJAX
+				$.ajax({
+					url: '@Url.Action("Editar")',
+					type: 'GET',
+					data: { id: id },
+					dataType: 'json',
+					success: function (response) {
+						if (response.success) {
+							$('#IdEditar').val(response.modelo.id);
+							$('#CodigoEditar').val(response.modelo.codigo);
+							$('#NombreEditar').val(response.modelo.nombre);
+							$('#EstadoEditar').prop('checked', response.modelo.estado);
+						} else {
+							$('#ModalEditar').modal('hide');
+							mostrarNotificacion(response.message || 'Error al cargar datos', 'danger');
+						}
+					},
+					error: function () {
+						$('#ModalEditar').modal('hide');
+						mostrarNotificacion('Error al comunicarse con el servidor', 'danger');
+					}
+				});
 
 				// Limpiar errores y validación previos
 				let form = $('#formEditar');

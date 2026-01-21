@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using fitcare.Models.Entities;
 
 namespace fitcare.Models.ViewModels;
@@ -20,11 +21,9 @@ public class MaquinaViewModel : BaseViewModel
 	public string Id { get; set; }
 	public string Nombre { get; set; }
 
-	[Display(Name = "Código")]
-	public string Codigo { get; set; }
+	[Display(Name = "Código")] public string Codigo { get; set; }
 
-	[Display(Name = "Código de activo")]
-	public string CodigoActivo { get; set; }
+	[Display(Name = "Código de activo")] public string CodigoActivo { get; set; }
 
 	[Display(Name = "Fecha de adquisición")]
 	public DateTime FechaAdquisicion { get; set; }
@@ -40,7 +39,6 @@ public class AgregarMaquinaViewModel
 	public string Nombre { get; set; }
 
 	[Display(Name = "Código")]
-	[Required(ErrorMessage = "El codigo es requerido.")]
 	[StringLength(50, ErrorMessage = "El codigo no puede exceder los 50 caracteres.")]
 	public string Codigo { get; set; }
 
@@ -61,11 +59,27 @@ public class AgregarMaquinaViewModel
 	public bool Activo { get; set; }
 
 	public Maquina Entidad() => new(Guid.NewGuid(), Codigo, Nombre, CodigoActivo, Activo, Convert.ToDateTime(FechaAdquisicion), new Guid(IdTipoMaquina));
+
+	public static async Task<AgregarMaquinaViewModel> CrearAsync(IGeneradorCodigo<Maquina> generadorCodigo)
+	{
+		return new AgregarMaquinaViewModel
+		{
+			Codigo = await generadorCodigo.GenerarCodigoAsync(),
+			Activo = true
+		};
+	}
+
+	public async Task RegenerarCodigoAsync(IGeneradorCodigo<Maquina> generadorCodigo)
+	{
+		Codigo = await generadorCodigo.GenerarCodigoAsync();
+	}
 }
 
 public class EditarMaquinaViewModel : BaseViewModel
 {
-	public EditarMaquinaViewModel() { }
+	public EditarMaquinaViewModel()
+	{
+	}
 
 	public EditarMaquinaViewModel(Maquina maquina) : base(maquina)
 	{
@@ -111,7 +125,9 @@ public class EditarMaquinaViewModel : BaseViewModel
 
 public class EliminarMaquinaViewModel
 {
-	public EliminarMaquinaViewModel() { }
+	public EliminarMaquinaViewModel()
+	{
+	}
 
 	public EliminarMaquinaViewModel(Maquina maquina)
 	{
@@ -137,13 +153,11 @@ public class TipoMaquinaViewModel : BaseViewModel
 
 	public string IdTipoMaquina { get; set; }
 
-	[Display(Name = "Tipo de máquina")]
-	public string Nombre { get; set; }
+	[Display(Name = "Tipo de máquina")] public string Nombre { get; set; }
 
 	public string Estado { get; set; }
 
-	[Display(Name = "Código")]
-	public string Codigo { get; set; }
+	[Display(Name = "Código")] public string Codigo { get; set; }
 }
 
 public class AgregarTipoMaquinaViewModel
@@ -153,20 +167,34 @@ public class AgregarTipoMaquinaViewModel
 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
 	public string Nombre { get; set; }
 
-	[Display(Name = "Activo")]
-	public bool Estado { get; set; }
+	[Display(Name = "Activo")] public bool Estado { get; set; }
 
 	[Display(Name = "Código del tipo de máquina")]
-	[Required(ErrorMessage = "El código es requerido")]
-	[StringLength(20, ErrorMessage = "El código no puede exceder los 50 caracteres")]
+	[StringLength(20, ErrorMessage = "El código no puede exceder los 20 caracteres")]
 	public string Codigo { get; set; }
 
 	public TipoMaquina Entidad() => new(Guid.NewGuid(), Nombre, Estado, Codigo);
+
+	public static async Task<AgregarTipoMaquinaViewModel> CrearAsync(IGeneradorCodigo<TipoMaquina> generadorCodigo)
+	{
+		return new AgregarTipoMaquinaViewModel
+		{
+			Codigo = await generadorCodigo.GenerarCodigoAsync(),
+			Estado = true
+		};
+	}
+
+	public async Task RegenerarCodigoAsync(IGeneradorCodigo<TipoMaquina> generadorCodigo)
+	{
+		Codigo = await generadorCodigo.GenerarCodigoAsync();
+	}
 }
 
 public class EditarTipoMaquinaViewModel : BaseViewModel
 {
-	public EditarTipoMaquinaViewModel() { }
+	public EditarTipoMaquinaViewModel()
+	{
+	}
 
 	public EditarTipoMaquinaViewModel(TipoMaquina tipoMaquina) : base(tipoMaquina)
 	{
@@ -183,8 +211,7 @@ public class EditarTipoMaquinaViewModel : BaseViewModel
 	[StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
 	public string Nombre { get; set; }
 
-	[Display(Name = "Activo")]
-	public bool Estado { get; set; }
+	[Display(Name = "Activo")] public bool Estado { get; set; }
 
 	[Display(Name = "Código del tipo de máquina")]
 	[Required(ErrorMessage = "El código es requerido")]
@@ -196,7 +223,9 @@ public class EditarTipoMaquinaViewModel : BaseViewModel
 
 public class EliminarTipoMaquinaViewModel
 {
-	public EliminarTipoMaquinaViewModel() { }
+	public EliminarTipoMaquinaViewModel()
+	{
+	}
 
 	public EliminarTipoMaquinaViewModel(TipoMaquina tipoMaquina)
 	{

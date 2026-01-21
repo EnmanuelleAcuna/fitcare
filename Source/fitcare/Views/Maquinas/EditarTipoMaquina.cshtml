@@ -33,7 +33,7 @@
 			<div class="card shadow-sm">
 				<div class="card-body">
 					<form asp-action="EditarTipoMaquina" asp-controller="Maquinas" method="post" autocomplete="off">
-						<input asp-for="Id" type="hidden" />
+						<input asp-for="Id" type="hidden"/>
 
 						<div class="row">
 							<div class="col-md-12">
@@ -44,25 +44,26 @@
 						<div class="row">
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
-									<label asp-for="Nombre"></label>
-									<input asp-for="Nombre" class="form-control form-control-sm" placeholder="Digite el tipo de máquina" />
-									<span asp-validation-for="Nombre"></span>
-								</div>
-							</div>
-
-							<div class="col-sm-12 col-md-4">
-								<div class="form-group">
 									<label asp-for="Codigo"></label>
-									<input asp-for="Codigo" class="form-control form-control-sm" placeholder="Digite el código del tipo de máquina" />
+									<input asp-for="Codigo" class="form-control form-control-sm" readonly />
 									<span asp-validation-for="Codigo"></span>
 								</div>
 							</div>
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
+									<label asp-for="Nombre"></label>
+									<input asp-for="Nombre" class="form-control form-control-sm"
+									       placeholder="Digite el tipo de máquina"/>
+									<span asp-validation-for="Nombre"></span>
+								</div>
+							</div>
+							
+							<div class="col-sm-12 col-md-4">
+								<div class="form-group">
 									<label asp-for="Estado"></label>
-									<br />
-									<input asp-for="Estado" type="checkbox" />
+									<br/>
+									<input asp-for="Estado" type="checkbox"/>
 								</div>
 							</div>
 
@@ -79,5 +80,5 @@
 </div>
 
 @section Scripts {
-	<partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial"/>
 }

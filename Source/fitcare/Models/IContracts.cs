@@ -29,6 +29,11 @@ public interface IDivisionTerritorial
 	IBaseCore<Distrito> Distritos { get; }
 }
 
+public interface IGeneradorCodigo<T>
+{
+	Task<string> GenerarCodigoAsync();
+}
+
 public interface IRutinas<T>
 {
 	Task<IList<T>> ReadAllAsync();

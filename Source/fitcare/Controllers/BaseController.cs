@@ -181,7 +181,10 @@ public class BaseController : Controller
 
 	public static IEnumerable<SelectListItem> CargarListaSeleccionTiposMaquina(IEnumerable<TipoMaquina> listaTiposMaquina)
 	{
-		IEnumerable<SelectListItem> listaSeleccionTiposMaquina = listaTiposMaquina.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = p.Nombre }).ToList();
+		IEnumerable<SelectListItem> listaSeleccionTiposMaquina = listaTiposMaquina
+			.Where(p => p.Estado)
+			.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = $"{p.Codigo} - {p.Nombre}" })
+			.ToList();
 		return listaSeleccionTiposMaquina;
 	}
 

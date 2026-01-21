@@ -57,10 +57,13 @@ class Program
 		builder.Services.AddScoped<IBaseCore<Distrito>, Distritos>();
 		builder.Services.AddTransient<IDivisionTerritorial, DivisionTerritorial>();
 		builder.Services.AddTransient<IBaseCore<TipoMaquina>, TiposMaquina>();
+		builder.Services.AddTransient<IGeneradorCodigo<TipoMaquina>, TiposMaquina>();
 		builder.Services.AddTransient<IBaseCore<Maquina>, Maquinas>();
+		builder.Services.AddTransient<IGeneradorCodigo<Maquina>, Maquinas>();
 		builder.Services.AddTransient<IBaseCore<TipoEjercicio>, TiposEjercicio>();
 		builder.Services.AddTransient<IBaseCore<Ejercicio>, Ejercicios>();
 		builder.Services.AddTransient<IBaseCore<TipoMedida>, TiposMedida>();
+		builder.Services.AddTransient<IGeneradorCodigo<TipoMedida>, TiposMedida>();
 		builder.Services.AddTransient<IBaseCore<GrupoMuscular>, GruposMusculares>();
 		builder.Services.AddTransient<IRutinas<Rutina>, Rutinas>();
 		builder.Services.AddScoped<IEmailSender, EmailSender>();

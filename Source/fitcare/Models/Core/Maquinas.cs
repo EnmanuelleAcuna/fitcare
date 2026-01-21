@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using fitcare.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace fitcare.Models.Core;
 
-public class Maquinas : IBaseCore<Maquina>
+public class Maquinas : IBaseCore<Maquina>, IGeneradorCodigo<Maquina>
 {
 	private readonly ApplicationDbContext _dbContext;
 	private readonly IBaseCore<TipoMaquina> _tiposMaquina;
@@ -19,7 +20,11 @@ public class Maquinas : IBaseCore<Maquina>
 
 	public async Task<IList<Maquina>> ReadAllAsync()
 	{
-		var maquinas = await _dbContext.Maquinas.Include(m => m.TipoMaquina).ToListAsync();
+		var maquinas = await _dbContext.Maquinas
+			.Include(m => m.TipoMaquina)
+			.OrderBy(m => m.Codigo.Length)
+			.ThenBy(m => m.Codigo)
+			.ToListAsync();
 		return maquinas ?? new List<Maquina>();
 	}
 
@@ -76,9 +81,34 @@ public class Maquinas : IBaseCore<Maquina>
 		_dbContext.Remove(record);
 		await _dbContext.SaveChangesAsync();
 	}
+
+	public async Task<string> GenerarCodigoAsync()
+	{
+		const string prefijo = "MAQ";
+
+		var ultimaMaquina = await _dbContext.Maquinas
+			.Where(m => m.Codigo.StartsWith(prefijo))
+			.OrderByDescending(m => m.Codigo.Length)
+			.ThenByDescending(m => m.Codigo)
+			.FirstOrDefaultAsync();
+
+		int siguienteNumero = 1;
+
+		if (ultimaMaquina != null)
+		{
+			string numeroStr = ultimaMaquina.Codigo.Substring(prefijo.Length);
+			if (int.TryParse(numeroStr, out int numeroActual))
+			{
+				siguienteNumero = numeroActual + 1;
+			}
+		}
+
+		string formato = siguienteNumero <= 999 ? "D3" : "D0";
+		return $"{prefijo}{siguienteNumero.ToString(formato)}";
+	}
 }
 
-public class TiposMaquina : IBaseCore<TipoMaquina>
+public class TiposMaquina : IBaseCore<TipoMaquina>, IGeneradorCodigo<TipoMaquina>
 {
 	private readonly ApplicationDbContext _dbContext;
 
@@ -86,7 +116,10 @@ public class TiposMaquina : IBaseCore<TipoMaquina>
 
 	public async Task<IList<TipoMaquina>> ReadAllAsync()
 	{
-		var tiposMaquina = await _dbContext.TiposMaquina.ToListAsync();
+		var tiposMaquina = await _dbContext.TiposMaquina
+			.OrderBy(t => t.Codigo.Length)
+			.ThenBy(t => t.Codigo)
+			.ToListAsync();
 		return tiposMaquina ?? new List<TipoMaquina>();
 	}
 
@@ -116,6 +149,15 @@ public class TiposMaquina : IBaseCore<TipoMaquina>
 		if (record == null)
 			throw new KeyNotFoundException($"No se encontró el tipo de máquina con el id {tipoMaquina.Id}");
 
+		if (!tipoMaquina.Estado)
+		{
+			bool tieneMaquinasActivas = await _dbContext.Maquinas
+				.AnyAsync(m => m.IdTipoMaquina == tipoMaquina.Id && m.Estado);
+
+			if (tieneMaquinasActivas)
+				throw new InvalidOperationException("No se puede desactivar el tipo de máquina porque tiene máquinas activas asignadas.");
+		}
+
 		record.Nombre = tipoMaquina.Nombre;
 		record.Codigo = tipoMaquina.Codigo;
 		record.Estado = tipoMaquina.Estado;
@@ -135,5 +177,30 @@ public class TiposMaquina : IBaseCore<TipoMaquina>
 
 		_dbContext.Remove(record);
 		await _dbContext.SaveChangesAsync();
+	}
+
+	public async Task<string> GenerarCodigoAsync()
+	{
+		const string prefijo = "TM";
+
+		var ultimoTipo = await _dbContext.TiposMaquina
+			.Where(t => t.Codigo.StartsWith(prefijo))
+			.OrderByDescending(t => t.Codigo.Length)
+			.ThenByDescending(t => t.Codigo)
+			.FirstOrDefaultAsync();
+
+		int siguienteNumero = 1;
+
+		if (ultimoTipo != null)
+		{
+			string numeroStr = ultimoTipo.Codigo.Substring(prefijo.Length);
+			if (int.TryParse(numeroStr, out int numeroActual))
+			{
+				siguienteNumero = numeroActual + 1;
+			}
+		}
+
+		string formato = siguienteNumero <= 999 ? "D3" : "D0";
+		return $"{prefijo}{siguienteNumero.ToString(formato)}";
 	}
 }
