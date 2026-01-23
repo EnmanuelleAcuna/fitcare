@@ -1,0 +1,107 @@
+@model IEnumerable<PagoMembresiaViewModel>
+
+@{
+	ViewBag.Title = "Pagos de Membresía";
+}
+
+<div class="container">
+	<div class="row">
+		<div class="col-5 align-self-center">
+			<h6 class="page-title">Pagos de Membresía</h6>
+		</div>
+		<div class="col-7 align-self-center">
+			<div class="d-flex align-items-center justify-content-end">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
+						</li>
+						<li class="breadcrumb-item active" aria-current="page">
+							Pagos de Membresía
+						</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+
+	@if (TempData["Success"] != null)
+	{
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			@TempData["Success"]
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	}
+
+	@if (TempData["Error"] != null)
+	{
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			@TempData["Error"]
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	}
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<table class="table table-sm table-hover" id="tablaPagos">
+						<thead>
+							<tr>
+								<th>Cliente</th>
+								<th>Plan</th>
+								<th>Fecha Inscripción</th>
+								<th>Fecha Renovación</th>
+								<th>Estado</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var cliente in Model)
+							{
+								<tr>
+									<td>@cliente.NombreCompleto</td>
+									<td>@cliente.NombrePlan</td>
+									<td>@(cliente.FechaInscripcion?.ToString("dd/MM/yyyy") ?? "-")</td>
+									<td>@(cliente.FechaRenovacion?.ToString("dd/MM/yyyy") ?? "-")</td>
+									<td>
+										@if (cliente.EstaVencido)
+										{
+											<span class="badge badge-danger">Vencido</span>
+										}
+										else
+										{
+											<span class="badge badge-success">Activo</span>
+										}
+									</td>
+									<td>
+										<a asp-action="ConfirmarPago" asp-route-id="@cliente.IdCliente" class="btn btn-sm btn-primary">
+											<i class="fa fa-credit-card"></i> Registrar Pago
+										</a>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('#tablaPagos').DataTable({
+				language: {
+					url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/es-ES.json'
+				},
+				order: [[4, 'desc'], [3, 'asc']] // Ordenar por estado (vencidos primero), luego por fecha renovación
+			});
+		});
+	</script>
+}

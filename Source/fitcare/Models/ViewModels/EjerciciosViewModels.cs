@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
+using fitcare.Models;
 using fitcare.Models.Entities;
 
 namespace fitcare.Models.ViewModels;
@@ -64,6 +66,20 @@ public class AgregarEjercicioViewModel
 	public List<string> IdsMaquinas { get; set; } = new();
 
 	public Ejercicio Entidad() => new(Guid.NewGuid(), Codigo, Nombre, Activo, new Guid(IdTipoEjercicio));
+
+	public static async Task<AgregarEjercicioViewModel> CrearAsync(IGeneradorCodigo<Ejercicio> generadorCodigo)
+	{
+		return new AgregarEjercicioViewModel
+		{
+			Codigo = await generadorCodigo.GenerarCodigoAsync(),
+			Activo = true
+		};
+	}
+
+	public async Task RegenerarCodigoAsync(IGeneradorCodigo<Ejercicio> generadorCodigo)
+	{
+		Codigo = await generadorCodigo.GenerarCodigoAsync();
+	}
 }
 
 public class EditarEjercicioViewModel : BaseViewModel
@@ -160,6 +176,20 @@ public class AgregarTipoEjercicioViewModel
 	public bool Estado { get; set; }
 
 	public TipoEjercicio Entidad() => new(Guid.NewGuid(), Codigo, Nombre, Estado);
+
+	public static async Task<AgregarTipoEjercicioViewModel> CrearAsync(IGeneradorCodigo<TipoEjercicio> generadorCodigo)
+	{
+		return new AgregarTipoEjercicioViewModel
+		{
+			Codigo = await generadorCodigo.GenerarCodigoAsync(),
+			Estado = true
+		};
+	}
+
+	public async Task RegenerarCodigoAsync(IGeneradorCodigo<TipoEjercicio> generadorCodigo)
+	{
+		Codigo = await generadorCodigo.GenerarCodigoAsync();
+	}
 }
 
 public class EditarTipoEjercicioViewModel : BaseViewModel

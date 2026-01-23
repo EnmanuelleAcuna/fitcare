@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using fitcare.Models;
+using fitcare.Models.Entities;
 using fitcare.Models.Extras;
 using fitcare.Models.Identity;
 using fitcare.Models.ViewModels;
@@ -30,6 +31,7 @@ public class CuentasController : BaseController
 	private readonly IConfiguration _configuration;
 	private readonly IEmailSender _emailSender;
 	private readonly ILogger<CuentasController> _logger;
+	private readonly IBaseCore<PlanMembresia> _planesMembresia;
 
 	public CuentasController(ApplicationUserManager<ApplicationUser> userManager,
 		RoleManager<ApplicationRole> roleManager,
@@ -39,7 +41,8 @@ public class CuentasController : BaseController
 		IHttpContextAccessor contextAccesor,
 		IEmailSender emailSender,
 		ILogger<CuentasController> logger,
-		IWebHostEnvironment environment)
+		IWebHostEnvironment environment,
+		IBaseCore<PlanMembresia> planesMembresia)
 		: base(divisionTerritorial, userManager, roleManager, configuration, contextAccesor, environment)
 	{
 		_userManager = userManager;
@@ -48,6 +51,7 @@ public class CuentasController : BaseController
 		_configuration = configuration;
 		_emailSender = emailSender;
 		_logger = logger;
+		_planesMembresia = planesMembresia;
 	}
 
 	[HttpGet]
@@ -493,6 +497,7 @@ public class CuentasController : BaseController
 		ViewBag.Provincias = await CargarListaSeleccionProvincias();
 		ViewBag.Cantones = await CargarListaSeleccionCantones();
 		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+		ViewBag.PlanesMembresia = await CargarListaSeleccionPlanesMembresia();
 
 		return View(modelo);
 	}
@@ -504,8 +509,10 @@ public class CuentasController : BaseController
 		{
 			// var rutaFotografia = GuardarImagenDisco(modelo.ProfilePicture);
 
+			var plan = await _planesMembresia.ReadByIdAsync(new Guid(modelo.IdPlanMembresia));
+
 			var usuarioRegistradoComoCliente =
-				await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), string.Empty);
+				await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), string.Empty, new Guid(modelo.IdPlanMembresia), plan.Dias);
 
 			if (usuarioRegistradoComoCliente.Succeeded) return RedirectToAction(nameof(Clientes));
 
@@ -517,6 +524,7 @@ public class CuentasController : BaseController
 		ViewBag.Provincias = await CargarListaSeleccionProvincias();
 		ViewBag.Cantones = await CargarListaSeleccionCantones();
 		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+		ViewBag.PlanesMembresia = await CargarListaSeleccionPlanesMembresia();
 
 		return View(modelo);
 	}
@@ -668,6 +676,7 @@ public class CuentasController : BaseController
 			IdProvincia = usuario.IdProvincia?.ToString(),
 			IdCanton = usuario.IdCanton?.ToString(),
 			IdDistrito = usuario.IdDistrito?.ToString(),
+			IdPlanMembresia = usuario.IdPlanMembresia?.ToString(),
 			FechaInscripcion = usuario.FechaIngresoInscripcion ?? DateTime.Now,
 			FechaRenovacion = usuario.FechaRenovacion ?? DateTime.Now.AddDays(30)
 		};
@@ -675,6 +684,7 @@ public class CuentasController : BaseController
 		ViewBag.Provincias = await CargarListaSeleccionProvincias();
 		ViewBag.Cantones = await CargarListaSeleccionCantones();
 		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+		ViewBag.PlanesMembresia = await CargarListaSeleccionPlanesMembresia();
 
 		return View(modelo);
 	}
@@ -685,7 +695,9 @@ public class CuentasController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			var resultado = await _userManager.ActualizarDatosCliente(modelo.Entidad());
+			var plan = await _planesMembresia.ReadByIdAsync(new Guid(modelo.IdPlanMembresia));
+
+			var resultado = await _userManager.ActualizarDatosCliente(modelo.Entidad(), new Guid(modelo.IdPlanMembresia), plan.Dias);
 
 			if (resultado.Succeeded) return RedirectToAction(nameof(Clientes));
 
@@ -697,6 +709,7 @@ public class CuentasController : BaseController
 		ViewBag.Provincias = await CargarListaSeleccionProvincias();
 		ViewBag.Cantones = await CargarListaSeleccionCantones();
 		ViewBag.Distritos = await CargarListaSeleccionDistritos();
+		ViewBag.PlanesMembresia = await CargarListaSeleccionPlanesMembresia();
 
 		return View(modelo);
 	}
@@ -812,5 +825,114 @@ public class CuentasController : BaseController
 			.ToList();
 
 		return Json(distritosFiltrados);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> PagosMembresia()
+	{
+		var usuariosCliente = await _userManager.GetUsersInRoleAsync("Cliente");
+		var modelo = new List<PagoMembresiaViewModel>();
+
+		foreach (var cliente in usuariosCliente)
+		{
+			string nombrePlan = "Sin plan";
+			if (cliente.IdPlanMembresia.HasValue)
+			{
+				try
+				{
+					var plan = await _planesMembresia.ReadByIdAsync(cliente.IdPlanMembresia.Value);
+					nombrePlan = plan.Nombre;
+				}
+				catch
+				{
+					nombrePlan = "Plan no encontrado";
+				}
+			}
+
+			modelo.Add(new PagoMembresiaViewModel
+			{
+				IdCliente = cliente.Id,
+				NombreCompleto = cliente.FullName,
+				NombrePlan = nombrePlan,
+				FechaInscripcion = cliente.FechaIngresoInscripcion,
+				FechaRenovacion = cliente.FechaRenovacion,
+				EstaVencido = cliente.FechaRenovacion.HasValue && cliente.FechaRenovacion.Value < DateTime.Now
+			});
+		}
+
+		return View(modelo);
+	}
+
+	[HttpGet]
+	public async Task<IActionResult> ConfirmarPago(string id)
+	{
+		var cliente = await _userManager.FindByIdAsync(id);
+
+		if (cliente == null) return NotFound();
+
+		if (!cliente.IdPlanMembresia.HasValue)
+		{
+			TempData["Error"] = "El cliente no tiene un plan de membresía asignado";
+			return RedirectToAction(nameof(PagosMembresia));
+		}
+
+		var plan = await _planesMembresia.ReadByIdAsync(cliente.IdPlanMembresia.Value);
+
+		var modelo = new ConfirmarPagoViewModel
+		{
+			IdCliente = cliente.Id,
+			NombreCompleto = cliente.FullName,
+			NombrePlan = plan.Nombre,
+			DiasPlan = plan.Dias,
+			FechaInscripcion = cliente.FechaIngresoInscripcion ?? DateTime.Now,
+			FechaRenovacionActual = cliente.FechaRenovacion ?? DateTime.Now,
+			NuevaFechaRenovacion = (cliente.FechaRenovacion ?? DateTime.Now).AddDays(plan.Dias)
+		};
+
+		return View(modelo);
+	}
+
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> RegistrarPago(string id)
+	{
+		var cliente = await _userManager.FindByIdAsync(id);
+
+		if (cliente == null) return NotFound();
+
+		if (!cliente.IdPlanMembresia.HasValue)
+		{
+			TempData["Error"] = "El cliente no tiene un plan de membresía asignado";
+			return RedirectToAction(nameof(PagosMembresia));
+		}
+
+		var plan = await _planesMembresia.ReadByIdAsync(cliente.IdPlanMembresia.Value);
+
+		var resultado = await _userManager.ExtenderMembresiaCliente(id, plan.Dias);
+
+		if (resultado.Succeeded)
+		{
+			TempData["Success"] = $"Pago registrado exitosamente. La membresía se extendió {plan.Dias} días.";
+		}
+		else
+		{
+			TempData["Error"] = "Error al registrar el pago";
+		}
+
+		return RedirectToAction(nameof(PagosMembresia));
+	}
+
+	private async Task<IList<SelectListItemWithData>> CargarListaSeleccionPlanesMembresia()
+	{
+		var planes = await _planesMembresia.ReadAllAsync();
+		return planes
+			.Where(p => p.Estado)
+			.Select(p => new SelectListItemWithData
+			{
+				Value = p.Id.ToString(),
+				Text = $"{p.Nombre} ({p.Dias} días - ₡{p.Costo:N0})",
+				Dias = p.Dias
+			})
+			.ToList();
 	}
 }

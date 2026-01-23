@@ -1,0 +1,86 @@
+@model ConfirmarPagoViewModel
+
+@{
+	ViewBag.Title = "Confirmar Pago";
+}
+
+<div class="container">
+	<div class="row">
+		<div class="col-5 align-self-center">
+			<h6 class="page-title">Confirmar Pago</h6>
+		</div>
+		<div class="col-7 align-self-center">
+			<div class="d-flex align-items-center justify-content-end">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
+						</li>
+						<li class="breadcrumb-item">
+							<a asp-action="PagosMembresia" asp-controller="Cuentas">Pagos de Membresía</a>
+						</li>
+						<li class="breadcrumb-item active" aria-current="page">
+							Confirmar Pago
+						</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<div class="card shadow-sm">
+				<div class="card-header bg-primary text-white">
+					<i class="fa fa-credit-card"></i> Confirmar Pago de Membresía
+				</div>
+				<div class="card-body">
+					<div class="text-center mb-4">
+						<i class="fa fa-user-circle fa-4x text-muted"></i>
+						<h5 class="mt-2">@Model.NombreCompleto</h5>
+					</div>
+
+					<table class="table table-bordered">
+						<tr>
+							<th class="bg-light">Plan de Membresía</th>
+							<td>@Model.NombrePlan</td>
+						</tr>
+						<tr>
+							<th class="bg-light">Días del Plan</th>
+							<td>@Model.DiasPlan días</td>
+						</tr>
+						<tr>
+							<th class="bg-light">Fecha Inscripción</th>
+							<td>@Model.FechaInscripcion.ToString("dd/MM/yyyy")</td>
+						</tr>
+						<tr>
+							<th class="bg-light">Fecha Renovación Actual</th>
+							<td>@Model.FechaRenovacionActual.ToString("dd/MM/yyyy")</td>
+						</tr>
+						<tr class="table-success">
+							<th class="bg-light">Nueva Fecha Renovación</th>
+							<td><strong>@Model.NuevaFechaRenovacion.ToString("dd/MM/yyyy")</strong></td>
+						</tr>
+					</table>
+
+					<div class="alert alert-info">
+						<i class="fa fa-info-circle"></i>
+						Al confirmar el pago, la membresía del cliente se extenderá <strong>@Model.DiasPlan días</strong>.
+					</div>
+
+					<form asp-action="RegistrarPago" asp-route-id="@Model.IdCliente" method="post">
+						@Html.AntiForgeryToken()
+						<div class="text-center">
+							<button type="submit" class="btn btn-success">
+								<i class="fa fa-check"></i> Confirmar Pago
+							</button>
+							<a asp-action="PagosMembresia" class="btn btn-secondary">
+								<i class="fa fa-times"></i> Cancelar
+							</a>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

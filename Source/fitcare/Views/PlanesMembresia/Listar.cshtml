@@ -1,0 +1,386 @@
+@{
+	ViewBag.Title = "Planes de Membresía";
+}
+
+<div class="container">
+	<div class="row">
+		<div class="col-5 align-self-center">
+			<h6 class="page-title">Planes de Membresía</h6>
+		</div>
+		<div class="col-7 align-self-center">
+			<div class="d-flex align-items-center justify-content-end">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item">
+							<a asp-action="Admin" asp-controller="Home">Administración</a>
+						</li>
+						<li class="breadcrumb-item active" aria-current="page">
+							Planes de Membresía
+						</li>
+					</ol>
+				</nav>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<!-- Lista izquierda -->
+		<div class="col-md-5">
+			<div class="card shadow-sm">
+				<div class="card-header d-flex justify-content-between align-items-center">
+					<span>Lista de planes</span>
+					<button type="button" class="btn btn-sm btn-primary" id="btnNuevo">
+						<i class="fa fa-plus"></i> Nuevo
+					</button>
+				</div>
+				<div class="card-body p-0">
+					<div class="list-group list-group-flush" id="listaPlanes">
+						<!-- Items cargados via AJAX -->
+					</div>
+					<div id="listaVacia" class="text-center text-muted p-3" style="display: none;">
+						No hay planes registrados
+					</div>
+					<div id="listaCargando" class="text-center text-muted p-3">
+						<i class="fa fa-spinner fa-spin"></i> Cargando...
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Formulario derecha -->
+		<div class="col-md-7">
+			<div class="card shadow-sm">
+				<div class="card-header">
+					<i class="fa fa-fw fa-edit" id="iconoFormulario"></i>
+					<span id="tituloFormulario">Nuevo Plan</span>
+				</div>
+				<div class="card-body">
+					<form id="formPlan" autocomplete="off">
+						@Html.AntiForgeryToken()
+						<input type="hidden" id="Id" name="Id" />
+
+						<div class="row">
+							<div class="col-12">
+								<div id="mensajeError" class="alert alert-danger" style="display: none;"></div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group">
+									<label for="Nombre">Nombre del plan <span class="text-danger">*</span></label>
+									<input type="text" class="form-control form-control-sm" id="Nombre" name="Nombre"
+										   placeholder="Ej: Plan Mensual" maxlength="255" required />
+									<span class="text-danger field-validation-valid" data-valmsg-for="Nombre"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="Dias">Días de duración <span class="text-danger">*</span></label>
+									<input type="number" class="form-control form-control-sm" id="Dias" name="Dias"
+										   placeholder="Ej: 30" min="1" max="3650" required />
+									<span class="text-danger field-validation-valid" data-valmsg-for="Dias"></span>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="Costo">Costo <span class="text-danger">*</span></label>
+									<div class="input-group input-group-sm">
+										<div class="input-group-prepend">
+											<span class="input-group-text">₡</span>
+										</div>
+										<input type="number" class="form-control form-control-sm" id="Costo" name="Costo"
+											   placeholder="Ej: 25000" min="0.01" step="0.01" required />
+									</div>
+									<span class="text-danger field-validation-valid" data-valmsg-for="Costo"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="Estado">Estado</label>
+									<br />
+									<div class="custom-control custom-switch">
+										<input type="checkbox" class="custom-control-input" id="Estado" name="Estado" checked>
+										<label class="custom-control-label" for="Estado" id="labelEstado">Activo</label>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<hr />
+
+						<div class="row">
+							<div class="col-12">
+								<button type="submit" class="btn btn-sm btn-primary" id="btnGuardar">
+									<i class="fa fa-save"></i> Guardar
+								</button>
+								<button type="button" class="btn btn-sm btn-secondary" id="btnCancelar">
+									<i class="fa fa-times"></i> Cancelar
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+
+	<style>
+		.list-group-item.active-item {
+			background-color: #e9ecef;
+			border-left: 3px solid #007bff;
+		}
+		.list-group-item {
+			cursor: pointer;
+			border-left: 3px solid transparent;
+		}
+		.list-group-item:hover {
+			background-color: #f8f9fa;
+		}
+		.plan-info {
+			font-size: 0.85rem;
+			color: #6c757d;
+		}
+	</style>
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			let modoEdicion = false;
+			let idSeleccionado = null;
+
+			// Cargar lista inicial
+			cargarLista();
+
+			// Evento: Nuevo plan
+			$('#btnNuevo').on('click', function () {
+				limpiarFormulario();
+				setModoAgregar();
+			});
+
+			// Evento: Cancelar
+			$('#btnCancelar').on('click', function () {
+				limpiarFormulario();
+				setModoAgregar();
+				quitarSeleccion();
+			});
+
+			// Evento: Cambio de estado
+			$('#Estado').on('change', function () {
+				$('#labelEstado').text($(this).is(':checked') ? 'Activo' : 'Inactivo');
+			});
+
+			// Evento: Click en item de lista
+			$(document).on('click', '.list-group-item', function () {
+				let id = $(this).data('id');
+				seleccionarPlan(id);
+			});
+
+			// Evento: Submit formulario
+			$('#formPlan').on('submit', function (e) {
+				e.preventDefault();
+
+				if (!validarFormulario()) {
+					return;
+				}
+
+				$('#btnGuardar').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Guardando...');
+
+				let formData = {
+					Nombre: $('#Nombre').val(),
+					Dias: parseInt($('#Dias').val()),
+					Costo: parseFloat($('#Costo').val()),
+					Estado: $('#Estado').is(':checked')
+				};
+
+				let url, method;
+				if (modoEdicion) {
+					formData.Id = idSeleccionado;
+					url = '@Url.Action("EditarAjax")';
+				} else {
+					url = '@Url.Action("AgregarAjax")';
+				}
+
+				let token = $('input[name="__RequestVerificationToken"]').val();
+
+				$.ajax({
+					url: url,
+					type: 'POST',
+					data: JSON.stringify(formData),
+					contentType: 'application/json',
+					dataType: 'json',
+					headers: {
+						'RequestVerificationToken': token
+					},
+					success: function (response) {
+						if (response.success) {
+							mostrarNotificacion(response.message, 'success');
+							cargarLista();
+							limpiarFormulario();
+							setModoAgregar();
+						} else {
+							if (response.errors) {
+								mostrarErroresValidacion(response.errors);
+							} else {
+								$('#mensajeError').text(response.message).show();
+							}
+						}
+					},
+					error: function () {
+						$('#mensajeError').text('Error al comunicarse con el servidor').show();
+					},
+					complete: function () {
+						$('#btnGuardar').prop('disabled', false).html('<i class="fa fa-save"></i> Guardar');
+					}
+				});
+			});
+
+			// Funciones auxiliares
+			function cargarLista() {
+				$('#listaCargando').show();
+				$('#listaVacia').hide();
+				$('#listaPlanes').empty();
+
+				$.ajax({
+					url: '@Url.Action("ObtenerPlanes")',
+					type: 'GET',
+					dataType: 'json',
+					success: function (response) {
+						$('#listaCargando').hide();
+						if (response.success && response.data.length > 0) {
+							response.data.forEach(function (plan) {
+								let estadoBadge = plan.estadoBool
+									? '<span class="badge badge-success">Activo</span>'
+									: '<span class="badge badge-secondary">Inactivo</span>';
+
+								let item = `
+									<a href="#" class="list-group-item list-group-item-action" data-id="${plan.id}">
+										<div class="d-flex w-100 justify-content-between">
+											<h6 class="mb-1">${plan.nombre}</h6>
+											${estadoBadge}
+										</div>
+										<div class="plan-info">
+											<span><i class="fa fa-calendar-alt"></i> ${plan.dias} días</span>
+											<span class="ml-3"><i class="fa fa-money-bill"></i> ₡${plan.costo.toLocaleString('es-CR')}</span>
+										</div>
+									</a>
+								`;
+								$('#listaPlanes').append(item);
+							});
+						} else {
+							$('#listaVacia').show();
+						}
+					},
+					error: function () {
+						$('#listaCargando').hide();
+						$('#listaVacia').text('Error al cargar los planes').show();
+					}
+				});
+			}
+
+			function seleccionarPlan(id) {
+				$('#tituloFormulario').html('<i class="fa fa-spinner fa-spin"></i> Cargando...');
+				$('#iconoFormulario').hide();
+
+				$.ajax({
+					url: '@Url.Action("Obtener")',
+					type: 'GET',
+					data: { id: id },
+					dataType: 'json',
+					success: function (response) {
+						$('#iconoFormulario').show();
+						if (response.success) {
+							let plan = response.modelo;
+							$('#Id').val(plan.id);
+							$('#Nombre').val(plan.nombre);
+							$('#Dias').val(plan.dias);
+							$('#Costo').val(plan.costo);
+							$('#Estado').prop('checked', plan.estadoBool);
+							$('#labelEstado').text(plan.estadoBool ? 'Activo' : 'Inactivo');
+
+							setModoEditar();
+							idSeleccionado = id;
+
+							// Resaltar item seleccionado
+							$('.list-group-item').removeClass('active-item');
+							$(`.list-group-item[data-id="${id}"]`).addClass('active-item');
+						} else {
+							setModoAgregar();
+							mostrarNotificacion(response.message, 'danger');
+						}
+					},
+					error: function () {
+						$('#iconoFormulario').show();
+						setModoAgregar();
+						mostrarNotificacion('Error al cargar el plan', 'danger');
+					}
+				});
+			}
+
+			function limpiarFormulario() {
+				$('#formPlan')[0].reset();
+				$('#Id').val('');
+				$('#Estado').prop('checked', true);
+				$('#labelEstado').text('Activo');
+				$('#mensajeError').hide();
+				$('.field-validation-valid, .field-validation-error').text('');
+				idSeleccionado = null;
+			}
+
+			function setModoAgregar() {
+				modoEdicion = false;
+				$('#tituloFormulario').text('Nuevo Plan');
+				$('#iconoFormulario').removeClass('fa-edit').addClass('fa-plus-circle');
+				$('#Nombre').focus();
+			}
+
+			function setModoEditar() {
+				modoEdicion = true;
+				$('#tituloFormulario').text('Editar Plan');
+				$('#iconoFormulario').removeClass('fa-plus-circle').addClass('fa-edit');
+			}
+
+			function quitarSeleccion() {
+				$('.list-group-item').removeClass('active-item');
+			}
+
+			function validarFormulario() {
+				let isValid = true;
+				$('#mensajeError').hide();
+				$('.field-validation-valid, .field-validation-error').text('');
+
+				if (!$('#Nombre').val().trim()) {
+					$('[data-valmsg-for="Nombre"]').text('El nombre es requerido').addClass('field-validation-error');
+					isValid = false;
+				}
+
+				if (!$('#Dias').val() || parseInt($('#Dias').val()) < 1) {
+					$('[data-valmsg-for="Dias"]').text('Los días son requeridos y deben ser mayor a 0').addClass('field-validation-error');
+					isValid = false;
+				}
+
+				if (!$('#Costo').val() || parseFloat($('#Costo').val()) <= 0) {
+					$('[data-valmsg-for="Costo"]').text('El costo es requerido y debe ser mayor a 0').addClass('field-validation-error');
+					isValid = false;
+				}
+
+				return isValid;
+			}
+
+			function mostrarErroresValidacion(errors) {
+				for (let field in errors) {
+					$(`[data-valmsg-for="${field}"]`).text(errors[field]).addClass('field-validation-error');
+				}
+			}
+		});
+	</script>
+}

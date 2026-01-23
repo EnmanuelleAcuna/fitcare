@@ -1,0 +1,15 @@
+USE fitcare;
+
+CREATE TABLE fitcare.PlanesMembresia (
+	Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_PlanesMembresia PRIMARY KEY,
+	Nombre VARCHAR(255) NOT NULL,
+	Dias INT NOT NULL,
+	Costo DECIMAL(10,2) NOT NULL,
+	Estado BIT NOT NULL,
+	DateCreated DATETIME NOT NULL CONSTRAINT DF_PlanesMembresia_DateCreated DEFAULT GETUTCDATE(),
+	CreatedBy NVARCHAR(100) NOT NULL,
+	DateUpdated DATETIME NULL,
+	UpdatedBy NVARCHAR(100) NULL
+);
+
+SELECT * FROM fitcare.PlanesMembresia;

@@ -1,3 +1,4 @@
+using fitcare.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,11 @@ public class IdentityDBContext : IdentityDbContext<ApplicationUser, ApplicationR
 			 .WithOne(e => e.User)
 			 .HasForeignKey(ur => ur.UserId)
 			 .IsRequired();
+
+			b.HasOne(e => e.PlanMembresia)
+			 .WithMany()
+			 .HasForeignKey(e => e.IdPlanMembresia)
+			 .OnDelete(DeleteBehavior.SetNull);
 		});
 
 		// Roles

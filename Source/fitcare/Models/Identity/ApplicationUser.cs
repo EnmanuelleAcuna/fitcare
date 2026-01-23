@@ -91,6 +91,9 @@ public class ApplicationUser : IdentityUser
 
 	public DateTime? FechaRenovacion { get; set; }
 
+	[ForeignKey(nameof(PlanMembresia))] public Guid? IdPlanMembresia { get; set; }
+	public virtual PlanMembresia PlanMembresia { get; set; }
+
 	[NotMapped] public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 
 	#region Identity properties that does not need to be mapped in the DB

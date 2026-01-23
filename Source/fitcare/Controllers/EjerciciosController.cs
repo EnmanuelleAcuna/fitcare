@@ -21,13 +21,17 @@ namespace fitcare.Controllers;
 public class EjerciciosController : BaseController
 {
 	private readonly IBaseCore<Ejercicio> _ejercicios;
+	private readonly IGeneradorCodigo<Ejercicio> _generadorCodigoEjercicio;
 	private readonly IBaseCore<TipoEjercicio> _tiposEjercicio;
+	private readonly IGeneradorCodigo<TipoEjercicio> _generadorCodigoTipoEjercicio;
 	private readonly IBaseCore<GrupoMuscular> _gruposMusculares;
 	private readonly IBaseCore<Maquina> _maquinas;
 	private readonly ILogger<EjerciciosController> _logger;
 
 	public EjerciciosController(IBaseCore<Ejercicio> ejercicios,
+								IGeneradorCodigo<Ejercicio> generadorCodigoEjercicio,
 								IBaseCore<TipoEjercicio> tiposEjercicio,
+								IGeneradorCodigo<TipoEjercicio> generadorCodigoTipoEjercicio,
 								IBaseCore<GrupoMuscular> gruposMusculares,
 								IBaseCore<Maquina> maquinas,
 								IDivisionTerritorial divisionTerritorial,
@@ -40,7 +44,9 @@ public class EjerciciosController : BaseController
 	: base(divisionTerritorial, userManager, roleManager, configuration, contextAccesor, environment)
 	{
 		_ejercicios = ejercicios;
+		_generadorCodigoEjercicio = generadorCodigoEjercicio;
 		_tiposEjercicio = tiposEjercicio;
+		_generadorCodigoTipoEjercicio = generadorCodigoTipoEjercicio;
 		_gruposMusculares = gruposMusculares;
 		_maquinas = maquinas;
 		_logger = logger;
@@ -57,10 +63,11 @@ public class EjerciciosController : BaseController
 	[HttpGet]
 	public async Task<ActionResult> AgregarEjercicio()
 	{
+		var modelo = await AgregarEjercicioViewModel.CrearAsync(_generadorCodigoEjercicio);
 		ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicio.ReadAllAsync());
 		ViewBag.ListaGruposMusculares = await CargarListaGruposMusculares();
 		ViewBag.ListaMaquinas = await CargarListaMaquinas();
-		return View();
+		return View(modelo);
 	}
 
 	[HttpPost]
@@ -76,34 +83,44 @@ public class EjerciciosController : BaseController
 			return View(modelo);
 		}
 
-		var ejercicio = modelo.Entidad();
-
-		// Agregar grupos musculares seleccionados
-		if (modelo.IdsGruposMusculares != null && modelo.IdsGruposMusculares.Any())
+		try
 		{
-			foreach (var idGrupo in modelo.IdsGruposMusculares)
-			{
-				var grupo = await _gruposMusculares.ReadByIdAsync(new Guid(idGrupo));
-				if (grupo != null)
-					ejercicio.GruposMusculares.Add(grupo);
-			}
-		}
+			var ejercicio = modelo.Entidad();
 
-		// Agregar máquinas seleccionadas
-		if (modelo.IdsMaquinas != null && modelo.IdsMaquinas.Any())
+			if (modelo.IdsGruposMusculares != null && modelo.IdsGruposMusculares.Any())
+			{
+				foreach (var idGrupo in modelo.IdsGruposMusculares)
+				{
+					var grupo = await _gruposMusculares.ReadByIdAsync(new Guid(idGrupo));
+					if (grupo != null)
+						ejercicio.GruposMusculares.Add(grupo);
+				}
+			}
+
+			if (modelo.IdsMaquinas != null && modelo.IdsMaquinas.Any())
+			{
+				foreach (var idMaquina in modelo.IdsMaquinas)
+				{
+					var maquina = await _maquinas.ReadByIdAsync(new Guid(idMaquina));
+					if (maquina != null)
+						ejercicio.Maquinas.Add(maquina);
+				}
+			}
+
+			await _ejercicios.CreateAsync(ejercicio, GetCurrentUser());
+			TempData["ToastMessage"] = "Ejercicio agregado exitosamente";
+			TempData["ToastType"] = "success";
+			return RedirectToAction(nameof(Ejercicios));
+		}
+		catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) when (ex.InnerException?.Message.Contains("UNIQUE") == true)
 		{
-			foreach (var idMaquina in modelo.IdsMaquinas)
-			{
-				var maquina = await _maquinas.ReadByIdAsync(new Guid(idMaquina));
-				if (maquina != null)
-					ejercicio.Maquinas.Add(maquina);
-			}
+			await modelo.RegenerarCodigoAsync(_generadorCodigoEjercicio);
+			ViewBag.ListaTiposEjercicio = CargarListaSeleccionTiposEjercicio(await _tiposEjercicio.ReadAllAsync());
+			ViewBag.ListaGruposMusculares = await CargarListaGruposMusculares();
+			ViewBag.ListaMaquinas = await CargarListaMaquinas();
+			ModelState.AddModelError("", "El código fue asignado a otro registro. Se ha generado uno nuevo.");
+			return View(modelo);
 		}
-
-		await _ejercicios.CreateAsync(ejercicio, GetCurrentUser());
-		TempData["ToastMessage"] = "Ejercicio agregado exitosamente";
-		TempData["ToastType"] = "success";
-		return RedirectToAction(nameof(Ejercicios));
 	}
 
 	[HttpGet]
@@ -209,9 +226,10 @@ public class EjerciciosController : BaseController
 	}
 
 	[HttpGet]
-	public ActionResult AgregarTipoEjercicio()
+	public async Task<ActionResult> AgregarTipoEjercicio()
 	{
-		return View();
+		var modelo = await AgregarTipoEjercicioViewModel.CrearAsync(_generadorCodigoTipoEjercicio);
+		return View(modelo);
 	}
 
 	[HttpPost]
@@ -220,10 +238,19 @@ public class EjerciciosController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			await _tiposEjercicio.CreateAsync(modelo.Entidad(), GetCurrentUser());
-			TempData["ToastMessage"] = "Tipo de ejercicio agregado exitosamente";
-			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(TiposEjercicio));
+			try
+			{
+				await _tiposEjercicio.CreateAsync(modelo.Entidad(), GetCurrentUser());
+				TempData["ToastMessage"] = "Tipo de ejercicio agregado exitosamente";
+				TempData["ToastType"] = "success";
+				return RedirectToAction(nameof(TiposEjercicio));
+			}
+			catch (Microsoft.EntityFrameworkCore.DbUpdateException ex) when (ex.InnerException?.Message.Contains("UNIQUE") == true)
+			{
+				await modelo.RegenerarCodigoAsync(_generadorCodigoTipoEjercicio);
+				ModelState.AddModelError("", "El código fue asignado a otro registro. Se ha generado uno nuevo.");
+				return View(modelo);
+			}
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorCrear(nameof(TipoEjercicio)));
@@ -245,11 +272,19 @@ public class EjerciciosController : BaseController
 	{
 		if (ModelState.IsValid)
 		{
-			TipoEjercicio tipoEjercicio = modelo.Entidad();
-			await _tiposEjercicio.UpdateAsync(tipoEjercicio, GetCurrentUser());
-			TempData["ToastMessage"] = "Tipo de ejercicio actualizado exitosamente";
-			TempData["ToastType"] = "success";
-			return RedirectToAction(nameof(TiposEjercicio));
+			try
+			{
+				TipoEjercicio tipoEjercicio = modelo.Entidad();
+				await _tiposEjercicio.UpdateAsync(tipoEjercicio, GetCurrentUser());
+				TempData["ToastMessage"] = "Tipo de ejercicio actualizado exitosamente";
+				TempData["ToastType"] = "success";
+				return RedirectToAction(nameof(TiposEjercicio));
+			}
+			catch (InvalidOperationException ex)
+			{
+				ModelState.AddModelError("", ex.Message);
+				return View(modelo);
+			}
 		}
 
 		ModelState.AddModelError("", Messages.MensajeErrorActualizar(nameof(TipoEjercicio)));

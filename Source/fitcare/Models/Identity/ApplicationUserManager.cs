@@ -107,7 +107,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		return result;
 	}
 
-	public async Task<IdentityResult> RegistrarUsuarioComoCliente(ApplicationUser user, string filePath)
+	public async Task<IdentityResult> RegistrarUsuarioComoCliente(ApplicationUser user, string filePath, Guid idPlanMembresia, int diasPlan)
 	{
 		var userRecord = await FindByIdAsync(user.Id);
 
@@ -130,7 +130,8 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		userRecord.IdDistrito = user.IdDistrito;
 		userRecord.URLFotografia = filePath;
 		userRecord.FechaIngresoInscripcion = user.FechaIngresoInscripcion;
-		userRecord.FechaRenovacion = user.FechaRenovacion;
+		userRecord.IdPlanMembresia = idPlanMembresia;
+		userRecord.FechaRenovacion = user.FechaIngresoInscripcion?.AddDays(diasPlan);
 
 		IdentityResult result = await UpdateAsync(userRecord);
 		return result;
@@ -214,7 +215,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		return await RemoveFromRoleAsync(user, "Instructor");
 	}
 
-	public async Task<IdentityResult> ActualizarDatosCliente(ApplicationUser user)
+	public async Task<IdentityResult> ActualizarDatosCliente(ApplicationUser user, Guid idPlanMembresia, int diasPlan)
 	{
 		var userRecord = await FindByIdAsync(user.Id);
 
@@ -225,7 +226,23 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		userRecord.IdCanton = user.IdCanton;
 		userRecord.IdDistrito = user.IdDistrito;
 		userRecord.FechaIngresoInscripcion = user.FechaIngresoInscripcion;
-		userRecord.FechaRenovacion = user.FechaRenovacion;
+		userRecord.IdPlanMembresia = idPlanMembresia;
+		userRecord.FechaRenovacion = user.FechaIngresoInscripcion?.AddDays(diasPlan);
+
+		return await UpdateAsync(userRecord);
+	}
+
+	public async Task<IdentityResult> ExtenderMembresiaCliente(string userId, int diasPlan)
+	{
+		var userRecord = await FindByIdAsync(userId);
+
+		if (userRecord == null)
+			return IdentityResult.Failed(new IdentityError { Description = "Usuario no encontrado" });
+
+		if (userRecord.FechaRenovacion == null)
+			return IdentityResult.Failed(new IdentityError { Description = "El cliente no tiene fecha de renovación" });
+
+		userRecord.FechaRenovacion = userRecord.FechaRenovacion.Value.AddDays(diasPlan);
 
 		return await UpdateAsync(userRecord);
 	}

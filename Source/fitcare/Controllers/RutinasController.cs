@@ -162,7 +162,20 @@ public class RutinasController : BaseController
 
 			Rutina rutina = modelo.Entidad(usuarioInstructor, usuarioCliente);
 
-			await _rutinas.CreateAsync(rutina, CurrentUser);
+			try
+			{
+				await _rutinas.CreateAsync(rutina, CurrentUser);
+			}
+			catch (InvalidOperationException ex)
+			{
+				var listaInstructoresEx = await _userManager.GetUsersInRoleAsync("Instructor");
+				var listaClientesEx = await _userManager.GetUsersInRoleAsync("Cliente");
+				ViewBag.ListaInstructores = CargarListaSeleccionUsuarios(listaInstructoresEx);
+				ViewBag.ListaClientes = CargarListaSeleccionUsuarios(listaClientesEx);
+
+				ModelState.AddModelError("FechaFin", ex.Message);
+				return View(modelo);
+			}
 
 			// Enviar correo de notificación de creación de rutina al cliente
 			string urlVisualizacionRutina = Url.Action("Detalle", "Rutinas", new { id = rutina.Id }, protocol: Request.Scheme);

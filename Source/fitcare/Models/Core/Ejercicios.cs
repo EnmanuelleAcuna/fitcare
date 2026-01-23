@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace fitcare.Models.Core;
 
-public class Ejercicios : IBaseCore<Ejercicio>
+public class Ejercicios : IBaseCore<Ejercicio>, IGeneradorCodigo<Ejercicio>
 {
 	private readonly ApplicationDbContext _dbContext;
 	private readonly IBaseCore<TipoEjercicio> _tiposEjercicio;
@@ -20,8 +20,35 @@ public class Ejercicios : IBaseCore<Ejercicio>
 
 	public async Task<IList<Ejercicio>> ReadAllAsync()
 	{
-		var ejercicios = await _dbContext.Ejercicios.Include(z => z.TipoEjercicio).ToListAsync();
+		var ejercicios = await _dbContext.Ejercicios
+			.Include(z => z.TipoEjercicio)
+			.OrderBy(e => e.Codigo.Length)
+			.ThenBy(e => e.Codigo)
+			.ToListAsync();
 		return ejercicios ?? new List<Ejercicio>();
+	}
+
+	public async Task<string> GenerarCodigoAsync()
+	{
+		const string prefijo = "EJ";
+		var ultimoEjercicio = await _dbContext.Ejercicios
+			.Where(e => e.Codigo.StartsWith(prefijo))
+			.OrderByDescending(e => e.Codigo.Length)
+			.ThenByDescending(e => e.Codigo)
+			.FirstOrDefaultAsync();
+
+		int siguienteNumero = 1;
+		if (ultimoEjercicio != null)
+		{
+			string numeroStr = ultimoEjercicio.Codigo.Substring(prefijo.Length);
+			if (int.TryParse(numeroStr, out int numeroActual))
+			{
+				siguienteNumero = numeroActual + 1;
+			}
+		}
+
+		string formato = siguienteNumero <= 999 ? "D3" : "D0";
+		return $"{prefijo}{siguienteNumero.ToString(formato)}";
 	}
 
 	public async Task<Ejercicio> ReadByIdAsync(Guid id)
@@ -95,7 +122,7 @@ public class Ejercicios : IBaseCore<Ejercicio>
 	}
 }
 
-public class TiposEjercicio : IBaseCore<TipoEjercicio>
+public class TiposEjercicio : IBaseCore<TipoEjercicio>, IGeneradorCodigo<TipoEjercicio>
 {
 	private readonly ApplicationDbContext _dbContext;
 
@@ -103,8 +130,34 @@ public class TiposEjercicio : IBaseCore<TipoEjercicio>
 
 	public async Task<IList<TipoEjercicio>> ReadAllAsync()
 	{
-		var tiposEjercicio = await _dbContext.TiposEjercicio.ToListAsync();
+		var tiposEjercicio = await _dbContext.TiposEjercicio
+			.OrderBy(t => t.Codigo.Length)
+			.ThenBy(t => t.Codigo)
+			.ToListAsync();
 		return tiposEjercicio ?? new List<TipoEjercicio>();
+	}
+
+	public async Task<string> GenerarCodigoAsync()
+	{
+		const string prefijo = "TE";
+		var ultimoTipo = await _dbContext.TiposEjercicio
+			.Where(t => t.Codigo.StartsWith(prefijo))
+			.OrderByDescending(t => t.Codigo.Length)
+			.ThenByDescending(t => t.Codigo)
+			.FirstOrDefaultAsync();
+
+		int siguienteNumero = 1;
+		if (ultimoTipo != null)
+		{
+			string numeroStr = ultimoTipo.Codigo.Substring(prefijo.Length);
+			if (int.TryParse(numeroStr, out int numeroActual))
+			{
+				siguienteNumero = numeroActual + 1;
+			}
+		}
+
+		string formato = siguienteNumero <= 999 ? "D3" : "D0";
+		return $"{prefijo}{siguienteNumero.ToString(formato)}";
 	}
 
 	public async Task<TipoEjercicio> ReadByIdAsync(Guid id)
@@ -130,8 +183,14 @@ public class TiposEjercicio : IBaseCore<TipoEjercicio>
 	{
 		TipoEjercicio record = await ReadByIdAsync(tipoEjercicio.Id);
 
-		if (record == null)
-			throw new KeyNotFoundException($"No se encontró el tipo  de ejercicio con el id {tipoEjercicio.Id}");
+		if (record.Estado && !tipoEjercicio.Estado)
+		{
+			bool tieneEjerciciosActivos = await _dbContext.Ejercicios
+				.AnyAsync(e => e.IdTipoEjercicio == tipoEjercicio.Id && e.Estado);
+
+			if (tieneEjerciciosActivos)
+				throw new InvalidOperationException("No se puede desactivar el tipo de ejercicio porque tiene ejercicios activos asociados.");
+		}
 
 		record.Codigo = tipoEjercicio.Codigo;
 		record.Nombre = tipoEjercicio.Nombre;

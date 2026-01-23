@@ -75,9 +75,23 @@
 
 							<div class="col-sm-12 col-md-4">
 								<div class="form-group">
+									<label asp-for="IdPlanMembresia"></label>
+									<select asp-for="IdPlanMembresia" class="form-control form-control-sm" id="selectPlanMembresia">
+										<option value="">Seleccione un plan</option>
+										@foreach (var plan in (IList<SelectListItemWithData>)ViewBag.PlanesMembresia)
+										{
+											<option value="@plan.Value" data-dias="@plan.Dias">@plan.Text</option>
+										}
+									</select>
+									<span asp-validation-for="IdPlanMembresia" class="text-danger"></span>
+								</div>
+							</div>
+
+							<div class="col-sm-12 col-md-4">
+								<div class="form-group">
 									<label asp-for="FechaInscripcion"></label>
 									<br />
-									<input asp-for="FechaInscripcion" class="form-control form-control-sm" />
+									<input asp-for="FechaInscripcion" class="form-control form-control-sm" id="inputFechaInscripcion" />
 									<span asp-validation-for="FechaInscripcion" class="text-danger"></span>
 								</div>
 							</div>
@@ -86,8 +100,8 @@
 								<div class="form-group">
 									<label asp-for="FechaRenovacion"></label>
 									<br />
-									<input asp-for="FechaRenovacion" class="form-control form-control-sm" />
-									<span asp-validation-for="FechaRenovacion" class="text-danger"></span>
+									<input asp-for="FechaRenovacion" class="form-control form-control-sm" id="inputFechaRenovacion" readonly />
+									<small class="text-muted">Calculada automáticamente</small>
 								</div>
 							</div>
 
@@ -115,6 +129,26 @@
 				cantonesUrl: '@Url.Action("ObtenerCantonesPorProvincia", "Cuentas")',
 				distritosUrl: '@Url.Action("ObtenerDistritosPorCanton", "Cuentas")'
 			});
+
+			// Calcular fecha de renovación al cambiar plan o fecha de inscripción
+			$('#selectPlanMembresia, #inputFechaInscripcion').on('change', function() {
+				calcularFechaRenovacion();
+			});
+
+			function calcularFechaRenovacion() {
+				var fechaInscripcion = $('#inputFechaInscripcion').val();
+				var diasPlan = $('#selectPlanMembresia option:selected').data('dias');
+
+				if (fechaInscripcion && diasPlan) {
+					var fecha = new Date(fechaInscripcion);
+					fecha.setDate(fecha.getDate() + diasPlan);
+					var fechaFormateada = fecha.toISOString().split('T')[0];
+					$('#inputFechaRenovacion').val(fechaFormateada);
+				}
+			}
+
+			// Calcular al cargar si ya hay valores
+			calcularFechaRenovacion();
 		});
 	</script>
 }

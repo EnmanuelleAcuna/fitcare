@@ -58,6 +58,13 @@ public class Rutinas : IRutinas<Rutina>
 		else
 			rutina.Cliente = existingUsuarioCliente;
 
+		// Validar que la fecha de finalización esté dentro del período de membresía del cliente
+		if (existingUsuarioCliente.FechaRenovacion.HasValue && rutina.FechaFin > existingUsuarioCliente.FechaRenovacion.Value)
+		{
+			throw new InvalidOperationException(
+				$"La fecha de finalización de la rutina ({rutina.FechaFin:dd/MM/yyyy}) excede la fecha de renovación de membresía del cliente ({existingUsuarioCliente.FechaRenovacion.Value:dd/MM/yyyy}).");
+		}
+
 		// Recorrer cada ejercicioRutina y medidaRutina
 		// para establecer los valores de fecha y usuario de insercion
 		foreach (var ejercicioRutina in rutina.Ejercicios)

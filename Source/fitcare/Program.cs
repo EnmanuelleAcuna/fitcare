@@ -61,10 +61,13 @@ class Program
 		builder.Services.AddTransient<IBaseCore<Maquina>, Maquinas>();
 		builder.Services.AddTransient<IGeneradorCodigo<Maquina>, Maquinas>();
 		builder.Services.AddTransient<IBaseCore<TipoEjercicio>, TiposEjercicio>();
+		builder.Services.AddTransient<IGeneradorCodigo<TipoEjercicio>, TiposEjercicio>();
 		builder.Services.AddTransient<IBaseCore<Ejercicio>, Ejercicios>();
+		builder.Services.AddTransient<IGeneradorCodigo<Ejercicio>, Ejercicios>();
 		builder.Services.AddTransient<IBaseCore<TipoMedida>, TiposMedida>();
 		builder.Services.AddTransient<IGeneradorCodigo<TipoMedida>, TiposMedida>();
 		builder.Services.AddTransient<IBaseCore<GrupoMuscular>, GruposMusculares>();
+		builder.Services.AddTransient<IBaseCore<PlanMembresia>, PlanesMembresia>();
 		builder.Services.AddTransient<IRutinas<Rutina>, Rutinas>();
 		builder.Services.AddScoped<IEmailSender, EmailSender>();
 

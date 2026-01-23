@@ -230,6 +230,10 @@ public class AgregarClienteViewModel : UsuarioViewModel
 	[Required(ErrorMessage = "El Distrito es requerido.")]
 	public string IdDistrito { get; set; }
 
+	[Display(Name = "Plan de membresía")]
+	[Required(ErrorMessage = "El plan de membresía es requerido.")]
+	public string IdPlanMembresia { get; set; }
+
 	// [Display(Name = "Fotografía")]
 	// [Required(ErrorMessage = "La fotografía es requerida.")]
 	// public IFormFile ProfilePicture { get; set; }
@@ -240,7 +244,6 @@ public class AgregarClienteViewModel : UsuarioViewModel
 	public DateTime FechaInscripcion { get; set; } = DateTime.Now;
 
 	[Display(Name = "Fecha de renovación")]
-	[Required(ErrorMessage = "La fecha de renovación es requerida")]
 	[DataType(DataType.Date, ErrorMessage = "La fecha no tiene formato correcto.")]
 	public DateTime FechaRenovacion { get; set; } = DateTime.Now.AddDays(30);
 
@@ -382,4 +385,32 @@ public class ClienteExportViewModel
 	public DateTime? FechaInscripcion { get; set; }
 	public DateTime? FechaRenovacion { get; set; }
 	public string Estado { get; set; }
+}
+
+public class SelectListItemWithData
+{
+	public string Value { get; set; }
+	public string Text { get; set; }
+	public int Dias { get; set; }
+}
+
+public class PagoMembresiaViewModel
+{
+	public string IdCliente { get; set; }
+	public string NombreCompleto { get; set; }
+	public string NombrePlan { get; set; }
+	public DateTime? FechaInscripcion { get; set; }
+	public DateTime? FechaRenovacion { get; set; }
+	public bool EstaVencido { get; set; }
+}
+
+public class ConfirmarPagoViewModel
+{
+	public string IdCliente { get; set; }
+	public string NombreCompleto { get; set; }
+	public string NombrePlan { get; set; }
+	public int DiasPlan { get; set; }
+	public DateTime FechaInscripcion { get; set; }
+	public DateTime FechaRenovacionActual { get; set; }
+	public DateTime NuevaFechaRenovacion { get; set; }
 }

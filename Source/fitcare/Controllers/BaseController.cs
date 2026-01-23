@@ -196,7 +196,7 @@ public class BaseController : Controller
 
 	public static IEnumerable<SelectListItem> CargarListaSeleccionTiposEjercicio(IEnumerable<TipoEjercicio> listaTiposEjercicio)
 	{
-		IEnumerable<SelectListItem> listaSeleccionTiposEjercicio = listaTiposEjercicio.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = p.Nombre }).ToList();
+		IEnumerable<SelectListItem> listaSeleccionTiposEjercicio = listaTiposEjercicio.Select(p => new SelectListItem { Value = Convert.ToString(p.Id.ToString(), new CultureInfo("es-CR")), Text = $"{p.Codigo} - {p.Nombre}" }).ToList();
 		return listaSeleccionTiposEjercicio;
 	}
 

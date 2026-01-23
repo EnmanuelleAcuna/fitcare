@@ -17,6 +17,7 @@ public class ApplicationDbContext : DbContext
 	public virtual DbSet<TipoMedida> TiposMedida { get; set; }
 	public virtual DbSet<GrupoMuscular> GruposMusculares { get; set; }
 	public virtual DbSet<Rutina> Rutinas { get; set; }
+	public virtual DbSet<PlanMembresia> PlanesMembresia { get; set; }
 	public virtual DbSet<ApplicationUser> Usuarios { get; set; }
 	// public virtual DbSet<DetalleMedidas> DetalleMedidas { get; set; }
 	// public virtual DbSet<DetalleRutina> DetalleRutina { get; set; }
