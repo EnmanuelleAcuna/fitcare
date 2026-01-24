@@ -83,7 +83,7 @@
 										<option value="">Seleccione un plan</option>
 										@foreach (var plan in (IList<SelectListItemWithData>)ViewBag.PlanesMembresia)
 										{
-											<option value="@plan.Value" data-dias="@plan.Dias" selected="@(Model.IdPlanMembresia == plan.Value)">@plan.Text</option>
+											<option value="@plan.Value" data-meses="@plan.Meses" selected="@(Model.IdPlanMembresia == plan.Value)">@plan.Text</option>
 										}
 									</select>
 									<span asp-validation-for="IdPlanMembresia" class="text-danger"></span>
@@ -140,11 +140,11 @@
 
 			function calcularFechaRenovacion() {
 				var fechaInscripcion = $('#inputFechaInscripcion').val();
-				var diasPlan = $('#selectPlanMembresia option:selected').data('dias');
+				var mesesPlan = $('#selectPlanMembresia option:selected').data('meses');
 
-				if (fechaInscripcion && diasPlan) {
+				if (fechaInscripcion && mesesPlan) {
 					var fecha = new Date(fechaInscripcion);
-					fecha.setDate(fecha.getDate() + diasPlan);
+					fecha.setMonth(fecha.getMonth() + mesesPlan);
 					var fechaFormateada = fecha.toISOString().split('T')[0];
 					$('#inputFechaRenovacion').val(fechaFormateada);
 				}

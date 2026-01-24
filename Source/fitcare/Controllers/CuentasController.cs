@@ -512,7 +512,7 @@ public class CuentasController : BaseController
 			var plan = await _planesMembresia.ReadByIdAsync(new Guid(modelo.IdPlanMembresia));
 
 			var usuarioRegistradoComoCliente =
-				await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), string.Empty, new Guid(modelo.IdPlanMembresia), plan.Dias);
+				await _userManager.RegistrarUsuarioComoCliente(modelo.Entidad(), string.Empty, new Guid(modelo.IdPlanMembresia), plan.Meses);
 
 			if (usuarioRegistradoComoCliente.Succeeded) return RedirectToAction(nameof(Clientes));
 
@@ -678,7 +678,7 @@ public class CuentasController : BaseController
 			IdDistrito = usuario.IdDistrito?.ToString(),
 			IdPlanMembresia = usuario.IdPlanMembresia?.ToString(),
 			FechaInscripcion = usuario.FechaIngresoInscripcion ?? DateTime.Now,
-			FechaRenovacion = usuario.FechaRenovacion ?? DateTime.Now.AddDays(30)
+			FechaRenovacion = usuario.FechaRenovacion ?? DateTime.Now.AddMonths(1)
 		};
 
 		ViewBag.Provincias = await CargarListaSeleccionProvincias();
@@ -697,7 +697,7 @@ public class CuentasController : BaseController
 		{
 			var plan = await _planesMembresia.ReadByIdAsync(new Guid(modelo.IdPlanMembresia));
 
-			var resultado = await _userManager.ActualizarDatosCliente(modelo.Entidad(), new Guid(modelo.IdPlanMembresia), plan.Dias);
+			var resultado = await _userManager.ActualizarDatosCliente(modelo.Entidad(), new Guid(modelo.IdPlanMembresia), plan.Meses);
 
 			if (resultado.Succeeded) return RedirectToAction(nameof(Clientes));
 
@@ -883,10 +883,10 @@ public class CuentasController : BaseController
 			IdCliente = cliente.Id,
 			NombreCompleto = cliente.FullName,
 			NombrePlan = plan.Nombre,
-			DiasPlan = plan.Dias,
+			MesesPlan = plan.Meses,
 			FechaInscripcion = cliente.FechaIngresoInscripcion ?? DateTime.Now,
 			FechaRenovacionActual = cliente.FechaRenovacion ?? DateTime.Now,
-			NuevaFechaRenovacion = (cliente.FechaRenovacion ?? DateTime.Now).AddDays(plan.Dias)
+			NuevaFechaRenovacion = (cliente.FechaRenovacion ?? DateTime.Now).AddMonths(plan.Meses)
 		};
 
 		return View(modelo);
@@ -908,11 +908,11 @@ public class CuentasController : BaseController
 
 		var plan = await _planesMembresia.ReadByIdAsync(cliente.IdPlanMembresia.Value);
 
-		var resultado = await _userManager.ExtenderMembresiaCliente(id, plan.Dias);
+		var resultado = await _userManager.ExtenderMembresiaCliente(id, plan.Meses);
 
 		if (resultado.Succeeded)
 		{
-			TempData["Success"] = $"Pago registrado exitosamente. La membresía se extendió {plan.Dias} días.";
+			TempData["Success"] = $"Pago registrado exitosamente. La membresía se extendió {plan.Meses} {(plan.Meses == 1 ? "mes" : "meses")}.";
 		}
 		else
 		{
@@ -930,8 +930,8 @@ public class CuentasController : BaseController
 			.Select(p => new SelectListItemWithData
 			{
 				Value = p.Id.ToString(),
-				Text = $"{p.Nombre} ({p.Dias} días - ₡{p.Costo:N0})",
-				Dias = p.Dias
+				Text = $"{p.Nombre} ({p.Meses} {(p.Meses == 1 ? "mes" : "meses")} - ₡{p.Costo:N0})",
+				Meses = p.Meses
 			})
 			.ToList();
 	}

@@ -219,6 +219,31 @@ public class Rutinas : IRutinas<Rutina>
 		await _db.SaveChangesAsync();
 	}
 
+	public async Task EditarEncabezadoAsync(Guid idRutina, DateTime fechaInicio, DateTime fechaFin, string objetivos, string user)
+	{
+		var rutina = await _db.Rutinas
+			.Include(r => r.Cliente)
+			.FirstOrDefaultAsync(r => r.Id == idRutina);
+
+		if (rutina == null)
+			throw new KeyNotFoundException($"No se encontró la rutina con id {idRutina}");
+
+		// Validar que la fecha de fin no exceda la membresía del cliente
+		if (rutina.Cliente.FechaRenovacion.HasValue && fechaFin > rutina.Cliente.FechaRenovacion.Value)
+		{
+			throw new InvalidOperationException(
+				$"La fecha de finalización de la rutina ({fechaFin:dd/MM/yyyy}) excede la fecha de renovación de membresía del cliente ({rutina.Cliente.FechaRenovacion.Value:dd/MM/yyyy}).");
+		}
+
+		rutina.FechaInicio = fechaInicio;
+		rutina.FechaFin = fechaFin;
+		rutina.Objetivo = objetivos;
+		rutina.DateUpdated = DateTime.UtcNow;
+		rutina.UpdatedBy = user;
+
+		await _db.SaveChangesAsync();
+	}
+
 	#region Exportación
 
 	/// <summary>

@@ -365,6 +365,37 @@ public class RutinasController : BaseController
 		}
 	}
 
+	[HttpPost]
+	public async Task<JsonResult> EditarEncabezadoAjax([FromBody] EditarEncabezadoRutinaViewModel modelo)
+	{
+		try
+		{
+			if (ModelState.IsValid)
+			{
+				await _rutinas.EditarEncabezadoAsync(
+					new Guid(modelo.IdRutina),
+					modelo.FechaInicio,
+					modelo.FechaFin,
+					modelo.Objetivos,
+					CurrentUser);
+				return Json(new { success = true, message = "Encabezado actualizado correctamente." });
+			}
+
+			var errors = ModelState.Where(x => x.Value.Errors.Count > 0)
+				.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => e.ErrorMessage).FirstOrDefault());
+			return Json(new { success = false, errors = errors });
+		}
+		catch (InvalidOperationException ex)
+		{
+			return Json(new { success = false, message = ex.Message });
+		}
+		catch (Exception ex)
+		{
+			_logger.LogError(ex, "Error al editar encabezado de rutina");
+			return Json(new { success = false, message = "Error al actualizar el encabezado. Por favor intente nuevamente." });
+		}
+	}
+
 	private async Task CargarViewBags()
 	{
 		ViewBag.ListaTiposMedida = CargarListaSeleccionTiposMedida(await _tiposMedida.ReadAllAsync());

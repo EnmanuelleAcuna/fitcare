@@ -347,3 +347,23 @@ public class EliminarMedidaRutinaViewModel
 	[Required(ErrorMessage = "El ID de la medida es requerido.")]
 	public string IdMedidaRutina { get; set; }
 }
+
+public class EditarEncabezadoRutinaViewModel
+{
+	[Required(ErrorMessage = "El ID de la rutina es requerido.")]
+	public string IdRutina { get; set; }
+
+	[Required(ErrorMessage = "La fecha de inicio es requerida.")]
+	[Display(Name = "Fecha de inicio")]
+	[DataType(DataType.Date)]
+	public DateTime FechaInicio { get; set; }
+
+	[Required(ErrorMessage = "La fecha de finalización es requerida.")]
+	[Display(Name = "Fecha de finalización")]
+	[DataType(DataType.Date)]
+	public DateTime FechaFin { get; set; }
+
+	[Display(Name = "Objetivos")]
+	[StringLength(1000, ErrorMessage = "Los objetivos no pueden exceder los 1000 caracteres.")]
+	public string Objetivos { get; set; }
+}

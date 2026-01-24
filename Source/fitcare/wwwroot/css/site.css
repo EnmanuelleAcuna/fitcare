@@ -163,3 +163,23 @@ input[type="checkbox"].input-validation-error {
 .table-full-width {
 	width: 100%;
 }
+
+/* Estilos para lista de planes de membresía */
+.list-group-item.active-item {
+	background-color: #e9ecef;
+	border-left: 3px solid #007bff;
+}
+
+.list-group-item.selectable {
+	cursor: pointer;
+	border-left: 3px solid transparent;
+}
+
+.list-group-item.selectable:hover {
+	background-color: #f8f9fa;
+}
+
+.plan-info {
+	font-size: 0.85rem;
+	color: #6c757d;
+}

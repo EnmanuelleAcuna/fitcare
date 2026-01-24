@@ -50,6 +50,9 @@ public interface IRutinas<T>
 	Task EditarMedidaAsync(Guid idMedidaRutina, Guid idTipoMedida, string valor, string comentario, string user);
 	Task EliminarMedidaAsync(Guid idMedidaRutina);
 
+	// Encabezado
+	Task EditarEncabezadoAsync(Guid idRutina, DateTime fechaInicio, DateTime fechaFin, string objetivos, string user);
+
 	// Exportación
 	Task<IList<Rutina>> ObtenerRutinasParaExportarAsync(string idInstructor, string idCliente);
 	byte[] ExportarRutinasExcel(IList<Rutina> rutinas);

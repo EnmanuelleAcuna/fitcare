@@ -46,7 +46,7 @@ public class PlanesMembresia : IBaseCore<PlanMembresia>
 		PlanMembresia record = await ReadByIdAsync(plan.Id);
 
 		record.Nombre = plan.Nombre;
-		record.Dias = plan.Dias;
+		record.Meses = plan.Meses;
 		record.Costo = plan.Costo;
 		record.Estado = plan.Estado;
 

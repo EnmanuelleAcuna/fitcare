@@ -9,18 +9,18 @@ public class PlanMembresia : Base
 {
 	public PlanMembresia() : base() { }
 
-	public PlanMembresia(Guid id, string nombre, int dias, decimal costo, bool estado)
+	public PlanMembresia(Guid id, string nombre, int meses, decimal costo, bool estado)
 	{
 		Id = id;
 		Nombre = nombre;
-		Dias = dias;
+		Meses = meses;
 		Costo = costo;
 		Estado = estado;
 	}
 
 	public Guid Id { get; set; }
 	public string Nombre { get; set; }
-	public int Dias { get; set; }
+	public int Meses { get; set; }
 	public decimal Costo { get; set; }
 	public bool Estado { get; set; }
 

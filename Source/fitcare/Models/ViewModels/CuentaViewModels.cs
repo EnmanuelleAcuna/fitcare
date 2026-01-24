@@ -391,7 +391,7 @@ public class SelectListItemWithData
 {
 	public string Value { get; set; }
 	public string Text { get; set; }
-	public int Dias { get; set; }
+	public int Meses { get; set; }
 }
 
 public class PagoMembresiaViewModel
@@ -409,7 +409,7 @@ public class ConfirmarPagoViewModel
 	public string IdCliente { get; set; }
 	public string NombreCompleto { get; set; }
 	public string NombrePlan { get; set; }
-	public int DiasPlan { get; set; }
+	public int MesesPlan { get; set; }
 	public DateTime FechaInscripcion { get; set; }
 	public DateTime FechaRenovacionActual { get; set; }
 	public DateTime NuevaFechaRenovacion { get; set; }

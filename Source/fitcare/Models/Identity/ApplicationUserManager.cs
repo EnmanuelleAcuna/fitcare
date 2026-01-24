@@ -107,7 +107,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		return result;
 	}
 
-	public async Task<IdentityResult> RegistrarUsuarioComoCliente(ApplicationUser user, string filePath, Guid idPlanMembresia, int diasPlan)
+	public async Task<IdentityResult> RegistrarUsuarioComoCliente(ApplicationUser user, string filePath, Guid idPlanMembresia, int mesesPlan)
 	{
 		var userRecord = await FindByIdAsync(user.Id);
 
@@ -131,7 +131,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		userRecord.URLFotografia = filePath;
 		userRecord.FechaIngresoInscripcion = user.FechaIngresoInscripcion;
 		userRecord.IdPlanMembresia = idPlanMembresia;
-		userRecord.FechaRenovacion = user.FechaIngresoInscripcion?.AddDays(diasPlan);
+		userRecord.FechaRenovacion = user.FechaIngresoInscripcion?.AddMonths(mesesPlan);
 
 		IdentityResult result = await UpdateAsync(userRecord);
 		return result;
@@ -215,7 +215,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		return await RemoveFromRoleAsync(user, "Instructor");
 	}
 
-	public async Task<IdentityResult> ActualizarDatosCliente(ApplicationUser user, Guid idPlanMembresia, int diasPlan)
+	public async Task<IdentityResult> ActualizarDatosCliente(ApplicationUser user, Guid idPlanMembresia, int mesesPlan)
 	{
 		var userRecord = await FindByIdAsync(user.Id);
 
@@ -227,12 +227,12 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		userRecord.IdDistrito = user.IdDistrito;
 		userRecord.FechaIngresoInscripcion = user.FechaIngresoInscripcion;
 		userRecord.IdPlanMembresia = idPlanMembresia;
-		userRecord.FechaRenovacion = user.FechaIngresoInscripcion?.AddDays(diasPlan);
+		userRecord.FechaRenovacion = user.FechaIngresoInscripcion?.AddMonths(mesesPlan);
 
 		return await UpdateAsync(userRecord);
 	}
 
-	public async Task<IdentityResult> ExtenderMembresiaCliente(string userId, int diasPlan)
+	public async Task<IdentityResult> ExtenderMembresiaCliente(string userId, int mesesPlan)
 	{
 		var userRecord = await FindByIdAsync(userId);
 
@@ -242,7 +242,7 @@ public class ApplicationUserManager<TUser> : UserManager<ApplicationUser>
 		if (userRecord.FechaRenovacion == null)
 			return IdentityResult.Failed(new IdentityError { Description = "El cliente no tiene fecha de renovación" });
 
-		userRecord.FechaRenovacion = userRecord.FechaRenovacion.Value.AddDays(diasPlan);
+		userRecord.FechaRenovacion = userRecord.FechaRenovacion.Value.AddMonths(mesesPlan);
 
 		return await UpdateAsync(userRecord);
 	}

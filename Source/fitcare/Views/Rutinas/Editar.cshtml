@@ -29,121 +29,182 @@
 		</div>
 	</div>
 
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<h6 class="mb-0 font-weight-bold">Información básica de rutina</h6>
+					<hr/>
+					<form id="formEncabezado">
+						<input type="hidden" id="IdRutina" value="@Model.Id"/>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>@Html.DisplayNameFor(m => m.Instructor)</label>
+									<input type="text" class="form-control form-control-sm" value="@Model.Instructor"
+									       readonly/>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label>@Html.DisplayNameFor(m => m.Cliente)</label>
+									<input type="text" class="form-control form-control-sm" value="@Model.Cliente"
+									       readonly/>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="FechaInicio">@Html.DisplayNameFor(m => m.FechaInicio)</label>
+									<input type="date" class="form-control form-control-sm" id="FechaInicio"
+									       name="FechaInicio"
+									       value="@Model.FechaInicio.ToString("yyyy-MM-dd")" required/>
+									<span class="text-danger d-none" id="errorFechaInicio"></span>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label for="FechaFin">@Html.DisplayNameFor(m => m.FechaFin)</label>
+									<input type="date" class="form-control form-control-sm" id="FechaFin"
+									       name="FechaFin"
+									       value="@Model.FechaFin.ToString("yyyy-MM-dd")" required/>
+									<span class="text-danger d-none" id="errorFechaFin"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-12">
+								<div class="form-group">
+									<label for="Objetivos">Objetivos</label>
+									<textarea class="form-control form-control-sm" id="Objetivos" name="Objetivos"
+									          rows="3" maxlength="1000">@Model.Objetivos</textarea>
+									<span class="text-danger d-none" id="errorObjetivos"></span>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-12">
+								<div class="alert alert-danger d-none" id="errorEncabezado"></div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-12">
+								<button type="submit" class="btn btn-sm btn-primary" id="btnGuardarEncabezado">
+									<i class="fa fa-save"></i> Guardar cambios
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<h6 class="mb-0 font-weight-bold">Ejercicios</h6>
+						<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ModalAgregarEjercicio">
+							Agregar ejercicio
+						</button>
+					</div>
+
+					<table class="table table-hover table-sm" id="tablaEjercicios">
+						<thead>
+						<tr>
+							<th>Ejercicio</th>
+							<th class="text-nowrap">@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().GruposMusculares)</th>
+							<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Maquinas)</th>
+							<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Series)</th>
+							<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Repeticiones)</th>
+							<th>Descanso</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody>
+						@foreach (var ejercicio in Model.Ejercicios)
+						{
+							<tr>
+								<td>@ejercicio.NombreEjercicio</td>
+								<td>@ejercicio.GruposMusculares</td>
+								<td>@ejercicio.Maquinas</td>
+								<td>@ejercicio.Series</td>
+								<td>@ejercicio.Repeticiones</td>
+								<td>@ejercicio.MinutosDescanso</td>
+								<td class="text-right text-nowrap">
+									<button class="btn btn-sm btn-light btn-editar-ejercicio"
+									        data-id="@ejercicio.Id"
+									        data-idejercicio="@ejercicio.IdEjercicio"
+									        data-series="@ejercicio.Series"
+									        data-repeticiones="@ejercicio.Repeticiones"
+									        data-minutos="@ejercicio.MinutosDescanso">
+										Editar
+									</button>
+									<button class="btn btn-sm btn-danger btn-eliminar-ejercicio"
+									        data-id="@ejercicio.Id">
+										Eliminar
+									</button>
+								</td>
+							</tr>
+						}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
 	<div class="row">
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table table-hover table-sm text-nowrap">
-							<thead>
-								<tr>
-									<th>@Html.DisplayNameFor(m => m.Instructor)</th>
-									<th>@Html.DisplayNameFor(m => m.Cliente)</th>
-									<th>@Html.DisplayNameFor(m => m.FechaInicio)</th>
-									<th>@Html.DisplayNameFor(m => m.FechaFin)</th>
-									<th>Ejercicios</th>
-									<th>@Html.DisplayNameFor(m => m.Objetivos)</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>@Model.Instructor</td>
-									<td>@Model.Cliente</td>
-									<td>@Model.FechaInicio.ToString("dd/MM/yyyy")</td>
-									<td>@Model.FechaFin.ToString("dd/MM/yyyy")	</td>
-									<td>@Model.CantidadEjercicios</td>
-									<td>@Model.Objetivos</td>
-								</tr>
-							</tbody>
-						</table>
-
-						<div class="d-flex justify-content-between align-items-center mb-2">
-							<h6 class="mb-0">Ejercicios</h6>
-							<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ModalAgregarEjercicio">
-								Agregar ejercicio
-							</button>
-						</div>
-
-						<table class="table table-hover table-sm" id="tablaEjercicios">
-							<thead>
-								<tr>
-									<th>Ejercicio</th>
-									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().GruposMusculares)</th>
-									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Maquinas)</th>
-									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Series)</th>
-									<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Repeticiones)</th>
-									<th>Descanso</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach (var ejercicio in Model.Ejercicios)
-								{
-									<tr>
-										<td>@ejercicio.NombreEjercicio</td>
-										<td>@ejercicio.GruposMusculares</td>
-										<td>@ejercicio.Maquinas</td>
-										<td>@ejercicio.Series</td>
-										<td>@ejercicio.Repeticiones</td>
-										<td>@ejercicio.MinutosDescanso</td>
-										<td class="text-right text-nowrap">
-											<button class="btn btn-sm btn-light btn-editar-ejercicio"
-													data-id="@ejercicio.Id"
-													data-idejercicio="@ejercicio.IdEjercicio"
-													data-series="@ejercicio.Series"
-													data-repeticiones="@ejercicio.Repeticiones"
-													data-minutos="@ejercicio.MinutosDescanso">
-												Editar
-											</button>
-											<button class="btn btn-sm btn-danger btn-eliminar-ejercicio" data-id="@ejercicio.Id">
-												Eliminar
-											</button>
-										</td>
-									</tr>
-								}
-							</tbody>
-						</table>
-
-						<div class="d-flex justify-content-between align-items-center mb-2 mt-4">
-							<h6 class="mb-0">Medidas</h6>
-							<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ModalAgregarMedida">
-								Agregar medida
-							</button>
-						</div>
-
-						<table class="table table-hover table-sm text-nowrap" id="tablaMedidas">
-							<thead>
-								<tr>
-									<th>Tipo de medida</th>
-									<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Valor)</th>
-									<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Comentario)</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								@foreach (var medida in Model.Medidas)
-								{
-									<tr>
-										<td>@medida.NombreTipoMedida</td>
-										<td>@medida.Valor</td>
-										<td>@medida.Comentario</td>
-										<td class="text-right">
-											<button class="btn btn-sm btn-light btn-editar-medida"
-													data-id="@medida.Id"
-													data-idtipomedida="@medida.IdTipoMedida"
-													data-valor="@medida.Valor"
-													data-comentario="@medida.Comentario">
-												Editar
-											</button>
-											<button class="btn btn-sm btn-danger btn-eliminar-medida" data-id="@medida.Id">
-												Eliminar
-											</button>
-										</td>
-									</tr>
-								}
-							</tbody>
-						</table>
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<h6 class="mb-0 font-weight-bold">Medidas</h6>
+						<button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#ModalAgregarMedida">
+							Agregar medida
+						</button>
 					</div>
+
+					<table class="table table-hover table-sm text-nowrap" id="tablaMedidas">
+						<thead>
+						<tr>
+							<th>Tipo de medida</th>
+							<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Valor)</th>
+							<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Comentario)</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody>
+						@foreach (var medida in Model.Medidas)
+						{
+							<tr>
+								<td>@medida.NombreTipoMedida</td>
+								<td>@medida.Valor</td>
+								<td>@medida.Comentario</td>
+								<td class="text-right">
+									<button class="btn btn-sm btn-light btn-editar-medida"
+									        data-id="@medida.Id"
+									        data-idtipomedida="@medida.IdTipoMedida"
+									        data-valor="@medida.Valor"
+									        data-comentario="@medida.Comentario">
+										Editar
+									</button>
+									<button class="btn btn-sm btn-danger btn-eliminar-medida" data-id="@medida.Id">
+										Eliminar
+									</button>
+								</td>
+							</tr>
+						}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
@@ -164,11 +225,12 @@
 				<div class="modal-body">
 					<div class="alert alert-danger d-none" id="errorAgregarEjercicio"></div>
 
-					<input type="hidden" id="IdRutinaEjercicio" value="@Model.Id" />
+					<input type="hidden" id="IdRutinaEjercicio" value="@Model.Id"/>
 
 					<div class="form-group">
 						<label for="IdEjercicioAgregar">Ejercicio</label>
-						<select id="IdEjercicioAgregar" name="IdEjercicio" class="form-control form-control-sm select2" required>
+						<select id="IdEjercicioAgregar" name="IdEjercicio" class="form-control form-control-sm select2"
+						        required>
 							<option value="">Seleccione un ejercicio</option>
 							@foreach (var ejercicio in (List<SelectListItem>)ViewBag.ListaEjercicios)
 							{
@@ -180,19 +242,22 @@
 
 					<div class="form-group">
 						<label for="SeriesAgregar">Series</label>
-						<input type="number" id="SeriesAgregar" name="Series" class="form-control form-control-sm" min="1" max="100" required />
+						<input type="number" id="SeriesAgregar" name="Series" class="form-control form-control-sm"
+						       min="1" max="100" required/>
 						<small class="text-danger d-none" id="errorSeries"></small>
 					</div>
 
 					<div class="form-group">
 						<label for="RepeticionesAgregar">Repeticiones</label>
-						<input type="number" id="RepeticionesAgregar" name="Repeticiones" class="form-control form-control-sm" min="1" max="500" required />
+						<input type="number" id="RepeticionesAgregar" name="Repeticiones"
+						       class="form-control form-control-sm" min="1" max="500" required/>
 						<small class="text-danger d-none" id="errorRepeticiones"></small>
 					</div>
 
 					<div class="form-group">
 						<label for="MinutosDescansoAgregar">Minutos de descanso</label>
-						<input type="number" id="MinutosDescansoAgregar" name="MinutosDescanso" class="form-control form-control-sm" min="0" max="60" required />
+						<input type="number" id="MinutosDescansoAgregar" name="MinutosDescanso"
+						       class="form-control form-control-sm" min="0" max="60" required/>
 						<small class="text-danger d-none" id="errorMinutosDescanso"></small>
 					</div>
 				</div>
@@ -219,11 +284,12 @@
 				<div class="modal-body">
 					<div class="alert alert-danger d-none" id="errorAgregarMedida"></div>
 
-					<input type="hidden" id="IdRutinaMedida" value="@Model.Id" />
+					<input type="hidden" id="IdRutinaMedida" value="@Model.Id"/>
 
 					<div class="form-group">
 						<label for="IdTipoMedidaAgregar">Tipo de medida</label>
-						<select id="IdTipoMedidaAgregar" name="IdTipoMedida" class="form-control form-control-sm" required>
+						<select id="IdTipoMedidaAgregar" name="IdTipoMedida" class="form-control form-control-sm"
+						        required>
 							<option value="">Seleccione un tipo de medida</option>
 							@foreach (var tipoMedida in (List<SelectListItem>)ViewBag.ListaTiposMedida)
 							{
@@ -235,13 +301,15 @@
 
 					<div class="form-group">
 						<label for="ValorAgregar">Valor</label>
-						<input type="text" id="ValorAgregar" name="Valor" class="form-control form-control-sm" required />
+						<input type="text" id="ValorAgregar" name="Valor" class="form-control form-control-sm"
+						       required/>
 						<small class="text-danger d-none" id="errorValor"></small>
 					</div>
 
 					<div class="form-group">
 						<label for="ComentarioAgregar">Comentario</label>
-						<textarea id="ComentarioAgregar" name="Comentario" class="form-control form-control-sm" rows="3"></textarea>
+						<textarea id="ComentarioAgregar" name="Comentario" class="form-control form-control-sm"
+						          rows="3"></textarea>
 						<small class="text-danger d-none" id="errorComentario"></small>
 					</div>
 				</div>
@@ -268,11 +336,12 @@
 				<div class="modal-body">
 					<div class="alert alert-danger d-none" id="errorEditarEjercicio"></div>
 
-					<input type="hidden" id="IdEjercicioRutinaEditar" />
+					<input type="hidden" id="IdEjercicioRutinaEditar"/>
 
 					<div class="form-group">
 						<label for="IdEjercicioEditar">Ejercicio</label>
-						<select id="IdEjercicioEditar" name="IdEjercicio" class="form-control form-control-sm select2-editar" required>
+						<select id="IdEjercicioEditar" name="IdEjercicio"
+						        class="form-control form-control-sm select2-editar" required>
 							<option value="">Seleccione un ejercicio</option>
 							@foreach (var ejercicio in (List<SelectListItem>)ViewBag.ListaEjercicios)
 							{
@@ -284,19 +353,22 @@
 
 					<div class="form-group">
 						<label for="SeriesEditar">Series</label>
-						<input type="number" id="SeriesEditar" name="Series" class="form-control form-control-sm" min="1" max="100" required />
+						<input type="number" id="SeriesEditar" name="Series" class="form-control form-control-sm"
+						       min="1" max="100" required/>
 						<small class="text-danger d-none" id="errorSeriesEditar"></small>
 					</div>
 
 					<div class="form-group">
 						<label for="RepeticionesEditar">Repeticiones</label>
-						<input type="number" id="RepeticionesEditar" name="Repeticiones" class="form-control form-control-sm" min="1" max="500" required />
+						<input type="number" id="RepeticionesEditar" name="Repeticiones"
+						       class="form-control form-control-sm" min="1" max="500" required/>
 						<small class="text-danger d-none" id="errorRepeticionesEditar"></small>
 					</div>
 
 					<div class="form-group">
 						<label for="MinutosDescansoEditar">Minutos de descanso</label>
-						<input type="number" id="MinutosDescansoEditar" name="MinutosDescanso" class="form-control form-control-sm" min="0" max="60" required />
+						<input type="number" id="MinutosDescansoEditar" name="MinutosDescanso"
+						       class="form-control form-control-sm" min="0" max="60" required/>
 						<small class="text-danger d-none" id="errorMinutosDescansoEditar"></small>
 					</div>
 				</div>
@@ -323,11 +395,12 @@
 				<div class="modal-body">
 					<div class="alert alert-danger d-none" id="errorEditarMedida"></div>
 
-					<input type="hidden" id="IdMedidaRutinaEditar" />
+					<input type="hidden" id="IdMedidaRutinaEditar"/>
 
 					<div class="form-group">
 						<label for="IdTipoMedidaEditar">Tipo de medida</label>
-						<select id="IdTipoMedidaEditar" name="IdTipoMedida" class="form-control form-control-sm" required>
+						<select id="IdTipoMedidaEditar" name="IdTipoMedida" class="form-control form-control-sm"
+						        required>
 							<option value="">Seleccione un tipo de medida</option>
 							@foreach (var tipoMedida in (List<SelectListItem>)ViewBag.ListaTiposMedida)
 							{
@@ -339,13 +412,14 @@
 
 					<div class="form-group">
 						<label for="ValorEditar">Valor</label>
-						<input type="text" id="ValorEditar" name="Valor" class="form-control form-control-sm" required />
+						<input type="text" id="ValorEditar" name="Valor" class="form-control form-control-sm" required/>
 						<small class="text-danger d-none" id="errorValorEditar"></small>
 					</div>
 
 					<div class="form-group">
 						<label for="ComentarioEditar">Comentario</label>
-						<textarea id="ComentarioEditar" name="Comentario" class="form-control form-control-sm" rows="3"></textarea>
+						<textarea id="ComentarioEditar" name="Comentario" class="form-control form-control-sm"
+						          rows="3"></textarea>
 						<small class="text-danger d-none" id="errorComentarioEditar"></small>
 					</div>
 				</div>
@@ -364,9 +438,50 @@
 		var ejerciciosAgregados = @Html.Raw(Json.Serialize(ViewBag.EjerciciosAgregados));
 		var tiposMedidaAgregados = @Html.Raw(Json.Serialize(ViewBag.TiposMedidaAgregados));
 
+		// Enviar formulario de encabezado
+		$('#formEncabezado').on('submit', function (e) {
+			e.preventDefault();
+			$('#btnGuardarEncabezado').prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Guardando...');
+
+			// Limpiar errores previos
+			$('#errorEncabezado').addClass('d-none').text('');
+			$('.text-danger').addClass('d-none').text('');
+
+			var formData = {
+				IdRutina: $('#IdRutina').val(),
+				FechaInicio: $('#FechaInicio').val(),
+				FechaFin: $('#FechaFin').val(),
+				Objetivos: $('#Objetivos').val()
+			};
+
+			$.ajax({
+				url: '@Url.Action("EditarEncabezadoAjax")',
+				type: 'POST',
+				data: JSON.stringify(formData),
+				contentType: 'application/json',
+				success: function (response) {
+					if (response.success) {
+						mostrarToast(response.message, 'success');
+					} else if (response.errors) {
+						for (var key in response.errors) {
+							$('#error' + key).removeClass('d-none').text(response.errors[key]);
+						}
+					} else {
+						$('#errorEncabezado').removeClass('d-none').text(response.message);
+					}
+				},
+				error: function () {
+					$('#errorEncabezado').removeClass('d-none').text('Error al comunicarse con el servidor.');
+				},
+				complete: function () {
+					$('#btnGuardarEncabezado').prop('disabled', false).html('<i class="fa fa-save"></i> Guardar cambios');
+				}
+			});
+		});
+
 		// Función para filtrar opciones del select
 		function filtrarOpcionesEjercicios() {
-			$('#IdEjercicioAgregar option').each(function() {
+			$('#IdEjercicioAgregar option').each(function () {
 				var optionValue = $(this).val();
 				if (optionValue && ejerciciosAgregados.includes(optionValue)) {
 					$(this).prop('disabled', true).hide();
@@ -377,7 +492,7 @@
 		}
 
 		function filtrarOpcionesTiposMedida() {
-			$('#IdTipoMedidaAgregar option').each(function() {
+			$('#IdTipoMedidaAgregar option').each(function () {
 				var optionValue = $(this).val();
 				if (optionValue && tiposMedidaAgregados.includes(optionValue)) {
 					$(this).prop('disabled', true).hide();
@@ -437,7 +552,7 @@
 			var ejercicioActual = btn.data('idejercicio').toString();
 
 			// Filtrar ejercicios pero permitir el que estamos editando
-			$('#IdEjercicioEditar option').each(function() {
+			$('#IdEjercicioEditar option').each(function () {
 				var optionValue = $(this).val();
 				if (optionValue && ejerciciosAgregados.includes(optionValue) && optionValue !== ejercicioActual) {
 					$(this).prop('disabled', true).hide();
@@ -460,7 +575,7 @@
 			var tipoMedidaActual = btn.data('idtipomedida').toString();
 
 			// Filtrar tipos de medida pero permitir el que estamos editando
-			$('#IdTipoMedidaEditar option').each(function() {
+			$('#IdTipoMedidaEditar option').each(function () {
 				var optionValue = $(this).val();
 				if (optionValue && tiposMedidaAgregados.includes(optionValue) && optionValue !== tipoMedidaActual) {
 					$(this).prop('disabled', true).hide();
@@ -502,7 +617,7 @@
 					if (response.success) {
 						$('#ModalAgregarEjercicio').modal('hide');
 						mostrarToast(response.message, 'success');
-						setTimeout(function() {
+						setTimeout(function () {
 							location.reload();
 						}, 1000);
 					} else if (response.errors) {
@@ -548,7 +663,7 @@
 					if (response.success) {
 						$('#ModalAgregarMedida').modal('hide');
 						mostrarToast(response.message, 'success');
-						setTimeout(function() {
+						setTimeout(function () {
 							location.reload();
 						}, 1000);
 					} else if (response.errors) {
@@ -595,7 +710,7 @@
 					if (response.success) {
 						$('#ModalEditarEjercicio').modal('hide');
 						mostrarToast(response.message, 'success');
-						setTimeout(function() {
+						setTimeout(function () {
 							location.reload();
 						}, 1000);
 					} else if (response.errors) {
@@ -641,7 +756,7 @@
 					if (response.success) {
 						$('#ModalEditarMedida').modal('hide');
 						mostrarToast(response.message, 'success');
-						setTimeout(function() {
+						setTimeout(function () {
 							location.reload();
 						}, 1000);
 					} else if (response.errors) {
@@ -673,7 +788,7 @@
 			$.ajax({
 				url: '@Url.Action("EliminarEjercicioAjax")',
 				type: 'POST',
-				data: JSON.stringify({ IdEjercicioRutina: idEjercicio }),
+				data: JSON.stringify({IdEjercicioRutina: idEjercicio}),
 				contentType: 'application/json',
 				success: function (response) {
 					if (response.success) {
@@ -701,7 +816,7 @@
 			$.ajax({
 				url: '@Url.Action("EliminarMedidaAjax")',
 				type: 'POST',
-				data: JSON.stringify({ IdMedidaRutina: idMedida }),
+				data: JSON.stringify({IdMedidaRutina: idMedida}),
 				contentType: 'application/json',
 				success: function (response) {
 					if (response.success) {

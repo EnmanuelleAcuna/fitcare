@@ -79,10 +79,10 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="Dias">Días de duración <span class="text-danger">*</span></label>
-									<input type="number" class="form-control form-control-sm" id="Dias" name="Dias"
-										   placeholder="Ej: 30" min="1" max="3650" required />
-									<span class="text-danger field-validation-valid" data-valmsg-for="Dias"></span>
+									<label for="Meses">Meses de duración <span class="text-danger">*</span></label>
+									<input type="number" class="form-control form-control-sm" id="Meses" name="Meses"
+										   placeholder="Ej: 1" min="1" max="120" required />
+									<span class="text-danger field-validation-valid" data-valmsg-for="Meses"></span>
 								</div>
 							</div>
 							<div class="col-md-6">
@@ -135,24 +135,6 @@
 @section Scripts {
 	<partial name="_ValidationScriptsPartial" />
 
-	<style>
-		.list-group-item.active-item {
-			background-color: #e9ecef;
-			border-left: 3px solid #007bff;
-		}
-		.list-group-item {
-			cursor: pointer;
-			border-left: 3px solid transparent;
-		}
-		.list-group-item:hover {
-			background-color: #f8f9fa;
-		}
-		.plan-info {
-			font-size: 0.85rem;
-			color: #6c757d;
-		}
-	</style>
-
 	<script type="text/javascript">
 		$(document).ready(function () {
 			let modoEdicion = false;
@@ -197,7 +179,7 @@
 
 				let formData = {
 					Nombre: $('#Nombre').val(),
-					Dias: parseInt($('#Dias').val()),
+					Meses: parseInt($('#Meses').val()),
 					Costo: parseFloat($('#Costo').val()),
 					Estado: $('#Estado').is(':checked')
 				};
@@ -263,13 +245,13 @@
 									: '<span class="badge badge-secondary">Inactivo</span>';
 
 								let item = `
-									<a href="#" class="list-group-item list-group-item-action" data-id="${plan.id}">
+									<a href="#" class="list-group-item list-group-item-action selectable" data-id="${plan.id}">
 										<div class="d-flex w-100 justify-content-between">
 											<h6 class="mb-1">${plan.nombre}</h6>
 											${estadoBadge}
 										</div>
 										<div class="plan-info">
-											<span><i class="fa fa-calendar-alt"></i> ${plan.dias} días</span>
+											<span><i class="fa fa-calendar-alt"></i> ${plan.meses} ${plan.meses == 1 ? 'mes' : 'meses'}</span>
 											<span class="ml-3"><i class="fa fa-money-bill"></i> ₡${plan.costo.toLocaleString('es-CR')}</span>
 										</div>
 									</a>
@@ -302,7 +284,7 @@
 							let plan = response.modelo;
 							$('#Id').val(plan.id);
 							$('#Nombre').val(plan.nombre);
-							$('#Dias').val(plan.dias);
+							$('#Meses').val(plan.meses);
 							$('#Costo').val(plan.costo);
 							$('#Estado').prop('checked', plan.estadoBool);
 							$('#labelEstado').text(plan.estadoBool ? 'Activo' : 'Inactivo');
@@ -363,8 +345,8 @@
 					isValid = false;
 				}
 
-				if (!$('#Dias').val() || parseInt($('#Dias').val()) < 1) {
-					$('[data-valmsg-for="Dias"]').text('Los días son requeridos y deben ser mayor a 0').addClass('field-validation-error');
+				if (!$('#Meses').val() || parseInt($('#Meses').val()) < 1) {
+					$('[data-valmsg-for="Meses"]').text('Los meses son requeridos y deben ser mayor a 0').addClass('field-validation-error');
 					isValid = false;
 				}
 

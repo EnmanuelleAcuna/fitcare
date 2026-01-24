@@ -16,7 +16,6 @@
 						<li class="breadcrumb-item">
 							<a asp-action="Admin" asp-controller="Home">Administración</a>
 						</li>
-
 						<li class="breadcrumb-item">
 							<a asp-action="Rutinas">Rutinas</a>
 						</li>
@@ -28,13 +27,94 @@
 			</div>
 		</div>
 	</div>
-	
-	<div class="row mb-3">
+
+	<div class="row mb-4">
 		<div class="col-12">
-			<div class="right text-right">
-				<a asp-action="ExportarRutina" asp-route-id="@Model.Id" class="btn btn-sm btn-success me-3">
-					<i class="fas fa-file-excel"></i> Exportar a Excel
-				</a>
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-center">
+						<h6 class="mb-0 font-weight-bold">Información básica de rutina</h6>
+						<a asp-action="ExportarRutina" asp-route-id="@Model.Id" class="btn btn-sm btn-success">
+							<i class="fas fa-file-excel"></i> Exportar a Excel
+						</a>
+					</div>
+					<hr/>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>@Html.DisplayNameFor(m => m.Instructor)</label>
+								<input type="text" class="form-control form-control-sm" value="@Model.Instructor" readonly/>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>@Html.DisplayNameFor(m => m.Cliente)</label>
+								<input type="text" class="form-control form-control-sm" value="@Model.Cliente" readonly/>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>@Html.DisplayNameFor(m => m.FechaInicio)</label>
+								<input type="text" class="form-control form-control-sm" value="@Model.FechaInicio.ToString("dd/MM/yyyy")" readonly/>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label>@Html.DisplayNameFor(m => m.FechaFin)</label>
+								<input type="text" class="form-control form-control-sm" value="@Model.FechaFin.ToString("dd/MM/yyyy")" readonly/>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-12">
+							<div class="form-group">
+								<label>Objetivos</label>
+								<textarea class="form-control form-control-sm" rows="3" readonly>@Model.Objetivos</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mb-4">
+		<div class="col-12">
+			<div class="card shadow-sm">
+				<div class="card-body">
+					<h6 class="mb-3 font-weight-bold">Ejercicios</h6>
+
+					<table class="table table-hover table-sm" id="tablaEjercicios">
+						<thead>
+						<tr>
+							<th>Ejercicio</th>
+							<th class="text-nowrap">@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().GruposMusculares)</th>
+							<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Maquinas)</th>
+							<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Series)</th>
+							<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Repeticiones)</th>
+							<th>Descanso</th>
+						</tr>
+						</thead>
+						<tbody>
+						@foreach (var ejercicio in Model.Ejercicios)
+						{
+							<tr>
+								<td>@ejercicio.NombreEjercicio</td>
+								<td>@ejercicio.GruposMusculares</td>
+								<td>@ejercicio.Maquinas</td>
+								<td>@ejercicio.Series</td>
+								<td>@ejercicio.Repeticiones</td>
+								<td>@ejercicio.MinutosDescanso @(ejercicio.MinutosDescanso == 1 ? "minuto" : "minutos")</td>
+							</tr>
+						}
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -43,76 +123,27 @@
 		<div class="col-12">
 			<div class="card shadow-sm">
 				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table table-hover table-sm text-nowrap">
-							<thead>
-							<tr>
-								<th>@Html.DisplayNameFor(m => m.Instructor)</th>
-								<th>@Html.DisplayNameFor(m => m.Cliente)</th>
-								<th>@Html.DisplayNameFor(m => m.FechaInicio)</th>
-								<th>@Html.DisplayNameFor(m => m.FechaFin)</th>
-								<th>Ejercicios</th>
-								<th>@Html.DisplayNameFor(m => m.Objetivos)</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr>
-								<td>@Model.Instructor</td>
-								<td>@Model.Cliente</td>
-								<td>@Model.FechaInicio.ToString("dd/MM/yyyy")</td>
-								<td>@Model.FechaFin.ToString("dd/MM/yyyy")    </td>
-								<td>@Model.CantidadEjercicios</td>
-								<td>@Model.Objetivos</td>
-							</tr>
-							</tbody>
-						</table>
+					<h6 class="mb-3 font-weight-bold">Medidas</h6>
 
-						<table class="table table-hover table-sm" id="tablaEjercicios">
-							<thead>
+					<table class="table table-hover table-sm text-nowrap" id="tablaMedidas">
+						<thead>
+						<tr>
+							<th>Tipo de medida</th>
+							<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Valor)</th>
+							<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Comentario)</th>
+						</tr>
+						</thead>
+						<tbody>
+						@foreach (var medida in Model.Medidas)
+						{
 							<tr>
-								<th>Ejercicios</th>
-								<th class="text-nowrap">@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().GruposMusculares)</th>
-								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Maquinas)</th>
-								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Series)</th>
-								<th>@Html.DisplayNameFor(m => m.Ejercicios.FirstOrDefault().Repeticiones)</th>
-								<th>Descanso</th>
+								<td>@medida.NombreTipoMedida</td>
+								<td>@medida.Valor</td>
+								<td>@medida.Comentario</td>
 							</tr>
-							</thead>
-							<tbody>
-							@foreach (var ejercicio in Model.Ejercicios)
-							{
-								<tr>
-									<td>@ejercicio.NombreEjercicio</td>
-									<td>@ejercicio.GruposMusculares</td>
-									<td>@ejercicio.Maquinas</td>
-									<td>@ejercicio.Series</td>
-									<td>@ejercicio.Repeticiones</td>
-									<td>@ejercicio.MinutosDescanso @(ejercicio.MinutosDescanso == 1 ? "minuto" : "minutos")</td>
-								</tr>
-							}
-							</tbody>
-						</table>
-
-						<table class="table table-hover table-sm text-nowrap" id="tablaMedidas">
-							<thead>
-							<tr>
-								<th>Tipos de medida</th>
-								<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Valor)</th>
-								<th>@Html.DisplayNameFor(m => m.Medidas.FirstOrDefault().Comentario)</th>
-							</tr>
-							</thead>
-							<tbody>
-							@foreach (var medida in Model.Medidas)
-							{
-								<tr>
-									<td>@medida.NombreTipoMedida</td>
-									<td>@medida.Valor</td>
-									<td>@medida.Comentario</td>
-								</tr>
-							}
-							</tbody>
-						</table>
-					</div>
+						}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>

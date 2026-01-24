@@ -10,7 +10,7 @@ public class PlanMembresiaViewModel : BaseViewModel
 	{
 		Id = modelo.Id.ToString();
 		Nombre = modelo.Nombre;
-		Dias = modelo.Dias;
+		Meses = modelo.Meses;
 		Costo = modelo.Costo;
 		Estado = modelo.Estado ? "Activo" : "Inactivo";
 		EstadoBool = modelo.Estado;
@@ -21,8 +21,8 @@ public class PlanMembresiaViewModel : BaseViewModel
 	[Display(Name = "Nombre del plan")]
 	public string Nombre { get; set; }
 
-	[Display(Name = "Días")]
-	public int Dias { get; set; }
+	[Display(Name = "Meses")]
+	public int Meses { get; set; }
 
 	[Display(Name = "Costo")]
 	public decimal Costo { get; set; }
@@ -38,10 +38,10 @@ public class AgregarPlanMembresiaViewModel
 	[StringLength(255, ErrorMessage = "El nombre no puede exceder los 255 caracteres")]
 	public string Nombre { get; set; }
 
-	[Display(Name = "Días de duración")]
-	[Required(ErrorMessage = "Los días son requeridos")]
-	[Range(1, 3650, ErrorMessage = "Los días deben estar entre 1 y 3650")]
-	public int Dias { get; set; }
+	[Display(Name = "Meses de duración")]
+	[Required(ErrorMessage = "Los meses son requeridos")]
+	[Range(1, 120, ErrorMessage = "Los meses deben estar entre 1 y 120")]
+	public int Meses { get; set; }
 
 	[Display(Name = "Costo")]
 	[Required(ErrorMessage = "El costo es requerido")]
@@ -51,7 +51,7 @@ public class AgregarPlanMembresiaViewModel
 	[Display(Name = "Activo")]
 	public bool Estado { get; set; }
 
-	public PlanMembresia Entidad() => new(Guid.NewGuid(), Nombre, Dias, Costo, Estado);
+	public PlanMembresia Entidad() => new(Guid.NewGuid(), Nombre, Meses, Costo, Estado);
 }
 
 public class EditarPlanMembresiaViewModel : BaseViewModel
@@ -62,7 +62,7 @@ public class EditarPlanMembresiaViewModel : BaseViewModel
 	{
 		Id = modelo.Id.ToString();
 		Nombre = modelo.Nombre;
-		Dias = modelo.Dias;
+		Meses = modelo.Meses;
 		Costo = modelo.Costo;
 		Estado = modelo.Estado;
 	}
@@ -75,10 +75,10 @@ public class EditarPlanMembresiaViewModel : BaseViewModel
 	[StringLength(255, ErrorMessage = "El nombre no puede exceder los 255 caracteres")]
 	public string Nombre { get; set; }
 
-	[Display(Name = "Días de duración")]
-	[Required(ErrorMessage = "Los días son requeridos")]
-	[Range(1, 3650, ErrorMessage = "Los días deben estar entre 1 y 3650")]
-	public int Dias { get; set; }
+	[Display(Name = "Meses de duración")]
+	[Required(ErrorMessage = "Los meses son requeridos")]
+	[Range(1, 120, ErrorMessage = "Los meses deben estar entre 1 y 120")]
+	public int Meses { get; set; }
 
 	[Display(Name = "Costo")]
 	[Required(ErrorMessage = "El costo es requerido")]
@@ -88,5 +88,5 @@ public class EditarPlanMembresiaViewModel : BaseViewModel
 	[Display(Name = "Activo")]
 	public bool Estado { get; set; }
 
-	public PlanMembresia Entidad() => new(new Guid(Id), Nombre, Dias, Costo, Estado);
+	public PlanMembresia Entidad() => new(new Guid(Id), Nombre, Meses, Costo, Estado);
 }
