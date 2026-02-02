@@ -1,108 +1,174 @@
 # fitcare
-Plataforma para la gestión de gimnasios.
 
-## Proceso de planificación y seguimiento de trabajo
-Básico, https://docs.microsoft.com/en-us/azure/devops/boards/get-started/plan-track-work?view=azure-devops&tabs=basic-process&source=docs
+Plataforma para la gestión de gimnasios, desarrollada con ASP.NET Core 6.0 MVC y Clean Architecture monolítica.
 
-## Arquitectura de la aplicación
-- Monolítica: https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#what-is-a-monolithic-application
-- Clean architecture: https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture
-- Front end:
-  - ASP.Net MVC.
-  - JavaScript
-  - jQuery
-  - Razor
-- Back end:
-	- Domain (Entities, interfaces, Logic)
-	- Data Persistence (EF Core/SQL Server)
-	- Identity (EF Core/SQL Server)
+## Características del sistema (v1)
 
-## Getting Started
-1.	[Installation process](#installation-process)
-2.	[Software dependencies](#software-dependencies)
-3.	[Latest releases](#latests-releases)
-4.	[API references](#api-references)
-5.	[Contribute](#contribute)
+### Gestión de usuarios y roles
+- Tres roles: Administrador, Instructor, Cliente
+- Registro y administración de instructores y clientes con datos personales y ubicación geográfica (Provincia, Cantón, Distrito)
+- Gestión de roles y usuarios del sistema
+- Autenticación con ASP.NET Identity, recuperación de contraseña por correo electrónico
 
-<h2 id="installation-process">Installation proccess</h3>
+### Rutinas
+- Creación y edición de rutinas asignadas por instructor a cliente
+- Gestión de ejercicios dentro de la rutina (series, repeticiones, tiempo de descanso) vía AJAX
+- Gestión de medidas corporales dentro de la rutina (valor, comentario, tipo de medida) vía AJAX
+- Edición de encabezado de rutina (fechas, objetivo) vía AJAX
+- Vista de detalle de rutina
+- Filtrado de rutinas por rol (administrador ve todas, instructor ve las suyas, cliente ve las propias)
 
-- Compilar: dotnet build Source/ --no-restore
-- Build and Test: dotnet run Source/Web --no-build
+### Catálogos
+- **Ejercicios**: CRUD completo con código autogenerado, clasificación por tipo de ejercicio, relación con grupos musculares y máquinas
+- **Tipos de ejercicio**: CRUD completo
+- **Máquinas/Equipos**: CRUD completo con código autogenerado, clasificación por tipo de máquina
+- **Tipos de máquina**: CRUD completo (patrón moderno DataTables + modales AJAX)
+- **Tipos de medida**: CRUD completo (patrón moderno DataTables + modales AJAX)
+- **Grupos musculares**: CRUD completo
 
-<h2 id="software-dependencies">Software dependencies</h2>
+### Planes de membresía
+- Catálogo de planes con nombre, duración en meses, costo y estado
+- CRUD vía AJAX con DataTables y modales (patrón moderno)
+- Asignación de plan al cliente al momento de registro
+- Fecha de renovación de membresía por cliente
+- Registro y confirmación de pagos de membresía
 
-- dotnet restore Source/ // Restaurar las dependecias de un proyecto
+### Exportación a Excel
+- Exportar rutina individual a Excel
+- Exportar listado de rutinas a Excel (filtrado por rol)
+- Exportar listado de instructores a Excel
+- Exportar listado de clientes a Excel
 
-<h2 id="latests-releases">Latests releases:</h2>
+### División territorial
+- Gestión de Provincias, Cantones y Distritos (Costa Rica)
+- Selects dependientes (Provincia → Cantón → Distrito) vía AJAX
+- Script de carga inicial de datos
 
-- Actualmente la versión inicial es el MVP, el cual se encuentra en pruebas: https://gimnasios.azurewebsites.net
+### Dashboard
+- Panel principal con tarjetas de acceso rápido por rol
+- Acceso directo a rutinas, clientes, instructores, catálogos, planes y pagos
 
-<h2 id="api=references">API references</h2>
-TODO: Add your code references.
+### Notificaciones por correo
+- Notificación al cliente cuando se le asigna una nueva rutina
+- Correo de recuperación de contraseña
 
-<h2 id="contribute">Contribute</h2>
+### Manual de usuario
+- Manual de usuario en PDF accesible desde la barra de navegación
 
-- Format code:
-  ```
-  dotnet format --severity info
-  ```
-- LibMan: Administrador de paquetes del lado del cliente
-  ```
-  dotnet tool install -g Microsoft.Web.LibraryManager.Cli // Instalar
-  Estando en carpeta raiz del repositorio: cd  Source/Web
-  libman restore // Restaurar los paquetes que se encuentran en el archivo de configuracion libman.json en Source/Web/
-  ```
-- Instalar Entity Framework Core tools:
-  ```
-  dotnet tool install -g dotnet-ef
-  dotnet-ef ó dotnet ef // Verificar dotnet ef, SOLO DESDE LA TERMINAL DE VSCODE O VISUAL STUDIO
-  ```
-- Crear modelo de Entity Framework a partir de la base de datos (database-first):
-   ```
-   Estando en carpeta raiz del repositorio: cd  Source
+## Arquitectura
 
-   dotnet ef dbcontext scaffold  Microsoft.EntityFrameworkCore.SqlServer --context fitcare_DB_Context --schema fitcare --output-dir ../Data/EntityFramework --namespace fitcare.Data.EntityFramework --no-pluralize --no-build
+- **Patrón**: Monolítica con Clean Architecture
+- **Front end**: ASP.NET MVC, Razor, JavaScript, jQuery, Bootstrap 4
+- **Back end**: Entities, Interfaces, Logic (Repository pattern vía `IBaseCore<T>`)
+- **Persistencia**: Entity Framework Core con SQL Server
+- **Dos DbContexts** en la misma base de datos:
+  1. `ApplicationDbContext` - Entidades de negocio
+  2. `IdentityDBContext` - Tablas de ASP.NET Identity
+- **Librerías cliente**: Font Awesome, DataTables, Select2, ClosedXML (Excel)
 
-   Nuevo:
-   dotnet ef dbcontext scaffold "Server=tcp:sql-svr-arenal.database.windows.net, 1433;Initial Catalog=db-arenal;;Persist Security Info=False;User Id=arenal;Password=6ABD70BEF057D69F529BE5DBA85DE2A3.;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" Microsoft.EntityFrameworkCore.SqlServer --context fitcare_DB_Context --schema fitcare --output-dir Models/DataAccess/EntityFramework --namespace fitcare.Models.DataAccess.EntityFramework --no-pluralize --no-build
-   ```
-- Añadir migracion para Identity (No es necesario este paso ya que la migración se encuentra creada, ir al siguiente punto):
-  ```
-  Estando en carpeta raiz del repositorio: cd  Source/Identity
+## Primeros pasos
 
-  dotnet ef migrations add "001" -o Data/Migrations --no-build
-  ```
-- Actualizar base de datos
-  ```
-  Estando en carpeta raiz del repositorio: cd  Source/Web
-  dotnet ef database update --context IdentityDBContext
-  ```
-- Instalar dotnet-aspnet-codegenerator:
-  ```
-  dotnet tool install -g dotnet-aspnet-codegenerator --version 6.0.11
-  dotnet-aspnet-codegenerator -h // Consultar ayuda de herramienta
-  ```
-- Generar las vistas y codigo para las vistas deseadas:
-  ```
-  dotnet aspnet-codegenerator identity --dbContext PCG.Data.ApplicationDbContext --files "Account.ForgotPassword;Account.ForgotPasswordConfirmation;Account.Login;Account.Logout;Account.ResetPassword;Account.ResetPasswordConfirmation"
-  ```
-<hr />
+### Requisitos
+- .NET 6.0 SDK
+- SQL Server
+- Entity Framework Core tools (`dotnet tool install -g dotnet-ef`)
+- LibMan CLI (`dotnet tool install -g Microsoft.Web.LibraryManager.Cli`)
 
-## Reporte de rutinas
-- Contar solo con una opcion llamada "Reporte de Rutinas"
-- Colocar los siguientes filtros:
-  - Instructor
-  - Cliente
-  - Rango de fechas
-- Mostrar en los resultados solo el encabezado de la rutina (Incluyendo la cantidad de ejercicios)
-- Por cada rutina colocar el boton ver detalle de rutina.
-- Este detalle debe abrirse en una nueva pestaña del navegador.
+### Compilar y ejecutar
+```bash
+dotnet restore Source/
+dotnet build Source/ --no-restore
+dotnet run --project Source/fitcare --no-build
+```
 
-## Trabajo de hoy
-- Reordenar opciones de catalogo en un solo grupo.
-- Definir un enumerable de las acciones que se pueden hacer en el sistema y registrar algunas acciones iniciales.
-- Trabajar mantenimiento de roles para que se pueda usar el enumerable de acciones.
-- Trabajar en autorización de los mantenimientos de los catálogos para validar contra el rol y sus acciones permitidas/registradas.
+### Restaurar librerías del cliente
+```bash
+cd Source/fitcare
+libman restore
+```
 
+### Base de datos
+```bash
+# Actualizar tablas de Identity
+dotnet ef database update --context IdentityDBContext --project Source/fitcare
 
-- Actualizar para establecer los grupos musculares y maquinas en el viewmodel en vez de hacerlo en el controller
+# Agregar migración
+dotnet ef migrations add "Nombre" -o Data/Migrations --project Source/fitcare --no-build
+```
+
+### Pruebas
+```bash
+dotnet test Source/fitcare.Tests/
+```
+
+### Formato de código
+```bash
+dotnet format --severity info
+```
+
+## Recomendaciones de negocio
+
+Funcionalidades sugeridas para futuras versiones, priorizadas por valor de negocio.
+
+### Fase 1 - Alto impacto
+
+#### Control de asistencia
+- Registro de entrada/salida (manual o con código QR)
+- Historial de asistencias por cliente
+- Reporte de asistencia (diaria, semanal, mensual)
+- Alertas de clientes inactivos (más de 1 semana sin asistir)
+
+#### Reportes financieros
+- Ingresos por período
+- Clientes morosos
+- Proyección de ingresos
+- Análisis de planes más vendidos
+
+#### Dashboard financiero y de gestión
+- KPIs: clientes activos vs totales, ingresos del mes, tasa de renovación, ocupación del gimnasio
+- Gráficas de ingresos mensuales, nuevos clientes por mes, retención de clientes
+
+### Fase 2 - Impacto medio
+
+#### Seguimiento de progreso del cliente
+- Gráficas de evolución de medidas (peso, IMC, grasa corporal)
+- Comparación antes/después y fotos de progreso
+- Marcar ejercicios completados por sesión con porcentaje de cumplimiento
+- Historial de pesos levantados por ejercicio
+
+#### Sistema de notificaciones avanzado
+- Notificación de vencimiento de membresía (7 días antes)
+- Recordatorio de cita con instructor
+- Notificaciones dentro de la aplicación (campana de notificaciones)
+- Historial de notificaciones enviadas
+
+#### Mejoras en reportes
+- Efectividad de instructores (clientes asignados, tasa de cumplimiento)
+- Uso de máquinas (para planificar mantenimiento)
+- Ejercicios más utilizados
+
+### Fase 3 - Valor agregado
+
+#### Gestión de clases grupales
+- Catálogo de clases (Yoga, Spinning, CrossFit, Zumba)
+- Horarios de clases (calendario semanal)
+- Inscripción con límite de cupos
+- Control de asistencia a clases
+
+#### Sistema de permisos granular
+- Acciones por módulo (Ver, Crear, Editar, Eliminar)
+- Asignación de permisos a roles
+- Middleware de autorización basado en acciones
+
+#### Aplicación móvil para clientes
+- Ver rutina asignada
+- Registrar ejercicios completados
+- Ver progreso con gráficas
+- Reservar clases grupales
+- Pagar membresía (integración con pasarela de pagos)
+
+### Integraciones futuras
+- Pasarela de pagos (Stripe, PayPal, Wompi para Costa Rica)
+- Servicio de SMS (Twilio) para recordatorios
+- Almacenamiento en la nube (Azure Blob, AWS S3) para fotos de progreso
+- API REST para aplicación móvil

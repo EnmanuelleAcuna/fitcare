@@ -36,14 +36,20 @@
 						</a>
 					</li>
 
-					</ul>
+					<li class="nav-item pt-1">
+						<a class="nav-link" href="~/MANUAL de USUARIO.pdf" target="_blank">
+							Manual de usuario
+						</a>
+					</li>
+				</ul>
 
 				<ul class="navbar-nav">
 					@if (SignInManager.IsSignedIn(User))
 					{
 						<li class="nav-item pt-1">
 							<div>
-								<form class="form-inline" method="post" asp-controller="Cuentas" asp-action="CerrarSesion">
+								<form class="form-inline" method="post" asp-controller="Cuentas"
+								      asp-action="CerrarSesion">
 									<button type="submit" class="dropdown-item text-danger font-weight-bold">
 										Cerrar sesión
 									</button>
